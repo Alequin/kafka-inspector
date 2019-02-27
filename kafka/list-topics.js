@@ -5,9 +5,7 @@ const pickBy = require("lodash/pickBy");
 const listTopics = async ({ kafkaNode }) => {
   return new Promise((resolve, reject) => {
     kafkaNode.admin.listTopics((error, response) => {
-      error
-        ? reject(error)
-        : resolve({ topics: transformToTopicList(response) });
+      error ? reject(error) : resolve(transformToTopicList(response));
     });
   });
 };

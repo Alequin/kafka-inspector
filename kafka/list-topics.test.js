@@ -52,7 +52,7 @@ describe("topics", () => {
       }
     };
 
-    const { topics } = await listTopics(mockKafkaConnection);
+    const topics = await listTopics(mockKafkaConnection);
     const rawTopicObject = mockMetadata.metadata;
     expect(topics).toEqual([
       {
