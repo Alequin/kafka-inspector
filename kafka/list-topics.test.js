@@ -1,3 +1,5 @@
+const listTopics = require("./list-topics");
+
 const mockBrokers = {
   "1": { nodeId: 1, host: "broker1", port: 9092 },
   "2": { nodeId: 2, host: "broker2", port: 9092 },
@@ -36,8 +38,6 @@ const mockMetadata = {
 };
 
 const mockResponse = [mockBrokers, mockMetadata];
-
-const listTopics = require("./list-topics");
 
 describe("topics", () => {
   it("Should return a list of all topics, filtering out private topics", async () => {
