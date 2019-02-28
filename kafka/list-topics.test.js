@@ -1,3 +1,5 @@
+jest.mock("./access-kafka-connections");
+const accessKafkaConnections = require("./access-kafka-connections");
 const listTopics = require("./list-topics");
 
 const mockBrokers = {
@@ -40,8 +42,12 @@ const mockMetadata = {
 const mockResponse = [mockBrokers, mockMetadata];
 
 describe("topics", () => {
+  beforeEach(() => {
+    accessKafkaConnections.mockReset();
+  });
+
   it("Should return a list of all topics, filtering out private topics", async () => {
-    const mockKafkaConnection = {
+    accessKafkaConnections.mockReturnValue({
       kafkaNode: {
         admin: {
           listTopics: callback => {
@@ -50,9 +56,9 @@ describe("topics", () => {
           }
         }
       }
-    };
+    });
 
-    const topics = await listTopics(mockKafkaConnection);
+    const topics = await listTopics();
     const rawTopicObject = mockMetadata.metadata;
     expect(topics).toEqual([
       {
@@ -71,7 +77,7 @@ describe("topics", () => {
 
   it("Should throw an error if requesting the list of topics fails", async () => {
     const mockErrorMessage = "list topics error message";
-    const mockKafkaConnection = {
+    accessKafkaConnections.mockReturnValue({
       kafkaNode: {
         admin: {
           listTopics: callback => {
@@ -80,9 +86,9 @@ describe("topics", () => {
           }
         }
       }
-    };
+    });
 
-    listTopics(mockKafkaConnection).catch(error => {
+    listTopics().catch(error => {
       expect(error).toBe(mockErrorMessage);
     });
   });
