@@ -42,10 +42,6 @@ const mockMetadata = {
 const mockResponse = [mockBrokers, mockMetadata];
 
 describe("topics", () => {
-  beforeEach(() => {
-    accessKafkaConnections.mockReset();
-  });
-
   it("Should return a list of all topics, filtering out private topics", async () => {
     accessKafkaConnections.mockReturnValue({
       kafkaNode: {
