@@ -43,7 +43,7 @@ const kafkaJs = () => {
       // In case disconnect is used over close.
       // As this is an event there is a small chance of race conditions,
       // meaning the value may not be set fast enough.
-      kafkaJsAdmin.events.on(kafkaJsAdmin.events.DISCONNECT, () => {
+      kafkaJsAdmin.on(kafkaJsAdmin.events.DISCONNECT, () => {
         kafkaJsAdmin.connected = false;
       });
     }
