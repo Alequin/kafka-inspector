@@ -27,10 +27,10 @@ const kafkaJs = () => {
     clientId: "k-inspect.kafkaJs",
     brokers: kafkaConfig.brokers
   });
-  const kafkaJsAdmin = null;
+  let kafkaJsAdmin = null;
 
   return () => {
-    const isKafkaJsAdminConnected = kafkaJs.admin.connected;
+    const isKafkaJsAdminConnected = kafkaJsAdmin && kafkaJsAdmin.connected;
     if (!isKafkaJsAdminConnected) {
       kafkaJsAdmin = kafkaJsClient.admin();
       // Provide a simple boolean value to check if admin connection is open
@@ -39,6 +39,13 @@ const kafkaJs = () => {
         kafkaJsAdmin.disconnect();
         kafkaJsAdmin.connected = false;
       };
+
+      // In case disconnect is used over close.
+      // As this is an event there is a small chance of race conditions,
+      // meaning the value may not be set fast enough.
+      kafkaJsAdmin.events.on(kafkaJsAdmin.events.DISCONNECT, () => {
+        kafkaJsAdmin.connected = false;
+      });
     }
 
     return {
@@ -49,7 +56,7 @@ const kafkaJs = () => {
 };
 
 const accessGlobalKafkaNodeConnection = kafkaNode();
-const accessGlobalKafkaJsConnection = kafkaNode();
+const accessGlobalKafkaJsConnection = kafkaJs();
 
 const accessKafkaConnections = () => {
   return {
