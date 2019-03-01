@@ -17,7 +17,6 @@ const kafkaNode = () => {
     return {
       client: kafkaNodeClient,
       admin: kafkaNodeAdmin,
-      // TODO - this is not used. If it stays this way it should be removed
       consumerGroupStream: options => {
         return new kafka.ConsumerGroupStream(
           {
