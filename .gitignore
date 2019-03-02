@@ -22,8 +22,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+#database
+
+sqlite-database
+db-journal
+
 #-------
+
 
 kafka-config.js
 play.js
-db

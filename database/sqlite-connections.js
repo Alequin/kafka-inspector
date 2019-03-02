@@ -1,5 +1,6 @@
 var sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("./db");
+const database = require("./database.json");
+const db = new sqlite3.Database(database.db.filename);
 
 const afterQuery = (resolve, reject) => (error, response) => {
   error ? reject(error) : resolve(response);
