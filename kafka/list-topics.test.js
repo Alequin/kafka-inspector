@@ -1,45 +1,7 @@
 jest.mock("./access-kafka-connections");
+const mockListTopics = require("mock-test-data/kafka-node/mock-list-topics");
 const accessKafkaConnections = require("./access-kafka-connections");
 const listTopics = require("./list-topics");
-
-const mockBrokers = {
-  "1": { nodeId: 1, host: "broker1", port: 9092 },
-  "2": { nodeId: 2, host: "broker2", port: 9092 },
-  "3": { nodeId: 3, host: "broker3", port: 9092 }
-};
-
-const mockPartitionData = (topicName, partition) => {
-  return {
-    topic: topicName,
-    partition,
-    leader: 1,
-    replicas: [3, 1, 2],
-    isr: [1, 3, 2]
-  };
-};
-
-const mockMetadata = {
-  metadata: {
-    topic1: {
-      "0": mockPartitionData("topic1", 0),
-      "1": mockPartitionData("topic1", 1)
-    },
-    "topic 2": {
-      "0": mockPartitionData("topic2", 0),
-      "1": mockPartitionData("topic2", 1)
-    },
-    _privateTopic1: {
-      "0": mockPartitionData("_privateTopic1", 0),
-      "1": mockPartitionData("_privateTopic1", 1)
-    },
-    __privateTopic2: {
-      "0": mockPartitionData("__privateTopic2", 0),
-      "1": mockPartitionData("__privateTopic2", 1)
-    }
-  }
-};
-
-const mockResponse = [mockBrokers, mockMetadata];
 
 describe("topics", () => {
   it("Should return a list of all topics, filtering out private topics", async () => {
@@ -48,14 +10,14 @@ describe("topics", () => {
         admin: {
           listTopics: callback => {
             const error = false;
-            callback(error, mockResponse);
+            callback(error, mockListTopics.response);
           }
         }
       }
     });
 
     const topics = await listTopics();
-    const rawTopicObject = mockMetadata.metadata;
+    const rawTopicObject = mockListTopics.metadata;
     expect(topics).toEqual([
       {
         name: "topic1",
@@ -78,7 +40,7 @@ describe("topics", () => {
         admin: {
           listTopics: callback => {
             const error = mockErrorMessage;
-            callback(error, mockResponse);
+            callback(error, mockListTopics.response);
           }
         }
       }
