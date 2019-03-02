@@ -21,13 +21,13 @@ describe("topics", () => {
     expect(topics).toEqual([
       {
         name: "topic1",
-        partitions: [rawTopicObject.topic1["0"], rawTopicObject.topic1["1"]]
+        partitions: [rawTopicObject.topic1[0], rawTopicObject.topic1[1]]
       },
       {
-        name: "topic 2",
+        name: mockListTopics.topic2,
         partitions: [
-          rawTopicObject["topic 2"]["0"],
-          rawTopicObject["topic 2"]["1"]
+          rawTopicObject[mockListTopics.topic2][0],
+          rawTopicObject[mockListTopics.topic2][1]
         ]
       }
     ]);
