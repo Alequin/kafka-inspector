@@ -2,6 +2,9 @@
   "name": "k-inspect",
   "version": "0.1.0",
   "private": true,
+  "devDependencies": {
+    "mock-test-data": "file:_mock-test-data"
+  },
   "dependencies": {
     "@babel/core": "7.2.2",
     "@svgr/webpack": "4.1.0",
