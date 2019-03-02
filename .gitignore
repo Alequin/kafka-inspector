@@ -25,7 +25,7 @@ yarn-error.log*
 #database
 
 sqlite-database
-db-journal
+sqlite-database-journal
 
 #-------
 
