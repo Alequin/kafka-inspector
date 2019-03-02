@@ -1,16 +1,7 @@
 jest.mock("./access-kafka-connections");
+const mockListGroups = require("mock-test-data/kafka-node/mock-list-groups");
 const accessKafkaConnections = require("./access-kafka-connections");
 const listConsumerGroups = require("./list-consumer-groups");
-
-const consumerGroup1 = "group1";
-const consumerGroup2 = "group2";
-const consumerGroup3 = "group3";
-
-const mockResponse = {
-  [consumerGroup1]: "consumer",
-  [consumerGroup2]: "",
-  [consumerGroup3]: "consumer"
-};
 
 describe("listConsumerGroups", () => {
   it("Should return a list of all consumer groups", async () => {
@@ -19,13 +10,17 @@ describe("listConsumerGroups", () => {
         admin: {
           listGroups: callback => {
             const error = false;
-            callback(error, mockResponse);
+            callback(error, mockListGroups.response);
           }
         }
       }
     });
 
-    const expected = [consumerGroup1, consumerGroup2, consumerGroup3];
+    const expected = [
+      mockListGroups.consumerGroup1,
+      mockListGroups.consumerGroup2,
+      mockListGroups.consumerGroup3
+    ];
     const consumerGroups = await listConsumerGroups();
     expect(consumerGroups).toEqual(expected);
   });
@@ -37,7 +32,7 @@ describe("listConsumerGroups", () => {
         admin: {
           listGroups: callback => {
             const error = false;
-            callback(error, mockResponse);
+            callback(error, mockListGroups.response);
           }
         }
       }
