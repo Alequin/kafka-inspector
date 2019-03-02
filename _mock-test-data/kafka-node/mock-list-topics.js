@@ -14,14 +14,17 @@ const mockPartitionData = (topicName, partition) => {
   };
 };
 
+const topic1 = "topic1";
+const topic2 = "topic-2";
+
 const metadata = {
-  topic1: {
-    "0": mockPartitionData("topic1", 0),
-    "1": mockPartitionData("topic1", 1)
+  [topic1]: {
+    "0": mockPartitionData(topic1, 0),
+    "1": mockPartitionData(topic1, 1)
   },
-  "topic 2": {
-    "0": mockPartitionData("topic2", 0),
-    "1": mockPartitionData("topic2", 1)
+  [topic2]: {
+    "0": mockPartitionData(topic2, 0),
+    "1": mockPartitionData(topic2, 1)
   },
   _privateTopic1: {
     "0": mockPartitionData("_privateTopic1", 0),
@@ -37,5 +40,7 @@ const response = [brokers, { metadata }];
 
 module.exports = {
   response,
-  metadata
+  metadata,
+  topic1,
+  topic2
 };
