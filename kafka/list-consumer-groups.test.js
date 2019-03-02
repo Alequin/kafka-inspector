@@ -25,13 +25,13 @@ describe("listConsumerGroups", () => {
     expect(consumerGroups).toEqual(expected);
   });
 
-  it("Should throw an error if requesting the list of consumer groups fails", async () => {
+  it("Should throw an error if requesting the list of consumer groups fails", done => {
     const mockErrorMessage = "list consumer groups error message";
     accessKafkaConnections.mockReturnValue({
       kafkaNode: {
         admin: {
           listGroups: callback => {
-            const error = false;
+            const error = mockErrorMessage;
             callback(error, mockListGroups.response);
           }
         }
@@ -40,6 +40,7 @@ describe("listConsumerGroups", () => {
 
     listConsumerGroups().catch(error => {
       expect(error).toBe(mockErrorMessage);
+      done();
     });
   });
 });
