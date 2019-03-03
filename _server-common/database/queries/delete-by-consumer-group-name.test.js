@@ -5,13 +5,13 @@ const { query } = require("server-common/database/sqlite-connections");
 describe.only("deleteByConsumerGroupName", () => {
   let db = null;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     db = testDatabaseMigration();
-    await db.up();
+    await db.up(Number.MAX_VALUE);
   });
 
-  afterAll(async () => {
-    await db.down();
+  afterEach(async () => {
+    await db.down(Number.MAX_VALUE);
   });
 
   it("Deletes all rows with a matching Consumer Group Name", async () => {

@@ -5,12 +5,12 @@ const { query } = require("server-common/database/sqlite-connections");
 describe("topicsAndConsumerGroups", () => {
   let db = null;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     db = testDatabaseMigration();
-    await db.up();
+    await db.up(Number.MAX_VALUE);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await db.down();
   });
 

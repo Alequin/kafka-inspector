@@ -1,20 +1,20 @@
-const upsertToTopicAndConsumerGroup = require("./upsert-to-topic-and-consumer-group");
 const testDatabaseMigration = require("../test-database-migration");
+const upsertToTopicAndConsumerGroup = require("./upsert-to-topic-and-consumer-group");
 const { query } = require("server-common/database/sqlite-connections");
 
 describe("upsertToTopicAndConsumerGroup", () => {
   let db = null;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     db = testDatabaseMigration();
-    await db.up();
+    await db.up(Number.MAX_VALUE);
   });
 
-  afterAll(async () => {
-    await db.down();
+  afterEach(async () => {
+    await db.down(Number.MAX_VALUE);
   });
 
-  it("Insert into topicAndConsumerGroup", async () => {
+  it("Can Insert into topicAndConsumerGroup", async () => {
     await upsertToTopicAndConsumerGroup("topic1", "group1", 1234);
 
     const expected = [
