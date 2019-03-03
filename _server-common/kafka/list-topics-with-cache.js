@@ -1,4 +1,3 @@
-const { seconds } = require("server-common/time-to-milliseconds");
 const simpleCache = require("./kafka-utils/simple-cache");
 const listTopics = require("./list-topics");
 
