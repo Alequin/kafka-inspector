@@ -1,28 +1,24 @@
 const { flow, isEmpty, reject } = require("lodash");
-const listTopics = require("../list-topics");
-const listConsumerGroups = require("../list-consumer-groups");
+const listTopicsWithCache = require("../list-topics-with-cache");
+const listConsumerGroupsWithCache = require("../list-consumer-groups-with-cache");
 
 const ILLEGAL_CHARACTERS = new RegExp("[^a-zA-Z0-9._-]+", "g");
 
-const confirmTopicAndConsumerGroupAreValid = () => {
-  const validTopicNames = listTopics().then(topics => {
-    return topics.map(({ name }) => name);
-  });
-  const validConsumerGroupNames = listConsumerGroups();
+const confirmTopicAndConsumerGroupAreValid = async topicAndConsumerGroup => {
+  if (!topicAndConsumerGroup) return null;
+  const topics = await listTopicsWithCache();
+  const consumerGroupNames = await listConsumerGroupsWithCache();
 
-  return async topicAndConsumerGroup => {
-    if (!topicAndConsumerGroup) return null;
-    const isTopicNameValid = (await validTopicNames).includes(
-      topicAndConsumerGroup.topicName
-    );
-    const isConsumerGroupValid = (await validConsumerGroupNames).includes(
-      topicAndConsumerGroup.consumerGroup.name
-    );
+  const isTopicNameValid = topics.find(
+    ({ name }) => name === topicAndConsumerGroup.topicName
+  );
+  const isConsumerGroupValid = consumerGroupNames.includes(
+    topicAndConsumerGroup.consumerGroup.name
+  );
 
-    return isTopicNameValid && isConsumerGroupValid
-      ? topicAndConsumerGroup
-      : null;
-  };
+  return isTopicNameValid && isConsumerGroupValid
+    ? topicAndConsumerGroup
+    : null;
 };
 
 const shapeIntoObject = consumerGroupAndTopic => {
@@ -53,7 +49,7 @@ const extractTopicAndConsumerGroupFromKey = flow(
   splitKeyIntoConsumerGroupAndTopicArray,
   removeEmptyStringsFromArray,
   shapeIntoObject,
-  confirmTopicAndConsumerGroupAreValid()
+  confirmTopicAndConsumerGroupAreValid
 );
 
 const topicAndConsumerGroupDetailsFromMessage = async message => {
