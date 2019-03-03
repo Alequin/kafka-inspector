@@ -12,26 +12,26 @@ describe("simpleCache", () => {
     mockRequestFunction.mockClear();
   });
 
-  it("Should call the given function if cache is empty", () => {
+  it("Should call the given function if cache is empty", async () => {
     const requestFunctionWithCache = simpleCache(mockRequestFunction);
 
     const expected = mockResponse;
-    const actual = requestFunctionWithCache();
+    const actual = await requestFunctionWithCache();
     expect(actual).toEqual(expected);
     expect(mockRequestFunction).toBeCalledTimes(1);
   });
 
-  it("Should not call the given function if cache is available", () => {
+  it("Should not call the given function if cache is available", async () => {
     const requestFunctionWithCache = simpleCache(mockRequestFunction);
 
     const expected = mockResponse;
     // first call without cache
-    requestFunctionWithCache();
+    await requestFunctionWithCache();
     // Reset call count to zero
     mockRequestFunction.mockClear();
 
     // second call with cache
-    const actual = requestFunctionWithCache();
+    const actual = await requestFunctionWithCache();
     expect(actual).toEqual(expected);
     expect(mockRequestFunction).toBeCalledTimes(0);
   });
@@ -44,8 +44,8 @@ describe("simpleCache", () => {
     const expected = mockResponse;
     requestFunctionWithCache();
 
-    setTimeout(() => {
-      const actual = requestFunctionWithCache();
+    setTimeout(async () => {
+      const actual = await requestFunctionWithCache();
       expect(actual).toEqual(expected);
       expect(mockRequestFunction).toBeCalledTimes(2);
       done();

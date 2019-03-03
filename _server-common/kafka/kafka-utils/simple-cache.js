@@ -1,3 +1,4 @@
+const cloneDeep = require("lodash/cloneDeep");
 const { seconds, milliseconds } = require("server-common/time-to-milliseconds");
 const selfResettingTimeout = require("./self-resetting-timeout");
 
@@ -25,12 +26,12 @@ const simpleCache = (func, options = DEFAULT_OPTIONS) => {
   const cleaningTimer = selfResettingTimeout(
     options.refreshCacheAfter + milliseconds(500)
   );
-  return (...args) => {
+  return async (...args) => {
     cleaningTimer(() => {
       cache = null;
     });
-    if (!cache || shouldRefeshCache(options)) cache = func(...args);
-    return cache;
+    if (!cache || shouldRefeshCache(options)) cache = await func(...args);
+    return cloneDeep(cache);
   };
 };
 
