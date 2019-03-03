@@ -15,6 +15,7 @@ const query = async query => {
     db.all(query, afterQuery(resolve, reject));
   });
 };
+
 const prepareQuery = query => {
   const preparedQuery = db.prepare(query);
   return async (...values) => {

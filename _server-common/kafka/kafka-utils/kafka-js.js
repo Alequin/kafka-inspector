@@ -12,7 +12,7 @@ const kafkaJs = () => {
     const isKafkaJsAdminConnected = kafkaJsAdmin && kafkaJsAdmin.connected;
     if (!isKafkaJsAdminConnected) {
       kafkaJsAdmin = kafkaJsClient.admin();
-      // Provide a simple boolean value to check if admin connection is open
+      // Provides a simple boolean value to check if admin connection is open
       kafkaJsAdmin.connected = true;
       kafkaJsAdmin.close = () => {
         kafkaJsAdmin.disconnect();

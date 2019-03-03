@@ -51,6 +51,7 @@ const maintainTopicsAndConsumerGroupsTable = async () => {
 
 maintainTopicsAndConsumerGroupsTable();
 
+// Deletes from table topicsAndConsumerGroups when topics or consumer groups are removed
 setInterval(async () => {
   const knownTopicAndConsumerGroups = await topicsAndConsumerGroups();
   const {
