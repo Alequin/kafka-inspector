@@ -1,5 +1,6 @@
 const { flow, isEmpty, reject } = require("lodash");
 
+// https://github.com/apache/kafka/blob/trunk/clients/src/main/java/org/apache/kafka/common/internals/Topic.java
 const ILLEGAL_CHARACTERS = new RegExp("[^a-zA-Z0-9._-]+", "g");
 
 const shapeIntoObject = consumerGroupAndTopic => {
