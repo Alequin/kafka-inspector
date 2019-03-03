@@ -1,25 +1,22 @@
 const { flow, isEmpty, reject } = require("lodash");
-const listTopicsWithCache = require("../list-topics-with-cache");
-const listConsumerGroupsWithCache = require("../list-consumer-groups-with-cache");
+const { seconds } = require("server-common/time-to-milliseconds");
+const topicsAndConsumerGroups = require("server-common/database/queries/topics-and-consumer-groups");
+const deleteByTopicName = require("server-common/database/queries/delete-by-topic-name");
+const deleteByConsumerGroupName = require("server-common/database/queries/delete-by-consumer-group-name");
+const checkForDeletedTopicsOrConsumerGroups = require("./check-for-deleted-topics-or-consumer-groups");
 
 const ILLEGAL_CHARACTERS = new RegExp("[^a-zA-Z0-9._-]+", "g");
 
-const confirmTopicAndConsumerGroupAreValid = async topicAndConsumerGroup => {
-  if (!topicAndConsumerGroup) return null;
-  const topics = await listTopicsWithCache();
-  const consumerGroupNames = await listConsumerGroupsWithCache();
+setInterval(async () => {
+  const knownTopicAndConsumerGroups = await topicsAndConsumerGroups();
+  const {
+    deletedTopicNames,
+    deletedConsumerGroupNames
+  } = await checkForDeletedTopicsOrConsumerGroups(knownTopicAndConsumerGroups);
 
-  const isTopicNameValid = topics.find(
-    ({ name }) => name === topicAndConsumerGroup.topicName
-  );
-  const isConsumerGroupValid = consumerGroupNames.includes(
-    topicAndConsumerGroup.consumerGroup.name
-  );
-
-  return isTopicNameValid && isConsumerGroupValid
-    ? topicAndConsumerGroup
-    : null;
-};
+  deleteByTopicName(deletedTopicNames);
+  deleteByConsumerGroupName(deletedConsumerGroupNames);
+}, seconds(30));
 
 const shapeIntoObject = consumerGroupAndTopic => {
   // Anything not of length two is not a Consumer Group / Topic pair
@@ -48,8 +45,7 @@ const extractTopicAndConsumerGroupFromKey = flow(
   transformKeyToString,
   splitKeyIntoConsumerGroupAndTopicArray,
   removeEmptyStringsFromArray,
-  shapeIntoObject,
-  confirmTopicAndConsumerGroupAreValid
+  shapeIntoObject
 );
 
 const topicAndConsumerGroupDetailsFromMessage = async message => {
