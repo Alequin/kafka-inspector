@@ -33,8 +33,8 @@ const extractTopicAndConsumerGroupFromKey = flow(
   shapeIntoObject
 );
 
-const topicAndConsumerGroupDetailsFromMessage = async message => {
-  const topicWithConsumerGroup = await extractTopicAndConsumerGroupFromKey(
+const topicAndConsumerGroupDetailsFromMessage = message => {
+  const topicWithConsumerGroup = extractTopicAndConsumerGroupFromKey(
     message.key
   );
   if (!topicWithConsumerGroup) return null;

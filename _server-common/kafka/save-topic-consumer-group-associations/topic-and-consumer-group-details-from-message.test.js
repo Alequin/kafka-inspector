@@ -22,7 +22,7 @@ const topicAndConsumerGroupDetailsFromMessage = require("./topic-and-consumer-gr
 const BAD_CHARACTER = String.fromCharCode(1);
 
 describe("topicAndConsumerGroupDetailsFromMessage", () => {
-  it("Should correctly extract the topic and consumer group details", async () => {
+  it("Should correctly extract the topic and consumer group details", () => {
     const timeNow = Date.now();
 
     // Key is received as a buffer.
@@ -44,11 +44,11 @@ describe("topicAndConsumerGroupDetailsFromMessage", () => {
       }
     };
 
-    const actual = await topicAndConsumerGroupDetailsFromMessage(mockMessage);
+    const actual = topicAndConsumerGroupDetailsFromMessage(mockMessage);
     expect(actual).toEqual(expected);
   });
 
-  it("Should return null if Topic Name is missing", async () => {
+  it("Should return null if Topic Name is missing", () => {
     const timeNow = Date.now();
 
     // Key is received as a buffer.
@@ -59,11 +59,11 @@ describe("topicAndConsumerGroupDetailsFromMessage", () => {
     };
 
     const expected = null;
-    const actual = await topicAndConsumerGroupDetailsFromMessage(mockMessage);
+    const actual = topicAndConsumerGroupDetailsFromMessage(mockMessage);
     expect(actual).toEqual(expected);
   });
 
-  it("Should return null if Consumer Group Name is missing", async () => {
+  it("Should return null if Consumer Group Name is missing", () => {
     const timeNow = Date.now();
 
     // Key is received as a buffer.
@@ -76,7 +76,7 @@ describe("topicAndConsumerGroupDetailsFromMessage", () => {
     };
 
     const expected = null;
-    const actual = await topicAndConsumerGroupDetailsFromMessage(mockMessage);
+    const actual = topicAndConsumerGroupDetailsFromMessage(mockMessage);
     expect(actual).toEqual(expected);
   });
 });

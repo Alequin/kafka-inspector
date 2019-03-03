@@ -1,4 +1,5 @@
 const { seconds } = require("server-common/time-to-milliseconds");
+const { uniqBy } = require("lodash");
 const topicsAndConsumerGroups = require("server-common/database/queries/topics-and-consumer-groups");
 const deleteByTopicName = require("server-common/database/queries/delete-by-topic-name");
 const deleteByConsumerGroupName = require("server-common/database/queries/delete-by-consumer-group-name");
@@ -43,27 +44,34 @@ const run = async () => {
     autoCommitThreshold: 500,
     commitOffsetsIfNecessary: true,
     eachBatch: async ({ batch, resolveOffset, heartbeat, isRunning }) => {
+      const newTopicAndConsumerGroupRows = [];
       for (const messageIndex in batch.messages) {
         const message = batch.messages[messageIndex];
-        const topicAndConsumerGroup = await topicAndConsumerGroupDetailsFromMessage(
+        const topicAndConsumerGroup = topicAndConsumerGroupDetailsFromMessage(
           message
         );
         if (!topicAndConsumerGroup) continue;
-        const { topicName, consumerGroup } = topicAndConsumerGroup;
-
-        await upsertToTopicAndConsumerGroupTable(
-          topicName,
-          consumerGroup.name,
-          consumerGroup.lastActive
-        );
+        newTopicAndConsumerGroupRows.push(topicAndConsumerGroup);
 
         if (messageIndex % 100 === 0) {
           console.log(batch.partition, message.offset);
-
           await resolveOffset(message.offset);
           await heartbeat();
           console.log("heartbeat");
         }
+      }
+
+      const newRowsWithDuplicatesRemoved = uniqBy(
+        newTopicAndConsumerGroupRows,
+        ({ topicName, consumerGroup }) => topicName + consumerGroup
+      );
+
+      for (const newRow of newRowsWithDuplicatesRemoved) {
+        await upsertToTopicAndConsumerGroupTable(
+          newRow.topicName,
+          newRow.consumerGroup.name,
+          newRow.consumerGroup.lastActive
+        );
       }
     }
   });
