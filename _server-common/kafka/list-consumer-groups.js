@@ -1,5 +1,9 @@
 const accessKafkaConnections = require("./access-kafka-connections");
 
+const mapConsumerGroupsToList = consumerGroupsObject => {
+  return Object.keys(consumerGroupsObject);
+};
+
 const listConsumerGroups = async () => {
   const { kafkaNode } = accessKafkaConnections();
 
@@ -8,10 +12,6 @@ const listConsumerGroups = async () => {
       error ? reject(error) : resolve(mapConsumerGroupsToList(response));
     });
   });
-};
-
-const mapConsumerGroupsToList = consumerGroupsObject => {
-  return Object.keys(consumerGroupsObject);
 };
 
 module.exports = listConsumerGroups;
