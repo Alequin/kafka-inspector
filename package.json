@@ -6,10 +6,10 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/run-tests.js",
-    "migrate:create": "db-migrate create --sql-file --config ./database/database.json -e db",
-    "migrate:up": "db-migrate up --config ./database/database.json -e db",
-    "migrate:down": "db-migrate down --config ./database/database.json -e db",
-    "migrate:reset": "db-migrate down --config ./database/database.json -e db -c 999999 && npm run migrate:up"
+    "migrate:create": "db-migrate create --sql-file --config ./_server-common/database/database.json -e db",
+    "migrate:up": "db-migrate up --config ./_server-common/database/database.json -e db",
+    "migrate:down": "db-migrate down --config ./_server-common/database/database.json -e db",
+    "migrate:reset": "db-migrate down --config ./_server-common/database/database.json -e db -c 999999 && npm run migrate:up"
   },
   "devDependencies": {
     "mock-test-data": "file:_mock-test-data",
