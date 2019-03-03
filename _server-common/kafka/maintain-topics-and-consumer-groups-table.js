@@ -1,5 +1,5 @@
 const { seconds } = require("server-common/time-to-milliseconds");
-const { uniqBy } = require("lodash");
+const { uniqBy, isNull } = require("lodash");
 const topicsAndConsumerGroups = require("server-common/database/queries/topics-and-consumer-groups");
 const deleteByTopicName = require("server-common/database/queries/delete-by-topic-name");
 const deleteByConsumerGroupName = require("server-common/database/queries/delete-by-consumer-group-name");
@@ -22,6 +22,8 @@ setInterval(async () => {
   deleteByConsumerGroupName(deletedConsumerGroupNames);
 }, seconds(30));
 
+const isNotNull = (...args) => !isNull(...args);
+
 const consumerFrom = async (topicName, consumerGroup) => {
   const { kafkaJs } = accessKafkaConnections();
   const consumer = kafkaJs.client.consumer({
@@ -43,28 +45,18 @@ const run = async () => {
     autoCommitInterval: 500,
     autoCommitThreshold: 500,
     commitOffsetsIfNecessary: true,
-    eachBatch: async ({ batch, resolveOffset, heartbeat, isRunning }) => {
-      const newTopicAndConsumerGroupRows = [];
-      for (const messageIndex in batch.messages) {
-        const message = batch.messages[messageIndex];
-        const topicAndConsumerGroup = topicAndConsumerGroupDetailsFromMessage(
-          message
-        );
-        if (!topicAndConsumerGroup) continue;
-        newTopicAndConsumerGroupRows.push(topicAndConsumerGroup);
-
-        if (messageIndex % 100 === 0) {
-          console.log(batch.partition, message.offset);
-          await resolveOffset(message.offset);
-          await heartbeat();
-          console.log("heartbeat");
-        }
-      }
+    eachBatch: async ({ batch, heartbeat }) => {
+      console.log("new batch");
+      const newTopicAndConsumerGroupRows = batch.messages
+        .map(topicAndConsumerGroupDetailsFromMessage)
+        .filter(isNotNull);
 
       const newRowsWithDuplicatesRemoved = uniqBy(
         newTopicAndConsumerGroupRows,
         ({ topicName, consumerGroup }) => topicName + consumerGroup
       );
+
+      await heartbeat();
 
       for (const newRow of newRowsWithDuplicatesRemoved) {
         await upsertToTopicAndConsumerGroupTable(
@@ -73,10 +65,9 @@ const run = async () => {
           newRow.consumerGroup.lastActive
         );
       }
+      console.log("batch processed");
     }
   });
-
-  // await consumer.disconnect();
 };
 
 run();
