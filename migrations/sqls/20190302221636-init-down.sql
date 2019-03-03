@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS topicAndConsumerGroup;
+DROP TABLE IF EXISTS topicsAndConsumerGroups;

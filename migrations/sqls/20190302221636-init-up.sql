@@ -1,4 +1,4 @@
-CREATE TABLE topicAndConsumerGroup (
+CREATE TABLE topicsAndConsumerGroups (
   id INTEGER PRIMARY KEY,
   topicName TEXT NOT NULL,
   consumerGroupName TEXT NOT NULL,

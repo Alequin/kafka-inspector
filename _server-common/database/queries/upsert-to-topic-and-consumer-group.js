@@ -1,7 +1,7 @@
 const { prepareQuery } = require("../sqlite-connections");
 
 const upsertToTopicAndConsumerGroup = prepareQuery(`
-  INSERT OR REPLACE INTO topicAndConsumerGroup
+  INSERT OR REPLACE INTO topicsAndConsumerGroups
   (topicName, consumerGroupName, lastActive)
   VALUES
   (?, ?, ?)

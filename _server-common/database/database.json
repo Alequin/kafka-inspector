@@ -1,4 +1,8 @@
 {
+  "test": {
+    "driver": "sqlite3",
+    "filename": "./_server-common/database/test-sqlite-database"
+  },
   "db": {
     "driver": "sqlite3",
     "filename": "./_server-common/database/sqlite-database"
