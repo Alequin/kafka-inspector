@@ -1,28 +1,14 @@
 const { seconds } = require("server-common/time-to-milliseconds");
-const { uniqBy, isNull } = require("lodash");
 const topicsAndConsumerGroups = require("server-common/database/queries/topics-and-consumer-groups");
 const deleteByTopicName = require("server-common/database/queries/delete-by-topic-name");
 const deleteByConsumerGroupName = require("server-common/database/queries/delete-by-consumer-group-name");
-const checkForDeletedTopicsOrConsumerGroups = require("./save-topic-consumer-group-associations/check-for-deleted-topics-or-consumer-groups");
-const topicAndConsumerGroupDetailsFromMessage = require("./save-topic-consumer-group-associations/topic-and-consumer-group-details-from-message");
-const accessKafkaConnections = require("./access-kafka-connections");
 const upsertToTopicAndConsumerGroupTable = require("server-common/database/queries/upsert-to-topic-and-consumer-group");
+const accessKafkaConnections = require("../access-kafka-connections");
+const checkForDeletedTopicsOrConsumerGroups = require("./check-for-deleted-topics-or-consumer-groups");
+const processMessageBatch = require("./process-message-batch");
 
 const CONSUMER_OFFSETS_TOPIC_NAME = "__consumer_offsets";
 const CONSUMER_GROUP = "jcox-420";
-
-setInterval(async () => {
-  const knownTopicAndConsumerGroups = await topicsAndConsumerGroups();
-  const {
-    deletedTopicNames,
-    deletedConsumerGroupNames
-  } = await checkForDeletedTopicsOrConsumerGroups(knownTopicAndConsumerGroups);
-
-  deleteByTopicName(deletedTopicNames);
-  deleteByConsumerGroupName(deletedConsumerGroupNames);
-}, seconds(30));
-
-const isNotNull = (...args) => !isNull(...args);
 
 const consumerFrom = async (topicName, consumerGroup) => {
   const { kafkaJs } = accessKafkaConnections();
@@ -34,7 +20,7 @@ const consumerFrom = async (topicName, consumerGroup) => {
   return consumer;
 };
 
-const run = async () => {
+const maintainTopicsAndConsumerGroupsTable = async () => {
   const consumer = await consumerFrom(
     CONSUMER_OFFSETS_TOPIC_NAME,
     CONSUMER_GROUP
@@ -47,18 +33,11 @@ const run = async () => {
     commitOffsetsIfNecessary: true,
     eachBatch: async ({ batch, heartbeat }) => {
       console.log("new batch");
-      const newTopicAndConsumerGroupRows = batch.messages
-        .map(topicAndConsumerGroupDetailsFromMessage)
-        .filter(isNotNull);
-
-      const newRowsWithDuplicatesRemoved = uniqBy(
-        newTopicAndConsumerGroupRows,
-        ({ topicName, consumerGroup }) => topicName + consumerGroup
-      );
+      const newRows = processMessageBatch(batch);
 
       await heartbeat();
 
-      for (const newRow of newRowsWithDuplicatesRemoved) {
+      for (const newRow of newRows) {
         await upsertToTopicAndConsumerGroupTable(
           newRow.topicName,
           newRow.consumerGroup.name,
@@ -70,4 +49,15 @@ const run = async () => {
   });
 };
 
-run();
+maintainTopicsAndConsumerGroupsTable();
+
+setInterval(async () => {
+  const knownTopicAndConsumerGroups = await topicsAndConsumerGroups();
+  const {
+    deletedTopicNames,
+    deletedConsumerGroupNames
+  } = await checkForDeletedTopicsOrConsumerGroups(knownTopicAndConsumerGroups);
+
+  deleteByTopicName(deletedTopicNames);
+  deleteByConsumerGroupName(deletedConsumerGroupNames);
+}, seconds(30));
