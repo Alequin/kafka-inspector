@@ -1,26 +1,24 @@
+const mockFetchOffsets = require("mock-test-data/kafka-node/mock-fetch-offsets");
 jest.mock("../access-kafka-connections");
 const accessKafkaConnections = require("../access-kafka-connections");
 
 const fetchLatestOffsets = require("./fetch-latest-offsets");
 
-const mockTopicName = "topic1";
-
 describe("fetchLatestOffsets", () => {
   it("Should resolve the topics offsets", async () => {
-    const mockOffestsResponse = {};
-
     accessKafkaConnections.mockReturnValue({
       kafkaNode: {
         offset: {
           fetchLatestOffsets: (_topicNames, callback) => {
             const error = false;
-            callback(error, { [mockTopicName]: mockOffestsResponse });
+            callback(error, mockFetchOffsets.response);
           }
         }
       }
     });
-    const expected = mockOffestsResponse;
-    const actual = await fetchLatestOffsets(mockTopicName);
+    const { topicName } = mockFetchOffsets;
+    const expected = mockFetchOffsets.response[topicName];
+    const actual = await fetchLatestOffsets(topicName);
     expect(actual).toEqual(expected);
   });
 
@@ -37,7 +35,7 @@ describe("fetchLatestOffsets", () => {
       }
     });
 
-    fetchLatestOffsets(mockTopicName).catch(error => {
+    fetchLatestOffsets("topicName").catch(error => {
       expect(error).toBe(mockError);
       done();
     });

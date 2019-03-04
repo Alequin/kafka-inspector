@@ -1,17 +1,11 @@
+const mockFetchOffsets = require("mock-test-data/kafka-node/mock-fetch-offsets");
+const mockFetchCommittedOffsets = require("mock-test-data/kafka-node/mock-fetch-committed-offsets");
+
 const aggregateOffsetDetails = require("./aggregate-offset-details");
 
 describe("aggregateOffsetDetails", () => {
-  const mockLatestOffsets = {
-    "0": 10,
-    "1": 20,
-    "2": 30
-  };
-
-  const mockCommittedOffsets = [
-    { partition: 0, offset: 4 },
-    { partition: 1, offset: 9 },
-    { partition: 2, offset: 14 }
-  ];
+  const mockLatestOffsets = mockFetchOffsets.topicOffsets;
+  const mockCommittedOffsets = mockFetchCommittedOffsets.response;
 
   it("Should find latest offset and calculate the message lag", () => {
     const expected = [
@@ -29,7 +23,7 @@ describe("aggregateOffsetDetails", () => {
   });
 
   it(`Should throw an error if the partitions known by the latest offsets 
-  and those known by committed offsets don't match`, () => {
+  and those known by committed offsets do not match`, () => {
     const mockCommittedOffsets = [
       { partition: 0, offset: 4 },
       { partition: 2, offset: 14 }
