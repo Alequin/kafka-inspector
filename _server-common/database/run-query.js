@@ -6,14 +6,12 @@ const db = new sqlite3.Database(
   IS_TEST ? database.test.filename : database.db.filename
 );
 
-const afterQuery = (resolve, reject) => (error, response) => {
-  error ? reject(error) : resolve(response);
-};
-
-const query = async (query, values) => {
+const runQuery = async (query, values) => {
   return new Promise((resolve, reject) => {
-    db.all(query, values, afterQuery(resolve, reject));
+    db.all(query, values, (error, response) => {
+      error ? reject(error) : resolve(response);
+    });
   });
 };
 
-module.exports = { query };
+module.exports = runQuery;

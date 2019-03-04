@@ -1,7 +1,7 @@
-const { query } = require("../sqlite-connections");
+const runQuery = require("../run-query");
 
 const upsertToTopicAndConsumerGroup = async (...values) => {
-  return await query(
+  return await runQuery(
     `
   INSERT OR REPLACE INTO topicsAndConsumerGroups
   (topicName, consumerGroupName, lastActive)

@@ -1,11 +1,11 @@
-const { query } = require("../sqlite-connections");
+const runQuery = require("../run-query");
 
 const deleteByTopicName = async consumerGroupNames => {
   const consumerGroupNameList = consumerGroupNames
     .map(name => `'${name}'`)
     .join(",");
 
-  await query(
+  await runQuery(
     `DELETE FROM topicsAndConsumerGroups WHERE consumerGroupName IN (${consumerGroupNameList})`
   );
 };

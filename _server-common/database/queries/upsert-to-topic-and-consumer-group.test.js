@@ -1,6 +1,6 @@
 const testDatabaseMigration = require("../test-database-migration");
 const upsertToTopicAndConsumerGroup = require("./upsert-to-topic-and-consumer-group");
-const { query } = require("server-common/database/sqlite-connections");
+const runQuery = require("server-common/database/run-query");
 
 describe("upsertToTopicAndConsumerGroup", () => {
   let db = null;
@@ -20,7 +20,7 @@ describe("upsertToTopicAndConsumerGroup", () => {
     const expected = [
       { topicName: "topic1", consumerGroupName: "group1", lastActive: 1234 }
     ];
-    const actual = await query(
+    const actual = await runQuery(
       "SELECT topicName, consumerGroupName, lastActive FROM topicsAndConsumerGroups"
     );
     expect(actual).toEqual(expected);
@@ -33,7 +33,7 @@ describe("upsertToTopicAndConsumerGroup", () => {
     const expected = [
       { topicName: "topic1", consumerGroupName: "group1", lastActive: 9876 }
     ];
-    const actual = await query(
+    const actual = await runQuery(
       "SELECT topicName, consumerGroupName, lastActive FROM topicsAndConsumerGroups"
     );
     expect(actual).toEqual(expected);

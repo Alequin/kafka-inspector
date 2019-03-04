@@ -1,7 +1,7 @@
-const { query } = require("../sqlite-connections");
+const runQuery = require("../run-query");
 
 const topicsAndConsumerGroups = async () => {
-  return await query("SELECT * FROM topicsAndConsumerGroups");
+  return await runQuery("SELECT * FROM topicsAndConsumerGroups");
 };
 
 module.exports = topicsAndConsumerGroups;

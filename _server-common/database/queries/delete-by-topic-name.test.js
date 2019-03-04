@@ -1,6 +1,6 @@
 const deleteByTopicName = require("./delete-by-topic-name");
 const testDatabaseMigration = require("../test-database-migration");
-const { query } = require("server-common/database/sqlite-connections");
+const runQuery = require("server-common/database/run-query");
 
 describe("deleteByTopicName", () => {
   let db = null;
@@ -15,14 +15,14 @@ describe("deleteByTopicName", () => {
   });
 
   it("Deletes all rows with a matching Topic Name", async () => {
-    await query(
+    await runQuery(
       "INSERT INTO topicsAndConsumerGroups VALUES (1, 'topic1', 'group1', 123)"
     );
 
     await deleteByTopicName(["topic1"]);
 
     const expected = [];
-    const actual = await query("SELECT * FROM topicsAndConsumerGroups");
+    const actual = await runQuery("SELECT * FROM topicsAndConsumerGroups");
 
     expect(actual).toEqual(expected);
   });
