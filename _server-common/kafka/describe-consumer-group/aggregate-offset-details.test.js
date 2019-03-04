@@ -28,22 +28,15 @@ describe("aggregateOffsetDetails", () => {
     expect(actual).toEqual(expected);
   });
 
-  it("Should skip a partition if it is not available in the committed offsets", () => {
+  it(`Should throw an error if the partitions known by the latest offsets 
+  and those known by committed offsets don't match`, () => {
     const mockCommittedOffsets = [
       { partition: 0, offset: 4 },
       { partition: 2, offset: 14 }
     ];
 
-    const expected = [
-      { partition: 0, latestOffset: 10, lag: 6 },
-      { partition: 2, latestOffset: 30, lag: 16 }
-    ];
-
-    const actual = aggregateOffsetDetails(
-      mockLatestOffsets,
-      mockCommittedOffsets
-    );
-
-    expect(actual).toEqual(expected);
+    expect(() =>
+      aggregateOffsetDetails(mockLatestOffsets, mockCommittedOffsets)
+    ).toThrow();
   });
 });
