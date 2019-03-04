@@ -4,6 +4,7 @@ const kafkaConfig = require("../kafka-config");
 const kafkaNode = () => {
   let kafkaNodeClient = null;
   let kafkaNodeAdmin = null;
+  let kafkaNodeOffset = null;
 
   return () => {
     const isKafkaNodeConnected = kafkaNodeClient && !kafkaNodeClient.closing;
@@ -12,11 +13,13 @@ const kafkaNode = () => {
         kafkaHost: kafkaConfig.brokers.join(",")
       });
       kafkaNodeAdmin = new kafka.Admin(kafkaNodeClient);
+      kafkaNodeOffset = new kafka.Offset(kafkaNodeClient);
     }
 
     return {
       client: kafkaNodeClient,
       admin: kafkaNodeAdmin,
+      offset: kafkaNodeOffset,
       consumerGroupStream: options => {
         return new kafka.ConsumerGroupStream(
           {
