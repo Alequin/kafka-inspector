@@ -12,13 +12,13 @@ const calculateTotalMessages = offsetDetails => {
 };
 
 const consumerGroupOffsets = async (topicName, consumerGroupName) => {
-  const latestOffset = await fetchLatestOffsets(topicName);
+  const latestOffsets = await fetchLatestOffsets(topicName);
   const committedOffsets = await fetchCommittedOffsets(
     topicName,
     consumerGroupName
   );
 
-  const offsetDetails = aggregateOffsetDetails(latestOffset, committedOffsets);
+  const offsetDetails = aggregateOffsetDetails(latestOffsets, committedOffsets);
 
   const totalMessages = calculateTotalMessages(offsetDetails);
   const totalLag = calculateTotalLag(offsetDetails);
