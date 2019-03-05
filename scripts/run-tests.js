@@ -1,8 +1,9 @@
 "use strict";
 
 // Do this as the first thing so that any code reading it knows the right env.
-process.env.BABEL_ENV = "test";
-process.env.NODE_ENV = "test";
+const { TEST } = require("server-common/config/environment-options");
+process.env.NODE_ENV = TEST;
+process.env.BABEL_ENV = TEST;
 process.env.PUBLIC_URL = "";
 
 // Makes the script crash on unhandled rejections instead of silently

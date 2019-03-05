@@ -1,6 +1,4 @@
 // TODO - Setting environment here should be temporary
-process.env.BABEL_ENV = "development";
-process.env.NODE_ENV = "development";
 
 const webpack = require("webpack");
 const configFactory = require("./webpack.config");
