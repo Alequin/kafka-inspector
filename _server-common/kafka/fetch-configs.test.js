@@ -1,6 +1,6 @@
 const { isError } = require("lodash");
-jest.mock("./access-kafka-connections");
-const accessKafkaConnections = require("./access-kafka-connections");
+jest.mock("./access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 
 const mockTopic = "topic1";
 const mockConfigEntries = [];
@@ -11,7 +11,7 @@ const mockResponse = {
 };
 const mockDescribeConfigs = jest.fn().mockResolvedValue(mockResponse);
 
-accessKafkaConnections.mockReturnValue({
+accessGlobalKafkaConnections.mockReturnValue({
   kafkaJs: {
     admin: {
       describeConfigs: mockDescribeConfigs

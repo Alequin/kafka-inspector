@@ -1,10 +1,10 @@
 const mockDescribeGroups = require("mock-test-data/kafka-node/mock-describe-groups");
-jest.mock("../access-kafka-connections");
-const accessKafkaConnections = require("../access-kafka-connections");
+jest.mock("../access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 const consumerGroupInformation = require("./consumer-group-information");
 
 const mockDescribeGroupsImplementation = jest.fn();
-accessKafkaConnections.mockReturnValue({
+accessGlobalKafkaConnections.mockReturnValue({
   kafkaNode: {
     admin: {
       describeGroups: mockDescribeGroupsImplementation

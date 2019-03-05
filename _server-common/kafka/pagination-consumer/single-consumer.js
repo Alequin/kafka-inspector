@@ -1,5 +1,5 @@
 const kafka = require("kafka-node");
-const accessKafkaConnections = require("../access-kafka-connections");
+const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 const consumeMessages = require("./consume-messages");
 
 const CONSUMER_OPTIONS = {
@@ -19,7 +19,7 @@ const singleConsumer = async ({ topic, partition, offsetRange }) => {
 
   const {
     kafkaNode: { client }
-  } = accessKafkaConnections();
+  } = accessGlobalKafkaConnections();
 
   const consumer = new kafka.Consumer(
     client,

@@ -1,7 +1,7 @@
 const flow = require("lodash/flow");
 const map = require("lodash/map");
 const pickBy = require("lodash/pickBy");
-const accessKafkaConnections = require("./access-kafka-connections");
+const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 
 function mapTopicsDetailsToList(topics) {
   return map(topics, (topicDetails, topicName) => {
@@ -29,7 +29,7 @@ const transformToTopicList = flow(
 );
 
 const listTopics = async () => {
-  const { kafkaNode } = accessKafkaConnections();
+  const { kafkaNode } = accessGlobalKafkaConnections();
 
   return new Promise((resolve, reject) => {
     kafkaNode.admin.listTopics((error, response) => {

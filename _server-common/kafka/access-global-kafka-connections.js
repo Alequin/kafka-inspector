@@ -6,11 +6,11 @@ const kafkaJs = require("./kafka-connections/kafka-js");
 const accessGlobalKafkaNodeConnection = kafkaNode();
 const accessGlobalKafkaJsConnection = kafkaJs();
 
-const accessKafkaConnections = () => {
+const accessGlobalKafkaConnections = () => {
   return {
     kafkaNode: accessGlobalKafkaNodeConnection(),
     kafkaJs: accessGlobalKafkaJsConnection()
   };
 };
 
-module.exports = accessKafkaConnections;
+module.exports = accessGlobalKafkaConnections;

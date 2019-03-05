@@ -3,7 +3,7 @@ const topicsAndConsumerGroups = require("server-common/database/queries/topics-a
 const deleteByTopicName = require("server-common/database/queries/delete-by-topic-name");
 const deleteByConsumerGroupName = require("server-common/database/queries/delete-by-consumer-group-name");
 const upsertToTopicAndConsumerGroupTable = require("server-common/database/queries/upsert-to-topic-and-consumer-group");
-const accessKafkaConnections = require("../access-kafka-connections");
+const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 const checkForDeletedTopicsOrConsumerGroups = require("./check-for-deleted-topics-or-consumer-groups");
 const processMessageBatch = require("./process-message-batch");
 
@@ -11,7 +11,7 @@ const CONSUMER_OFFSETS_TOPIC_NAME = "__consumer_offsets";
 const CONSUMER_GROUP = "jcox-420";
 
 const consumerFrom = async (topicName, consumerGroup) => {
-  const { kafkaJs } = accessKafkaConnections();
+  const { kafkaJs } = accessGlobalKafkaConnections();
   const consumer = kafkaJs.client.consumer({
     groupId: consumerGroup
   });

@@ -1,9 +1,9 @@
 const mockFetchLatestOffsets = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
-jest.mock("../access-kafka-connections");
-const accessKafkaConnections = require("../access-kafka-connections");
+jest.mock("../access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 
 const mockFetchLatestOffsetsImplementation = jest.fn();
-accessKafkaConnections.mockReturnValue({
+accessGlobalKafkaConnections.mockReturnValue({
   kafkaNode: {
     offset: {
       fetchLatestOffsets: mockFetchLatestOffsetsImplementation

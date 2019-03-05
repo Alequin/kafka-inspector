@@ -1,11 +1,11 @@
-jest.mock("./access-kafka-connections");
+jest.mock("./access-global-kafka-connections");
 const mockListTopics = require("mock-test-data/kafka-node/mock-list-topics");
-const accessKafkaConnections = require("./access-kafka-connections");
+const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 const listTopics = require("./list-topics");
 
 describe("topics", () => {
   it("Should return a list of all topics, filtering out private topics", async () => {
-    accessKafkaConnections.mockReturnValue({
+    accessGlobalKafkaConnections.mockReturnValue({
       kafkaNode: {
         admin: {
           listTopics: callback => {
@@ -35,7 +35,7 @@ describe("topics", () => {
 
   it("Should throw an error if requesting the list of topics fails", async () => {
     const mockErrorMessage = "list topics error message";
-    accessKafkaConnections.mockReturnValue({
+    accessGlobalKafkaConnections.mockReturnValue({
       kafkaNode: {
         admin: {
           listTopics: callback => {

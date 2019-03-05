@@ -1,9 +1,9 @@
-const accessKafkaConnections = require("../access-kafka-connections");
+const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 
 const fetchCommittedOffsets = async (topicName, consumerGroupName) => {
   const {
     kafkaJs: { admin }
-  } = accessKafkaConnections();
+  } = accessGlobalKafkaConnections();
 
   return await admin.fetchOffsets({
     topic: topicName,

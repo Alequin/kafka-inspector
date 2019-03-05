@@ -1,6 +1,6 @@
-jest.mock("../access-kafka-connections");
-const accessKafkaConnections = require("../access-kafka-connections");
-accessKafkaConnections.mockReturnValue({
+jest.mock("../access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+accessGlobalKafkaConnections.mockReturnValue({
   kafkaNode: {
     admin: {
       listTopics: callback => {

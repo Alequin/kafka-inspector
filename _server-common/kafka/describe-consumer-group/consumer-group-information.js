@@ -1,9 +1,9 @@
-const accessKafkaConnections = require("../access-kafka-connections");
+const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 
 const consumerGroupInformation = consumerGroupName => {
   const {
     kafkaNode: { admin }
-  } = accessKafkaConnections();
+  } = accessGlobalKafkaConnections();
 
   return new Promise((resolve, reject) => {
     admin.describeGroups([consumerGroupName], (error, response) => {

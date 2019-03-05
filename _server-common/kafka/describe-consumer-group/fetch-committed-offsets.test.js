@@ -1,9 +1,9 @@
-jest.mock("../access-kafka-connections");
-const accessKafkaConnections = require("../access-kafka-connections");
+jest.mock("../access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 
 const mockFetchOffsets = jest.fn();
 
-accessKafkaConnections.mockReturnValue({
+accessGlobalKafkaConnections.mockReturnValue({
   kafkaJs: {
     admin: {
       fetchOffsets: mockFetchOffsets

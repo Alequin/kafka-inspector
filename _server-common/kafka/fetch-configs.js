@@ -1,6 +1,6 @@
 const { ResourceTypes } = require("kafkajs");
 const { first, omit } = require("lodash");
-const accessKafkaConnections = require("./access-kafka-connections");
+const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 
 // Omit the resource types which dont work with the function 'admin.describeConfigs'
 // For all types view https://github.com/tulios/kafkajs/blob/master/src/protocol/resourceTypes.js
@@ -9,7 +9,7 @@ const RESOURCE_TYPES = omit(ResourceTypes, ["ANY", "UNKNOWN"]);
 const fetchConfigs = async resources => {
   const {
     kafkaJs: { admin }
-  } = accessKafkaConnections();
+  } = accessGlobalKafkaConnections();
 
   return await admin.describeConfigs({ resources });
 };
