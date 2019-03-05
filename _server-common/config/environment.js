@@ -1,39 +1,33 @@
-const PRODUCTION = "production";
-const DEVELOPMENT = "development";
-const SERVER_ONLY = "server-only";
-const TEST = "test";
+const {
+  PRODUCTION,
+  DEVELOPMENT,
+  SERVER_ONLY,
+  TEST
+} = require("./environment-options");
 
 const isTest = process.env.NODE_ENV === TEST;
-const isProduction = process.argv.includes(PRODUCTION) && !isTest;
+const isProduction = process.env.NODE_ENV === PRODUCTION;
+// Default to development if nothing is set
 const isDevelopment = !isProduction && !isTest;
 
 const isServerOnly = process.argv.includes(SERVER_ONLY);
 
 const { freeze } = Object;
-const environmentVariables = freeze({
-  OPTIONS: freeze({
-    PRODUCTION,
-    DEVELOPMENT,
-    TEST
-  }),
+const environmentVariables = {
   isProduction,
   isDevelopment,
   isTest,
   isServerOnly
+};
+
+module.exports = freeze({
+  ...environmentVariables,
+  currentEnvironment: identifyCurrentEnvironment(environmentVariables)
 });
 
-const identifyCurrentEnvironment = ({
-  isProduction,
-  isDevelopment,
-  isTest
-}) => {
+function identifyCurrentEnvironment({ isProduction, isDevelopment, isTest }) {
   if (isProduction) return PRODUCTION;
   if (isDevelopment) return DEVELOPMENT;
   if (isTest) return TEST;
   throw new Error("No environment set");
-};
-
-module.exports = {
-  ...environmentVariables,
-  currentEnvironment: identifyCurrentEnvironment(environmentVariables)
-};
+}
