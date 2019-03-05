@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node src/server/server.js",
-    "build": "node scripts/build.js",
+    "build": "rm -rf build && node scripts/build.js",
     "test": "node scripts/run-tests.js",
     "migrate:create": "db-migrate create --sql-file --config ./_server-common/database/database.json -e db",
     "migrate:up": "db-migrate up --config ./_server-common/database/database.json -e db",
