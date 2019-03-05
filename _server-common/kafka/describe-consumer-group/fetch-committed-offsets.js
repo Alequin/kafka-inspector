@@ -1,10 +1,10 @@
 const accessKafkaConnections = require("../access-kafka-connections");
 
-const {
-  kafkaJs: { admin }
-} = accessKafkaConnections();
-
 const fetchCommittedOffsets = async (topicName, consumerGroupName) => {
+  const {
+    kafkaJs: { admin }
+  } = accessKafkaConnections();
+
   return await admin.fetchOffsets({
     topic: topicName,
     groupId: consumerGroupName
