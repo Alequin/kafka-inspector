@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 // The Minified javascript use in production is built from this config
 const sourceAssestFile = isProduction ? "/build" : "/dist";
 
-const requestForAssets = /.js$|.css$/;
+const requestForAssets = /.js$|.css$|.json$|.map$/;
 app.get(requestForAssets, (req, res) => {
   sendFile(res, `/${sourceAssestFile}${req.url}`).catch(error => {
     res.status(500).send(error);
