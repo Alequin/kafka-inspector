@@ -112,6 +112,7 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
 
 module.exports = {
   mode: isProduction ? "production" : isDevelopment && "development",
+  watch: isDevelopment,
   // Stop compilation early in production
   bail: isProduction,
   devtool: isProduction
