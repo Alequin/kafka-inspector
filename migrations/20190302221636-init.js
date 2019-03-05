@@ -1,5 +1,5 @@
 "use strict";
-const { IS_TEST } = require("server-common/config/environment");
+const { isTest } = require("server-common/config/environment");
 
 var dbm;
 var type;
@@ -24,7 +24,7 @@ exports.up = function(db) {
   return new Promise(function(resolve, reject) {
     fs.readFile(filePath, { encoding: "utf-8" }, function(err, data) {
       if (err) return reject(err);
-      !IS_TEST && console.log("received data: " + data);
+      !isTest && console.log("received data: " + data);
 
       resolve(data);
     });
@@ -38,7 +38,7 @@ exports.down = function(db) {
   return new Promise(function(resolve, reject) {
     fs.readFile(filePath, { encoding: "utf-8" }, function(err, data) {
       if (err) return reject(err);
-      !IS_TEST && console.log("received data: " + data);
+      !isTest && console.log("received data: " + data);
 
       resolve(data);
     });
