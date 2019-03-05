@@ -1,4 +1,4 @@
-const mockFetchOffsets = require("mock-test-data/kafka-node/mock-fetch-offsets");
+const mockFetchLatestOffsets = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
 const mockFetchCommittedOffsets = require("mock-test-data/kafka-node/mock-fetch-committed-offsets");
 jest.mock("../access-kafka-connections");
 const accessKafkaConnections = require("../access-kafka-connections");
@@ -7,7 +7,7 @@ accessKafkaConnections.mockReturnValue({
     offset: {
       fetchLatestOffsets: (_topicNames, callback) => {
         const error = false;
-        callback(error, mockFetchOffsets.response);
+        callback(error, mockFetchLatestOffsets.response);
       }
     }
   },
@@ -34,7 +34,7 @@ describe("consumerGroupOffsets", async () => {
       ]
     };
     const actual = await consumerGroupOffsets(
-      mockFetchOffsets.topicName,
+      mockFetchLatestOffsets.topicName,
       "mockConsumerGroup"
     );
     expect(actual).toEqual(expected);

@@ -1,4 +1,4 @@
-const mockFetchOffsets = require("mock-test-data/kafka-node/mock-fetch-offsets");
+const mockFetchLatestOffsets = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
 jest.mock("../access-kafka-connections");
 const accessKafkaConnections = require("../access-kafka-connections");
 
@@ -18,20 +18,20 @@ describe("fetchLatestOffsets", () => {
     mockFetchLatestOffsetsImplementation.mockImplementation(
       (_topicNames, callback) => {
         const error = false;
-        callback(error, mockFetchOffsets.response);
+        callback(error, mockFetchLatestOffsets.response);
       }
     );
   });
 
   it("Should resolve the topics offsets", async () => {
-    const { topicName } = mockFetchOffsets;
-    const expected = mockFetchOffsets.response[topicName];
+    const { topicName } = mockFetchLatestOffsets;
+    const expected = mockFetchLatestOffsets.response[topicName];
     const actual = await fetchLatestOffsets(topicName);
     expect(actual).toEqual(expected);
   });
 
   it("Should call fetchLatestOffsets with given topicName", async () => {
-    const { topicName } = mockFetchOffsets;
+    const { topicName } = mockFetchLatestOffsets;
     await fetchLatestOffsets(topicName);
     expect(mockFetchLatestOffsetsImplementation.mock.calls[0][0]).toEqual([
       topicName
@@ -43,7 +43,7 @@ describe("fetchLatestOffsets", () => {
     mockFetchLatestOffsetsImplementation.mockImplementation(
       (_topicNames, callback) => {
         const error = mockError;
-        callback(error, mockFetchOffsets.response);
+        callback(error, mockFetchLatestOffsets.response);
       }
     );
     fetchLatestOffsets("topicName").catch(error => {
