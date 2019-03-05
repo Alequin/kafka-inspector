@@ -1,7 +1,7 @@
 require("events").EventEmitter.defaultMaxListeners = 1000;
 
-const kafkaNode = require("./kafka-utils/kafka-node");
-const kafkaJs = require("./kafka-utils/kafka-js");
+const kafkaNode = require("./kafka-connections/kafka-node");
+const kafkaJs = require("./kafka-connections/kafka-js");
 
 const accessGlobalKafkaNodeConnection = kafkaNode();
 const accessGlobalKafkaJsConnection = kafkaJs();
