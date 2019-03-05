@@ -14,6 +14,8 @@ process.on("unhandledRejection", err => {
 // Ensure environment variables are read.
 require("server-common/webpack/env");
 
+const webpackCompiler = require("server-common/webpack/webpack-compiler");
+
 const fs = require("fs");
 const chalk = require("react-dev-utils/chalk");
 const webpack = require("webpack");
@@ -79,7 +81,7 @@ checkBrowsers(paths.appPath, isInteractive)
     const appName = require(paths.appPackageJson).name;
     const urls = prepareUrls(protocol, HOST, port);
     // Create a webpack compiler that is configured with custom messages.
-    const compiler = createCompiler(webpack, config, appName, urls, useYarn);
+
     // Load proxy config
     const proxySetting = require(paths.appPackageJson).proxy;
     const proxyConfig = prepareProxy(proxySetting, paths.appPublic);
@@ -88,7 +90,7 @@ checkBrowsers(paths.appPath, isInteractive)
       proxyConfig,
       urls.lanUrlForConfig
     );
-    const devServer = new WebpackDevServer(compiler, serverConfig);
+    const devServer = new WebpackDevServer(webpackCompiler, serverConfig);
     // Launch WebpackDevServer.
     devServer.listen(port, HOST, err => {
       if (err) {
