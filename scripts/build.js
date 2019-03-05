@@ -13,15 +13,15 @@ process.on("unhandledRejection", err => {
 });
 
 // Ensure environment variables are read.
-require("server-common/webpack/env");
+require("../webpack/env");
 
 const path = require("path");
 const chalk = require("react-dev-utils/chalk");
 const fs = require("fs-extra");
 const webpack = require("webpack");
 const bfj = require("bfj");
-const configFactory = require("server-common/webpack/webpack.config");
-const paths = require("server-common/webpack/paths");
+const config = require("../webpack/webpack.config");
+const paths = require("../webpack/paths");
 const checkRequiredFiles = require("react-dev-utils/checkRequiredFiles");
 const formatWebpackMessages = require("react-dev-utils/formatWebpackMessages");
 const printHostingInstructions = require("react-dev-utils/printHostingInstructions");
@@ -48,9 +48,6 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
 // Process CLI arguments
 const argv = process.argv.slice(2);
 const writeStatsJson = argv.indexOf("--stats") !== -1;
-
-// Generate configuration
-const config = configFactory("production");
 
 // We require that you explicitly set browsers and do not fall back to
 // browserslist defaults.
