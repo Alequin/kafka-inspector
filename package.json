@@ -25,6 +25,8 @@
   "dependencies": {
     "@babel/core": "7.2.2",
     "@svgr/webpack": "4.1.0",
+    "apollo-server": "^2.4.8",
+    "apollo-server-express": "^2.4.8",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
     "babel-loader": "8.0.5",
@@ -48,6 +50,8 @@
     "file-loader": "2.0.0",
     "fork-ts-checker-webpack-plugin-alt": "0.4.14",
     "fs-extra": "7.0.1",
+    "graphql": "^14.1.1",
+    "graphql-tools": "^4.0.4",
     "html-webpack-plugin": "4.0.0-alpha.2",
     "identity-obj-proxy": "3.0.0",
     "kafka-node": "^4.0.2",

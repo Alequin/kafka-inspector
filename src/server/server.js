@@ -8,12 +8,15 @@ const {
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const setupGraphql = require("./graphql/setup-graphql");
 const sendFile = require("./send-file");
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+setupGraphql(app);
 
 // Only use the webpack config in development.
 // The Minified javascript use in production is built from this config
