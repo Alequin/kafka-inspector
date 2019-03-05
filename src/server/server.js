@@ -1,3 +1,5 @@
+require("./process-input-args");
+
 const {
   currentEnvironment,
   isProduction,

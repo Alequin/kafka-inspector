@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npx webpack --config webpack/webpack.config.js && node src/server/server.js",
+    "start": "node src/server/server.js production",
+    "start:dev": "npx webpack --config webpack/webpack.config.js && node src/server/server.js",
     "build": "rm -rf build && node scripts/build.js",
     "test": "node scripts/run-tests.js",
     "migrate:create": "db-migrate create --sql-file --config ./_server-common/database/database.json -e db",

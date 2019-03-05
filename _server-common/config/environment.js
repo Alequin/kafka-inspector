@@ -1,9 +1,4 @@
-const {
-  PRODUCTION,
-  DEVELOPMENT,
-  SERVER_ONLY,
-  TEST
-} = require("./environment-options");
+const { PRODUCTION, DEVELOPMENT, TEST } = require("./environment-options");
 
 const isTest = process.env.NODE_ENV === TEST;
 const isProduction = process.env.NODE_ENV === PRODUCTION;
@@ -15,7 +10,7 @@ if (isDevelopment) {
 }
 // For development purposes when testing non client components
 // Should never be true is environment is production
-const isServerOnly = process.argv.includes(SERVER_ONLY) && !isProduction;
+const isServerOnly = process.env.SERVER_ONLY === "true" && !isProduction;
 
 const { freeze } = Object;
 const environmentVariables = {
