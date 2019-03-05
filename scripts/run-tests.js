@@ -13,7 +13,7 @@ process.on("unhandledRejection", err => {
 });
 
 // Ensure environment variables are read.
-require("./utils/env");
+require("server-common/webpack/env");
 
 const jest = require("jest");
 const execSync = require("child_process").execSync;
