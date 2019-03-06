@@ -1,5 +1,5 @@
 const singleConsumer = require("./single-consumer");
-const fetchLatestOffset = require("../utils/fetch-latest-offsets");
+const checkAgainstLatestOffsetForTopic = require("./check-against-latest-offsets-for-topic");
 
 const paginationConsumer = async options => {
   const consumer = await consumerIterator(options);
@@ -15,11 +15,13 @@ const consumerIterator = async ({
   partitions,
   offsetRange: { min, max }
 }) => {
-  const latestOffsets = await fetchLatestOffset(topicName);
+  const checkMaxOffsetAgainstLatest = checkAgainstLatestOffsetForTopic(
+    topicName
+  );
   return async function*() {
     const orderedPartitions = partitions.sort();
     for (let partition of orderedPartitions) {
-      const maxOffset = Math.min(max, latestOffsets[partition]);
+      const maxOffset = await checkMaxOffsetAgainstLatest(max, partition);
       yield {
         partition,
         messages: await singleConsumer({
