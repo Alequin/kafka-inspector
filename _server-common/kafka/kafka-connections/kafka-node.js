@@ -20,6 +20,9 @@ const kafkaNode = () => {
       client: kafkaNodeClient,
       admin: kafkaNodeAdmin,
       offset: kafkaNodeOffset,
+      consumer: (topics, options) => {
+        return new kafka.Consumer(kafkaNodeClient, topics, options);
+      },
       consumerGroupStream: options => {
         return new kafka.ConsumerGroupStream(
           {
