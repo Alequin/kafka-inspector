@@ -1,5 +1,5 @@
 const singleConsumer = require("./single-consumer");
-const fetchLatestOffset = require("./../describe-consumer-group/fetch-latest-offsets");
+const fetchLatestOffset = require("../utils/fetch-latest-offsets");
 
 const paginationConsumer = async options => {
   const consumer = await consumerIterator(options);

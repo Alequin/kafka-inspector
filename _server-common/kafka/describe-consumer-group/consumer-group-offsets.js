@@ -1,5 +1,5 @@
 const { sumBy } = require("lodash");
-const fetchLatestOffsets = require("./fetch-latest-offsets");
+const fetchLatestOffsets = require("../utils/fetch-latest-offsets");
 const fetchCommittedOffsets = require("./fetch-committed-offsets");
 const aggregateOffsetDetails = require("./aggregate-offset-details");
 
