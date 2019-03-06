@@ -72,8 +72,8 @@ const appAssetsFolder = resolveApp(isDevelopment ? "dist" : "build");
 
 module.exports = {
   appAssetsFolder,
-  // appHtml: `${appAssetsFolder}/index.hmtl`,
-  appHtml: resolveApp("public/index.html"),
+  appHtml: `${appAssetsFolder}/index.hmtl`,
+  appHtmlTemplate: resolveApp("public/index.html"),
   dotenv: resolveApp(".env"),
   appPath: resolveApp("."),
   appBuild: resolveApp("build"),
