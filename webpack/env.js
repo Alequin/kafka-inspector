@@ -3,10 +3,10 @@
 const fs = require("fs");
 const path = require("path");
 const { currentEnvironment } = require("server-common/config/environment");
-const paths = require("./paths");
+const paths = require("server-common/config/paths");
 
 // Make sure that including paths.js after env.jsF will read .env variables.
-delete require.cache[require.resolve("./paths")];
+delete require.cache[require.resolve("server-common/config/paths")];
 
 if (!currentEnvironment) {
   throw new Error(

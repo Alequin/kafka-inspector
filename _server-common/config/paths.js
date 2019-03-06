@@ -1,5 +1,7 @@
 "use strict";
 
+const { isDevelopment } = require("server-common/config/environment");
+
 const path = require("path");
 const fs = require("fs");
 const url = require("url");
@@ -66,12 +68,16 @@ const resolveModule = (resolveFn, filePath) => {
 };
 
 // config after eject: we're in ./config/
+const appAssetsFolder = resolveApp(isDevelopment ? "dist" : "build");
+
 module.exports = {
+  appAssetsFolder,
+  // appHtml: `${appAssetsFolder}/index.hmtl`,
+  appHtml: resolveApp("public/index.html"),
   dotenv: resolveApp(".env"),
   appPath: resolveApp("."),
   appBuild: resolveApp("build"),
   appPublic: resolveApp("public"),
-  appHtml: resolveApp("public/index.html"),
   appIndexJs: resolveModule(resolveApp, "src/client/index"),
   appPackageJson: resolveApp("package.json"),
   appSrc: resolveApp("src/client"),
