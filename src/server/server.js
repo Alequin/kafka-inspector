@@ -2,9 +2,9 @@ require("./process-input-args");
 
 const {
   currentEnvironment,
-  isProduction,
   isServerOnly
 } = require("server-common/config/environment");
+const { appHtml, findInAssetFolder } = require("server-common/config/paths");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -18,21 +18,16 @@ app.use(bodyParser.json());
 
 setupGraphql(app);
 
-// Only use the webpack config in development.
-// The Minified javascript use in production is built from this config
-const sourceAssestFile = isProduction ? "/build" : "/dist";
-
-const requestForAssets = /.js$|.css$|.json$|.map$/;
+const requestForAssets = /.js$|.css$|.json$|.map$|.ico$/;
 app.get(requestForAssets, (req, res) => {
-  sendFile(res, `/${sourceAssestFile}${req.url}`).catch(error => {
+  sendFile(res, findInAssetFolder(req.url)).catch(error => {
     res.status(500).send(error);
   });
 });
 
 const allRoutes = /\.*/;
-const HOME_ROUTE = `${sourceAssestFile}/index.html`;
 app.get(allRoutes, (_req, res) => {
-  sendFile(res, HOME_ROUTE).catch(error => {
+  sendFile(res, appHtml).catch(error => {
     res.status(500).send(error);
   });
 });

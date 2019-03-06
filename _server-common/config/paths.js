@@ -67,12 +67,11 @@ const resolveModule = (resolveFn, filePath) => {
   return resolveFn(`${filePath}.js`);
 };
 
-// config after eject: we're in ./config/
-const appAssetsFolder = resolveApp(isDevelopment ? "dist" : "build");
+const appRoot = isDevelopment ? "dist" : "build";
 
 module.exports = {
-  appAssetsFolder,
-  appHtml: `${appAssetsFolder}/index.hmtl`,
+  findInAssetFolder: pathToFile => path.resolve(`${appRoot}${pathToFile}`),
+  appHtml: path.resolve(`${appRoot}/index.html`),
   appHtmlTemplate: resolveApp("public/index.html"),
   dotenv: resolveApp(".env"),
   appPath: resolveApp("."),
