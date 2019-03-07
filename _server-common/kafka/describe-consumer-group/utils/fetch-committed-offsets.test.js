@@ -1,5 +1,5 @@
-jest.mock("../access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+jest.mock("../../access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("../../access-global-kafka-connections");
 
 const mockFetchOffsets = jest.fn();
 

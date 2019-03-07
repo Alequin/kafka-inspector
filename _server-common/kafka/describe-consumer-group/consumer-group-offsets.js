@@ -1,7 +1,7 @@
 const { sumBy } = require("lodash");
 const fetchLatestOffsets = require("../utils/fetch-latest-offsets");
-const fetchCommittedOffsets = require("./fetch-committed-offsets");
-const aggregateOffsetDetails = require("./aggregate-offset-details");
+const fetchCommittedOffsets = require("./utils/fetch-committed-offsets");
+const aggregateOffsetDetails = require("./utils/aggregate-offset-details");
 
 const calculateTotalLag = offsetDetails => {
   return sumBy(offsetDetails, ({ lag }) => lag);
