@@ -1,6 +1,9 @@
 const resolvers = {
   Query: {
-    test: () => true
+    topics: require("./resolvers/topics-resolver")
+  },
+  Topic: {
+    partitions: require("./resolvers/partitions-resolver")
   }
 };
 
