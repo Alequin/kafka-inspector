@@ -13,8 +13,7 @@ describe("listConsumerGroups", () => {
 
     const expected = [
       mockConsumerGroups.consumerGroup1,
-      mockConsumerGroups.consumerGroup2,
-      mockConsumerGroups.consumerGroup3
+      mockConsumerGroups.consumerGroup2
     ];
     const consumerGroups = await listConsumerGroups();
     expect(consumerGroups).toEqual(expected);
