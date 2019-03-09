@@ -1,24 +1,18 @@
-const mockFetchLatestOffsets = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
+const mockTopics = require("mock-test-data/data/mock-topics");
 jest.mock("../access-global-kafka-connections");
+const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 
-accessGlobalKafkaConnections.mockReturnValue({
-  kafkaNode: {
-    offset: {
-      fetchLatestOffsets: (_topicNames, callback) => {
-        const error = false;
-        callback(error, mockFetchLatestOffsets.response);
-      }
-    }
-  }
-});
+accessGlobalKafkaConnections.mockReturnValue(
+  mockAccessGlobalKafkaConnectionsImp()
+);
 
 const checkAgainstLatestOffsetForTopic = require("./check-against-latest-offsets-for-topic");
 
 describe("checkAgainstLatestOffsetForTopic", () => {
   it("Should return the requests max offset when it is below the requested partitions latest offset", async () => {
     const checkMaxOffsetAgainstLatest = checkAgainstLatestOffsetForTopic(
-      mockFetchLatestOffsets.topicName
+      mockTopics.topic1
     );
 
     const expected = 1;
@@ -35,7 +29,7 @@ describe("checkAgainstLatestOffsetForTopic", () => {
 
   it("Should return the latest offset when the requested max offset is greater than the requested partitions latest offset", async () => {
     const checkMaxOffsetAgainstLatest = checkAgainstLatestOffsetForTopic(
-      mockFetchLatestOffsets.topicName
+      mockTopics.topic1
     );
 
     const expected = 10;
