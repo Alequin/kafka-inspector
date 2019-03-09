@@ -1,8 +1,5 @@
-const brokers = {
-  "1": { nodeId: 1, host: "broker1", port: 9092 },
-  "2": { nodeId: 2, host: "broker2", port: 9092 },
-  "3": { nodeId: 3, host: "broker3", port: 9092 }
-};
+const mockBrokers = require("../data/mock-brokers");
+const mockTopics = require("../data/mock-topics");
 
 const mockPartitionData = (topicName, partition) => {
   return {
@@ -14,33 +11,28 @@ const mockPartitionData = (topicName, partition) => {
   };
 };
 
-const topic1 = "topic1";
-const topic2 = "topic-2";
-
 const metadata = {
-  [topic1]: {
-    "0": mockPartitionData(topic1, 0),
-    "1": mockPartitionData(topic1, 1)
+  [mockTopics.topic1]: {
+    "0": mockPartitionData(mockTopics.topic1, 0),
+    "1": mockPartitionData(mockTopics.topic1, 1)
   },
-  [topic2]: {
-    "0": mockPartitionData(topic2, 0),
-    "1": mockPartitionData(topic2, 1)
+  [mockTopics.topic2]: {
+    "0": mockPartitionData(mockTopics.topic2, 0),
+    "1": mockPartitionData(mockTopics.topic2, 1)
   },
-  _privateTopic1: {
-    "0": mockPartitionData("_privateTopic1", 0),
-    "1": mockPartitionData("_privateTopic1", 1)
+  [mockTopics.privateTopic1]: {
+    "0": mockPartitionData([mockTopics.privateTopic1], 0),
+    "1": mockPartitionData([mockTopics.privateTopic1], 1)
   },
-  __privateTopic2: {
-    "0": mockPartitionData("__privateTopic2", 0),
-    "1": mockPartitionData("__privateTopic2", 1)
+  [mockTopics.privateTopic2]: {
+    "0": mockPartitionData([mockTopics.privateTopic2], 0),
+    "1": mockPartitionData([mockTopics.privateTopic2], 1)
   }
 };
 
-const response = [brokers, { metadata }];
+const response = [mockBrokers, { metadata }];
 
 module.exports = {
   response,
-  metadata,
-  topic1,
-  topic2
+  metadata
 };
