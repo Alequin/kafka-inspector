@@ -1,44 +1,36 @@
 jest.mock("../access-global-kafka-connections");
+const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
-const mockListTopics = require("mock-test-data/kafka-node/mock-list-topics");
-const mockListGroups = require("mock-test-data/kafka-node/mock-list-groups");
-accessGlobalKafkaConnections.mockReturnValue({
-  kafkaNode: {
-    admin: {
-      listTopics: callback => {
-        const error = false;
-        callback(error, mockListTopics.response);
-      },
-      listGroups: callback => {
-        const error = false;
-        callback(error, mockListGroups.response);
-      }
-    }
-  }
-});
+const mockTopics = require("mock-test-data/data/mock-topics");
+const mockConsumerGroups = require("mock-test-data/data/mock-consumer-groups");
+
+const deletedTopicName = mockTopics.topic3;
+const deletedConsumerGroupName = mockConsumerGroups.consumerGroup3;
+
+accessGlobalKafkaConnections.mockReturnValue(
+  mockAccessGlobalKafkaConnectionsImp()
+);
+
 const checkForDeletedTopicsOrConsumerGroups = require("./check-for-deleted-topics-or-consumer-groups");
 
 describe("checkForDeletedTopicsOrConsumerGroups", () => {
-  const deletedTopicName = "deleted-topic";
-  const deletedConsumerGroups = "deleted-consumer-group";
-
   const mockTable = [
     {
       id: 1,
-      topicName: mockListTopics.topic1,
-      consumerGroupName: mockListGroups.consumerGroup1,
-      lastActive: 123
+      topicName: mockTopics.topic1,
+      consumerGroupName: mockConsumerGroups.consumerGroup1,
+      lastActive: 234
     },
     {
       id: 2,
-      topicName: mockListTopics.topic2,
-      consumerGroupName: mockListGroups.consumerGroup2,
+      topicName: mockTopics.topic2,
+      consumerGroupName: mockConsumerGroups.consumerGroup2,
       lastActive: 234
     },
     {
       id: 3,
       topicName: deletedTopicName,
-      consumerGroupName: deletedConsumerGroups,
+      consumerGroupName: deletedConsumerGroupName,
       lastActive: 345
     }
   ];
@@ -50,7 +42,7 @@ describe("checkForDeletedTopicsOrConsumerGroups", () => {
   });
 
   it("Should identify Consumer Groups which are in the table topicAndConsumerGroup which should be deleted", async () => {
-    const expected = [deletedConsumerGroups];
+    const expected = [deletedConsumerGroupName];
     const actual = await checkForDeletedTopicsOrConsumerGroups(mockTable);
     expect(actual.deletedConsumerGroupNames).toEqual(expected);
   });
@@ -59,14 +51,14 @@ describe("checkForDeletedTopicsOrConsumerGroups", () => {
     const mockTable = [
       {
         id: 1,
-        topicName: mockListTopics.topic1,
-        consumerGroupName: mockListGroups.consumerGroup1,
-        lastActive: 123
+        topicName: mockTopics.topic1,
+        consumerGroupName: mockConsumerGroups.consumerGroup1,
+        lastActive: 234
       },
       {
         id: 2,
-        topicName: mockListTopics.topic2,
-        consumerGroupName: mockListGroups.consumerGroup2,
+        topicName: mockTopics.topic2,
+        consumerGroupName: mockConsumerGroups.consumerGroup2,
         lastActive: 234
       }
     ];

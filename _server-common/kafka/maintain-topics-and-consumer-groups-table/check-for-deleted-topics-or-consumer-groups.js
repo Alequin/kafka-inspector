@@ -20,11 +20,15 @@ const filterForDeletedTopics = async knownTopicAndConsumerGroups => {
 const checkForDeletedTopicsOrConsumerGroups = async knownTopicAndConsumerGroups => {
   const deletedTopicNames = filterForDeletedTopics(
     knownTopicAndConsumerGroups
-  ).then(rows => rows.map(({ topicName }) => topicName));
+  ).then(rows => {
+    return rows.map(({ topicName }) => topicName);
+  });
 
   const deletedConsumerGroupNames = filterForDeletedConsumerGroups(
     knownTopicAndConsumerGroups
-  ).then(rows => rows.map(({ consumerGroupName }) => consumerGroupName));
+  ).then(rows => {
+    return rows.map(({ consumerGroupName }) => consumerGroupName);
+  });
 
   return {
     deletedTopicNames: await deletedTopicNames,
