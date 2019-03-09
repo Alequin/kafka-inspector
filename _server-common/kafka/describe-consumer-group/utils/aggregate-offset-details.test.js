@@ -1,10 +1,10 @@
-const mockFetchLatestOffsets = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
+const mockTopicOffsets = require("mock-test-data/data/mock-topic-offsets");
 const mockFetchCommittedOffsets = require("mock-test-data/kafka-node/mock-fetch-committed-offsets");
 
 const aggregateOffsetDetails = require("./aggregate-offset-details");
 
 describe("aggregateOffsetDetails", () => {
-  const mockLatestOffsets = mockFetchLatestOffsets.topicOffsets;
+  const mockLatestOffsets = mockTopicOffsets;
   const mockCommittedOffsets = mockFetchCommittedOffsets.response;
 
   it("Should find latest offset and calculate the message lag", () => {
