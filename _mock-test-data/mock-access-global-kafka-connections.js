@@ -1,19 +1,27 @@
 const { get, set } = require("lodash");
 const mockListTopics = require("./kafka-node/mock-list-topics");
 const mockListGroups = require("./kafka-node/mock-list-groups");
+const mockDescribeConfigs = require("./kafkajs/mock-describe-configs");
 
 module.exports = (overrides = []) => {
   const mock = {
     kafkaNode: {
       admin: {
-        listTopics: callback => {
+        listTopics: jest.fn().mockImplementation(callback => {
           const error = false;
           callback(error, mockListTopics.response);
-        },
-        listGroups: callback => {
+        }),
+        listGroups: jest.fn().mockImplementation(callback => {
           const error = false;
           callback(error, mockListGroups.response);
-        }
+        })
+      }
+    },
+    kafkaJs: {
+      admin: {
+        describeConfigs: jest
+          .fn()
+          .mockResolvedValue(mockDescribeConfigs.response)
       }
     }
   };

@@ -1,28 +1,22 @@
 const { isError } = require("lodash");
 jest.mock("./access-global-kafka-connections");
+const mockConfigEntry = require("mock-test-data/data/mock-config-entry");
+const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
-
-const mockTopic = "topic1";
-const mockConfigEntries = [];
-const mockResponse = {
-  resources: [
-    { errorCode: 0, errorMessage: null, configEntries: mockConfigEntries }
-  ]
-};
-const mockDescribeConfigs = jest.fn().mockResolvedValue(mockResponse);
-
-accessGlobalKafkaConnections.mockReturnValue({
-  kafkaJs: {
-    admin: {
-      describeConfigs: mockDescribeConfigs
-    }
-  }
-});
-
 const { topicConfig, RESOURCE_TYPES } = require("./fetch-configs");
+
+const mockTopic = "topic-name";
 
 describe("fetchConfigs", () => {
   describe("topicConfig", () => {
+    let mockDescribeConfigs = null;
+
+    beforeEach(() => {
+      const mockKafkaConnections = mockAccessGlobalKafkaConnectionsImp();
+      mockDescribeConfigs = mockKafkaConnections.kafkaJs.admin.describeConfigs;
+      accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
+    });
+
     it("Should call describeConfigs with requested topic", async () => {
       await topicConfig(mockTopic);
 
@@ -32,7 +26,7 @@ describe("fetchConfigs", () => {
     });
 
     it("Should destructure and return the requested topics config", async () => {
-      const expected = mockConfigEntries;
+      const expected = mockConfigEntry;
       const actual = await topicConfig(mockTopic);
       expect(actual).toEqual(expected);
     });
