@@ -32,7 +32,16 @@ module.exports = (overrides = []) => {
             const error = false;
             callback(error, mockFetchLatestOffsets.response);
           })
-      }
+      },
+      consumer: jest.fn().mockImplementation(() => {
+        return {
+          on: (_eventType, callback) => {
+            const message = { offset: 1000 };
+            callback(message);
+          },
+          close: () => {}
+        };
+      })
     },
     kafkaJs: {
       admin: {

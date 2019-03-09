@@ -1,21 +1,11 @@
 jest.mock("../access-global-kafka-connections");
+const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 
-const mockKafkaNodeConsumer = jest.fn().mockImplementation(() => {
-  return {
-    on: (_eventType, callback) => {
-      const message = { offset: 1000 };
-      callback(message);
-    },
-    close: () => {}
-  };
-});
+const mockKafkaConnections = mockAccessGlobalKafkaConnectionsImp();
+const mockKafkaNodeConsumer = mockKafkaConnections.kafkaNode.consumer;
 
-accessGlobalKafkaConnections.mockReturnValue({
-  kafkaNode: {
-    consumer: mockKafkaNodeConsumer
-  }
-});
+accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
 
 const singleConsumer = require("./single-consumer");
 
