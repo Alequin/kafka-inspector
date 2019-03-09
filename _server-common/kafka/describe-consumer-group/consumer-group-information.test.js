@@ -1,50 +1,46 @@
-const mockDescribeGroups = require("mock-test-data/kafka-node/mock-describe-groups");
+const mockConsumerGroups = require("mock-test-data/data/mock-consumer-groups");
+const mockConsumerGroupInformation = require("mock-test-data/data/mock-consumer-group-information");
 jest.mock("../access-global-kafka-connections");
+const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
 const consumerGroupInformation = require("./consumer-group-information");
 
-const mockDescribeGroupsImplementation = jest.fn();
-accessGlobalKafkaConnections.mockReturnValue({
-  kafkaNode: {
-    admin: {
-      describeGroups: mockDescribeGroupsImplementation
-    }
-  }
-});
-
 describe("consumerGroupInformation", () => {
+  let mockDescribeGroups = null;
+
   beforeEach(() => {
-    mockDescribeGroupsImplementation.mockImplementation(
-      async (_groupNames, callback) => {
-        const error = false;
-        callback(error, mockDescribeGroups.response);
-      }
-    );
+    const mockKafkaConnections = mockAccessGlobalKafkaConnectionsImp();
+    mockDescribeGroups = mockKafkaConnections.kafkaNode.admin.describeGroups;
+    accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
   });
 
-  it("Should resolve the consumer groups information", async () => {
-    const expected = mockDescribeGroups.groupInformation;
+  it.only("Should resolve the consumer groups information", async () => {
+    const expected = mockConsumerGroupInformation;
     const actual = await consumerGroupInformation(
-      mockDescribeGroups.consumerGroupName
+      mockConsumerGroups.consumerGroup1
     );
     expect(actual).toEqual(expected);
   });
 
-  it("Should call describeGroups with given consumerGroupNames", async () => {
-    const { consumerGroupName } = mockDescribeGroups;
-    await consumerGroupInformation(consumerGroupName);
-    expect(mockDescribeGroupsImplementation.mock.calls[0][0]).toEqual([
-      consumerGroupName
+  it.only("Should call describeGroups with given consumerGroupName", async () => {
+    await consumerGroupInformation(mockConsumerGroups.consumerGroup1);
+    expect(mockDescribeGroups.mock.calls[0][0]).toEqual([
+      mockConsumerGroups.consumerGroup1
     ]);
   });
 
-  it("Should reject if there is an error", done => {
+  it.only("Should reject if there is an error", done => {
     const mockError = "fetch group information error message";
-    mockDescribeGroupsImplementation.mockImplementation(
-      async (_groupNames, callback) => {
-        const error = mockError;
-        callback(error, null);
-      }
+    accessGlobalKafkaConnections.mockReturnValue(
+      mockAccessGlobalKafkaConnectionsImp([
+        {
+          path: "kafkaNode.admin.describeGroups",
+          override: (_groupNames, callback) => {
+            const error = mockError;
+            callback(error, null);
+          }
+        }
+      ])
     );
 
     consumerGroupInformation("groupName").catch(error => {

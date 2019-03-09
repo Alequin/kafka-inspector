@@ -1,16 +1,10 @@
-const consumerGroupName = "group1";
-
-const groupInformation = {
-  members: [],
-  protocolType: "consumer"
-};
+const mockConsumerGroups = require("../data/mock-consumer-groups");
+const consumerGroupInformation = require("../data/mock-consumer-group-information");
 
 const response = {
-  [consumerGroupName]: groupInformation
+  [mockConsumerGroups.consumerGroup1]: consumerGroupInformation
 };
 
 module.exports = {
-  response,
-  groupInformation,
-  consumerGroupName
+  response
 };
