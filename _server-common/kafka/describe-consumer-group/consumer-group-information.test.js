@@ -14,7 +14,7 @@ describe("consumerGroupInformation", () => {
     accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
   });
 
-  it.only("Should resolve the consumer groups information", async () => {
+  it("Should resolve the consumer groups information", async () => {
     const expected = mockConsumerGroupInformation;
     const actual = await consumerGroupInformation(
       mockConsumerGroups.consumerGroup1
@@ -22,14 +22,14 @@ describe("consumerGroupInformation", () => {
     expect(actual).toEqual(expected);
   });
 
-  it.only("Should call describeGroups with given consumerGroupName", async () => {
+  it("Should call describeGroups with given consumerGroupName", async () => {
     await consumerGroupInformation(mockConsumerGroups.consumerGroup1);
     expect(mockDescribeGroups.mock.calls[0][0]).toEqual([
       mockConsumerGroups.consumerGroup1
     ]);
   });
 
-  it.only("Should reject if there is an error", done => {
+  it("Should reject if there is an error", done => {
     const mockError = "fetch group information error message";
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp([

@@ -18,20 +18,20 @@ describe("fetchLatestOffsets", () => {
     accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
   });
 
-  it.only("Should resolve the topics offsets", async () => {
+  it("Should resolve the topics offsets", async () => {
     const topicName = mockTopicNames.topic1;
     const expected = mockFetchLatestOffsetsResponse[topicName];
     const actual = await fetchLatestOffsets(topicName);
     expect(actual).toEqual(expected);
   });
 
-  it.only("Should call fetchLatestOffsets with given topicName", async () => {
+  it("Should call fetchLatestOffsets with given topicName", async () => {
     const topicName = mockTopicNames.topic1;
     await fetchLatestOffsets(topicName);
     expect(mockFetchLatestOffsets.mock.calls[0][0]).toEqual([topicName]);
   });
 
-  it.only("Should reject if there is an error", done => {
+  it("Should reject if there is an error", done => {
     const mockError = "fetch latest offsets error message";
 
     accessGlobalKafkaConnections.mockReturnValue(

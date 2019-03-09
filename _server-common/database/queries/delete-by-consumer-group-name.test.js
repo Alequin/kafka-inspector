@@ -2,7 +2,7 @@ const deleteByConsumerGroupName = require("./delete-by-consumer-group-name");
 const testDatabaseMigration = require("../test-database-migration");
 const runQuery = require("server-common/database/run-query");
 
-describe.only("deleteByConsumerGroupName", () => {
+describe("deleteByConsumerGroupName", () => {
   let db = null;
 
   beforeEach(async () => {
