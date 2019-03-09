@@ -1,51 +1,51 @@
-const mockFetchLatestOffsets = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
+const mockTopicNames = require("mock-test-data/data/mock-topics");
+const {
+  response: mockFetchLatestOffsetsResponse
+} = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
 jest.mock("../access-global-kafka-connections");
+const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
-
-const mockFetchLatestOffsetsImplementation = jest.fn();
-accessGlobalKafkaConnections.mockReturnValue({
-  kafkaNode: {
-    offset: {
-      fetchLatestOffsets: mockFetchLatestOffsetsImplementation
-    }
-  }
-});
 
 const fetchLatestOffsets = require("./fetch-latest-offsets");
 
 describe("fetchLatestOffsets", () => {
+  let mockFetchLatestOffsets = null;
+
   beforeEach(() => {
-    mockFetchLatestOffsetsImplementation.mockImplementation(
-      (_topicNames, callback) => {
-        const error = false;
-        callback(error, mockFetchLatestOffsets.response);
-      }
-    );
+    const mockKafkaConnections = mockAccessGlobalKafkaConnectionsImp();
+    mockFetchLatestOffsets =
+      mockKafkaConnections.kafkaNode.offset.fetchLatestOffsets;
+    accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
   });
 
-  it("Should resolve the topics offsets", async () => {
-    const { topicName } = mockFetchLatestOffsets;
-    const expected = mockFetchLatestOffsets.response[topicName];
+  it.only("Should resolve the topics offsets", async () => {
+    const topicName = mockTopicNames.topic1;
+    const expected = mockFetchLatestOffsetsResponse[topicName];
     const actual = await fetchLatestOffsets(topicName);
     expect(actual).toEqual(expected);
   });
 
-  it("Should call fetchLatestOffsets with given topicName", async () => {
-    const { topicName } = mockFetchLatestOffsets;
+  it.only("Should call fetchLatestOffsets with given topicName", async () => {
+    const topicName = mockTopicNames.topic1;
     await fetchLatestOffsets(topicName);
-    expect(mockFetchLatestOffsetsImplementation.mock.calls[0][0]).toEqual([
-      topicName
-    ]);
+    expect(mockFetchLatestOffsets.mock.calls[0][0]).toEqual([topicName]);
   });
 
-  it("Should reject if there is an error", done => {
+  it.only("Should reject if there is an error", done => {
     const mockError = "fetch latest offsets error message";
-    mockFetchLatestOffsetsImplementation.mockImplementation(
-      (_topicNames, callback) => {
-        const error = mockError;
-        callback(error, mockFetchLatestOffsets.response);
-      }
+
+    accessGlobalKafkaConnections.mockReturnValue(
+      mockAccessGlobalKafkaConnectionsImp([
+        {
+          path: "kafkaNode.offset.fetchLatestOffsets",
+          override: (_topicNames, callback) => {
+            const error = mockError;
+            callback(error, null);
+          }
+        }
+      ])
     );
+
     fetchLatestOffsets("topicName").catch(error => {
       expect(error).toBe(mockError);
       done();

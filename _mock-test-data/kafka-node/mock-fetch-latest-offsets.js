@@ -1,17 +1,10 @@
-const topicName = "topic1";
-
-const topicOffsets = {
-  "0": 10,
-  "1": 20,
-  "2": 30
-};
+const mockTopics = require("../data/mock-topics");
+const mockTopicOffsets = require("../data/mock-topic-offsets");
 
 const response = {
-  [topicName]: topicOffsets
+  [mockTopics.topic1]: mockTopicOffsets
 };
 
 module.exports = {
-  topicName,
-  topicOffsets,
   response
 };
