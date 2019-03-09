@@ -37,7 +37,8 @@ module.exports = (overrides = []) => {
       admin: {
         describeConfigs: jest
           .fn()
-          .mockResolvedValue(mockDescribeConfigs.response)
+          .mockResolvedValue(mockDescribeConfigs.response),
+        fetchOffsets: jest.fn()
       }
     }
   };
