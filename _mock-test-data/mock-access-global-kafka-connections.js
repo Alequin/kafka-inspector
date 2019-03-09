@@ -4,6 +4,7 @@ const mockListGroups = require("./kafka-node/mock-list-groups");
 const mockDescribeConfigs = require("./kafkajs/mock-describe-configs");
 const mockDescribeGroups = require("./kafka-node/mock-describe-groups");
 const mockFetchLatestOffsets = require("./kafka-node/mock-fetch-latest-offsets");
+const mockFetchOffsets = require("./kafkajs/mock-fetch-offsets");
 
 module.exports = (overrides = []) => {
   const mock = {
@@ -38,7 +39,7 @@ module.exports = (overrides = []) => {
         describeConfigs: jest
           .fn()
           .mockResolvedValue(mockDescribeConfigs.response),
-        fetchOffsets: jest.fn()
+        fetchOffsets: jest.fn().mockResolvedValue(mockFetchOffsets.response)
       }
     }
   };

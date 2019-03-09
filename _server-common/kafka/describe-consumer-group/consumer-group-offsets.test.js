@@ -1,29 +1,17 @@
-const mockFetchLatestOffsets = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
-const mockFetchCommittedOffsets = require("mock-test-data/kafka-node/mock-fetch-committed-offsets");
+const mockTopicNames = require("mock-test-data/data/mock-topics");
+const mockConsumerGroups = require("mock-test-data/data/mock-consumer-groups");
 jest.mock("../access-global-kafka-connections");
+const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
-accessGlobalKafkaConnections.mockReturnValue({
-  kafkaNode: {
-    offset: {
-      fetchLatestOffsets: (_topicNames, callback) => {
-        const error = false;
-        callback(error, mockFetchLatestOffsets.response);
-      }
-    }
-  },
-  kafkaJs: {
-    admin: {
-      fetchOffsets: async (_topicName, _consumerGroupName) => {
-        return mockFetchCommittedOffsets.response;
-      }
-    }
-  }
-});
 
 const consumerGroupOffsets = require("./consumer-group-offsets");
 
 describe("consumerGroupOffsets", async () => {
   it("Should gather and return a summary of offset details from the requested consumer group", async () => {
+    accessGlobalKafkaConnections.mockReturnValue(
+      mockAccessGlobalKafkaConnectionsImp()
+    );
+
     const expected = {
       sumOfLatestOffsets: 60,
       sumOfLag: 33,
@@ -34,8 +22,8 @@ describe("consumerGroupOffsets", async () => {
       ]
     };
     const actual = await consumerGroupOffsets(
-      mockFetchLatestOffsets.topicName,
-      "mockConsumerGroup"
+      mockTopicNames.topic1,
+      mockConsumerGroups.consumerGroup1
     );
     expect(actual).toEqual(expected);
   });

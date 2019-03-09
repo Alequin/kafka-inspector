@@ -1,5 +1,13 @@
 const { isEqual } = require("lodash");
 
+const checkAllPartitionsMatch = (latestOffsets, committedOffsets) => {
+  const latestOffsetPartitions = Object.keys(latestOffsets);
+  const committedOffsetsPartitions = committedOffsets.map(({ partition }) =>
+    partition.toString()
+  );
+  return isEqual(latestOffsetPartitions, committedOffsetsPartitions);
+};
+
 const aggregateOffsetDetails = (latestOffsets, committedOffsets) => {
   const arePartitionsSame = checkAllPartitionsMatch(
     latestOffsets,
@@ -10,20 +18,12 @@ const aggregateOffsetDetails = (latestOffsets, committedOffsets) => {
       "Latest offsets and committed offsets have different partitions"
     );
 
-  return committedOffsets.map(({ partition, offset }) => {
+  return committedOffsets.map(({ partition, offset: committedOffset }) => {
     const latestOffset = latestOffsets[partition];
     return latestOffset
-      ? { partition, latestOffset, lag: latestOffset - offset }
+      ? { partition, latestOffset, lag: latestOffset - committedOffset }
       : null;
   });
-};
-
-const checkAllPartitionsMatch = (latestOffsets, committedOffsets) => {
-  const latestOffsetPartitions = Object.keys(latestOffsets);
-  const committedOffsetsPartitions = committedOffsets.map(({ partition }) =>
-    partition.toString()
-  );
-  return isEqual(latestOffsetPartitions, committedOffsetsPartitions);
 };
 
 module.exports = aggregateOffsetDetails;
