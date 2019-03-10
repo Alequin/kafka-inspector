@@ -14,6 +14,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    topic(topicName: String!): Topic!
     topics: [Topic!]!
   }
 `;

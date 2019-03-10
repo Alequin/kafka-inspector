@@ -1,5 +1,6 @@
 const resolvers = {
   Query: {
+    topic: require("./resolvers/topic-resolver"),
     topics: require("./resolvers/topics-resolver")
   },
   Topic: {
