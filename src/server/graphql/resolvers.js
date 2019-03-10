@@ -6,6 +6,9 @@ const resolvers = {
   Topic: {
     partitions: require("./resolvers/partitions-resolver"),
     config: require("./resolvers/topic-config-resolver")
+  },
+  Partition: {
+    metadata: require("./resolvers/partition-metadata-resolver")
   }
 };
 

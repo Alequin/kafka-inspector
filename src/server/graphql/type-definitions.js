@@ -1,11 +1,15 @@
 const { gql } = require("apollo-server");
 
 const typeDefs = gql`
-  type Partition {
-    partitionNumber: Int!
+  type PartitionMetadata {
     leader: Int!
     replicas: [Int!]!
     inSyncReplicas: [Int!]!
+  }
+
+  type Partition {
+    partitionNumber: Int!
+    metadata: PartitionMetadata!
   }
 
   type Config {
