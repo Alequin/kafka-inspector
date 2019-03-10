@@ -1,5 +1,5 @@
 const { sumBy } = require("lodash");
-const fetchLatestOffsets = require("../fetch-latest-offsets");
+const fetchLatestOffsetsWithCache = require("../fetch-latest-offsets-with-cache");
 const fetchCommittedOffsets = require("./utils/fetch-committed-offsets");
 const aggregateOffsetDetails = require("./utils/aggregate-offset-details");
 
@@ -12,7 +12,7 @@ const calculateTotalMessages = offsetDetails => {
 };
 
 const consumerGroupOffsets = async (topicName, consumerGroupName) => {
-  const latestOffsets = await fetchLatestOffsets(topicName);
+  const latestOffsets = await fetchLatestOffsetsWithCache(topicName);
   const committedOffsets = await fetchCommittedOffsets(
     topicName,
     consumerGroupName
