@@ -1,4 +1,4 @@
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 
 const fetchLatestOffsets = topicName => {
   const {

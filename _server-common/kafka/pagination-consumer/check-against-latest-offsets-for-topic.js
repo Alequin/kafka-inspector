@@ -1,4 +1,4 @@
-const fetchLatestOffset = require("../utils/fetch-latest-offsets");
+const fetchLatestOffset = require("../fetch-latest-offsets");
 
 const checkAgainstLatestOffsetForTopic = topicName => {
   const latestOffsets = fetchLatestOffset(topicName);

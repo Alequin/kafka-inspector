@@ -2,9 +2,9 @@ const mockTopicNames = require("mock-test-data/data/mock-topics");
 const {
   response: mockFetchLatestOffsetsResponse
 } = require("mock-test-data/kafka-node/mock-fetch-latest-offsets");
-jest.mock("../access-global-kafka-connections");
+jest.mock("./access-global-kafka-connections");
 const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 
 const fetchLatestOffsets = require("./fetch-latest-offsets");
 
