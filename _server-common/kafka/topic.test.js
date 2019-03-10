@@ -41,6 +41,40 @@ describe("topic", () => {
     expect(actual).toEqual(expected);
   });
 
+  it("Sorts the partitions by number ascending", async () => {
+    accessGlobalKafkaConnections.mockReturnValue(
+      mockAccessGlobalKafkaConnectionsImp([
+        {
+          path: "kafkaJs.admin.getTopicMetadata",
+          override: async () => mockGetTopicMetadata.unorderedResponse
+        }
+      ])
+    );
+
+    const expected = {
+      name: mockTopics.topic1,
+      partitions: [
+        {
+          topic: mockTopics.topic1,
+          partition: 0,
+          leader: 1,
+          replicas: [3, 1, 2],
+          isr: [1, 3, 2]
+        },
+        {
+          topic: mockTopics.topic1,
+          partition: 1,
+          leader: 1,
+          replicas: [3, 1, 2],
+          isr: [1, 3, 2]
+        }
+      ]
+    };
+
+    const actual = await topic(mockTopics.topic1);
+    expect(actual).toEqual(expected);
+  });
+
   it("Throws an error if any partitions have a failing error code", done => {
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp([

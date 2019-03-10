@@ -18,3 +18,12 @@ module.exports.response = {
     }
   ]
 };
+
+module.exports.unorderedResponse = {
+  topics: [
+    {
+      topics: mockTopics.topic1,
+      partitions: [mockPartitionData(1), mockPartitionData(0)]
+    }
+  ]
+};

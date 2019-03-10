@@ -1,23 +1,42 @@
+const { sortBy, flow } = require("lodash");
 const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 const { failure, identifyError } = require("./error-codes");
 
-const transformPartition = topicName => {
-  return partition => {
-    return {
-      topic: topicName,
-      partition: partition.partitionId,
-      leader: partition.leader,
-      replicas: partition.replicas,
-      isr: partition.isr
-    };
+const shapePartitions = topicName => {
+  return partitions => {
+    return partitions.map(partition => {
+      return {
+        topic: topicName,
+        partition: partition.partitionId,
+        leader: partition.leader,
+        replicas: partition.replicas,
+        isr: partition.isr
+      };
+    });
   };
 };
 
-const checkForErrors = ({ partitionErrorCode: errorCode }) => {
-  if (failure(errorCode)) {
-    const error = identifyError(errorCode);
-    throw new Error(JSON.stringify(error));
-  }
+const sortPartitions = partitions => {
+  return sortBy(partitions, ({ partitionId }) => partitionId);
+};
+
+const checkForErrors = partitions => {
+  partitions.forEach(({ partitionErrorCode: errorCode }) => {
+    if (failure(errorCode)) {
+      const error = identifyError(errorCode);
+      throw new Error(JSON.stringify(error));
+    }
+  });
+
+  return partitions;
+};
+
+const transformPartition = (topicName, partitions) => {
+  return flow(
+    checkForErrors,
+    sortPartitions,
+    shapePartitions(topicName)
+  )(partitions);
 };
 
 const topic = async topicName => {
@@ -29,11 +48,9 @@ const topic = async topicName => {
     topics: [{ partitions }]
   } = await admin.getTopicMetadata({ topics: [topicName] });
 
-  partitions.forEach(checkForErrors);
-
   return {
     name: topicName,
-    partitions: partitions.map(transformPartition(topicName))
+    partitions: transformPartition(topicName, partitions)
   };
 };
 
