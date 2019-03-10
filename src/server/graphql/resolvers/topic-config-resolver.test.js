@@ -1,4 +1,4 @@
-const mockTopics = require("mock-test-data//data/mock-topics");
+const mockTopics = require("mock-test-data/data/mock-topics");
 jest.mock("server-common/kafka/access-global-kafka-connections");
 const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("server-common/kafka/access-global-kafka-connections");

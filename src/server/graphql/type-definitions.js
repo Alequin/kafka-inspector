@@ -10,6 +10,7 @@ const typeDefs = gql`
   type Partition {
     partitionNumber: Int!
     metadata: PartitionMetadata!
+    latestOffset: Int!
   }
 
   type Config {
