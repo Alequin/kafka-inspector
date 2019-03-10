@@ -35,9 +35,13 @@ const typeDefs = gql`
     config: [Config!]!
   }
 
-  type Query {
+  type Cluster {
     topic(topicName: String!): Topic!
     topics: [Topic!]!
+  }
+
+  type Query {
+    cluster(kafkaBrokers: String!): Cluster
   }
 `;
 

@@ -1,5 +1,8 @@
 const resolvers = {
   Query: {
+    cluster: require("./resolvers/cluster-resolver")
+  },
+  Cluster: {
     topic: require("./resolvers/topic-resolver"),
     topics: require("./resolvers/topics-resolver")
   },
