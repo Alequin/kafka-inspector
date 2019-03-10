@@ -16,6 +16,14 @@ const typeDefs = gql`
     isSensitive: Boolean!
   }
 
+  type ConfigList {
+    name: String!
+    value: String
+    readOnly: Boolean!
+    isDefault: Boolean!
+    isSensitive: Boolean!
+  }
+
   type Topic {
     name: String!
     partitions(partitionNumbers: [Int!]): [Partition!]!

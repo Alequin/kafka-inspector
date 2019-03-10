@@ -5,7 +5,7 @@ const resolvers = {
   },
   Topic: {
     partitions: require("./resolvers/partitions-resolver"),
-    config: () => {}
+    config: require("./resolvers/topic-config-resolver")
   }
 };
 
