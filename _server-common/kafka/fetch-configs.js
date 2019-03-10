@@ -1,5 +1,7 @@
 const { ResourceTypes } = require("kafkajs");
 const { first, omit } = require("lodash");
+const { seconds } = require("server-common/time-to-milliseconds");
+const simpleCache = require("server-common/kafka/utils/simple-cache");
 const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 
 // Omit the resource types which dont work with the function 'admin.describeConfigs'
@@ -35,9 +37,13 @@ const fetchConfigForSingleResource = resourceType => {
 // TODO - other resource type should be possible but always error when requested.
 // Figure out why the others error or find another way to access other resource types
 const topicConfig = fetchConfigForSingleResource(RESOURCE_TYPES.TOPIC);
+const topicConfigWithCache = simpleCache(topicConfig, {
+  refreshCacheAfter: seconds(5)
+});
 
 module.exports = {
   RESOURCE_TYPES,
   fetchConfigs,
-  topicConfig
+  topicConfig,
+  topicConfigWithCache
 };

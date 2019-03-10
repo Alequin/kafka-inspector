@@ -11,21 +11,27 @@ describe("partitionsResolver", () => {
     const expected = [
       {
         partitionNumber: 0,
-        leader: 1,
-        replicas: [1, 2, 3],
-        inSyncReplicas: [3, 2, 1]
+        metadata: {
+          leader: 1,
+          replicas: [1, 2, 3],
+          inSyncReplicas: [3, 2, 1]
+        }
       },
       {
         partitionNumber: 1,
-        leader: 1,
-        replicas: [1, 2, 3],
-        inSyncReplicas: [3, 2, 1]
+        metadata: {
+          leader: 1,
+          replicas: [1, 2, 3],
+          inSyncReplicas: [3, 2, 1]
+        }
       },
       {
         partitionNumber: 2,
-        leader: 1,
-        replicas: [1, 2, 3],
-        inSyncReplicas: [3, 2, 1]
+        metadata: {
+          leader: 1,
+          replicas: [1, 2, 3],
+          inSyncReplicas: [3, 2, 1]
+        }
       }
     ];
 
@@ -37,15 +43,19 @@ describe("partitionsResolver", () => {
     const expected = [
       {
         partitionNumber: 0,
-        leader: 1,
-        replicas: [1, 2, 3],
-        inSyncReplicas: [3, 2, 1]
+        metadata: {
+          leader: 1,
+          replicas: [1, 2, 3],
+          inSyncReplicas: [3, 2, 1]
+        }
       },
       {
         partitionNumber: 2,
-        leader: 1,
-        replicas: [1, 2, 3],
-        inSyncReplicas: [3, 2, 1]
+        metadata: {
+          leader: 1,
+          replicas: [1, 2, 3],
+          inSyncReplicas: [3, 2, 1]
+        }
       }
     ];
 

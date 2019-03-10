@@ -2,9 +2,11 @@ const omit = require("lodash/omit");
 
 const transformPartitionToFitGqlType = partition => {
   return {
-    ...omit(partition, ["isr", "partition"]),
-    inSyncReplicas: partition.isr,
-    partitionNumber: partition.partition
+    partitionNumber: partition.partition,
+    metadata: {
+      ...omit(partition, ["isr", "partition"]),
+      inSyncReplicas: partition.isr
+    }
   };
 };
 
