@@ -1,10 +1,13 @@
 const { get, set } = require("lodash");
+
 const mockListTopics = require("./kafka-node/mock-list-topics");
 const mockListGroups = require("./kafka-node/mock-list-groups");
-const mockDescribeConfigs = require("./kafkajs/mock-describe-configs");
 const mockDescribeGroups = require("./kafka-node/mock-describe-groups");
 const mockFetchLatestOffsets = require("./kafka-node/mock-fetch-latest-offsets");
+
+const mockDescribeConfigs = require("./kafkajs/mock-describe-configs");
 const mockFetchOffsets = require("./kafkajs/mock-fetch-offsets");
+const mockGetTopicMetadata = require("./kafkajs/mock-get-topic-metadata");
 
 module.exports = (overrides = []) => {
   const mock = {
@@ -48,7 +51,10 @@ module.exports = (overrides = []) => {
         describeConfigs: jest
           .fn()
           .mockResolvedValue(mockDescribeConfigs.response),
-        fetchOffsets: jest.fn().mockResolvedValue(mockFetchOffsets.response)
+        fetchOffsets: jest.fn().mockResolvedValue(mockFetchOffsets.response),
+        getTopicMetadata: jest
+          .fn()
+          .mockResolvedValue(mockGetTopicMetadata.response)
       }
     }
   };
