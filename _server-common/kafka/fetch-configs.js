@@ -38,7 +38,7 @@ const fetchConfigForSingleResource = resourceType => {
 // Figure out why the others error or find another way to access other resource types
 const topicConfig = fetchConfigForSingleResource(RESOURCE_TYPES.TOPIC);
 const topicConfigWithCache = simpleCache(topicConfig, {
-  refreshCacheAfter: seconds(5)
+  refreshCacheAfter: seconds(30)
 });
 
 module.exports = {
