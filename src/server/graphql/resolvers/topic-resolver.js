@@ -1,11 +1,11 @@
-const topic = require("server-common/kafka/topic");
+const topicWithCache = require("server-common/kafka/topic-with-cache");
 
 const topicsResolver = async (
   _parent,
   { topicName },
   { kafkaConnectionConfig }
 ) => {
-  return await topic(topicName, kafkaConnectionConfig);
+  return await topicWithCache(topicName, kafkaConnectionConfig);
 };
 
 module.exports = topicsResolver;

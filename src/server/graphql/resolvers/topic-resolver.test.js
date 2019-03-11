@@ -1,12 +1,14 @@
 jest.mock("server-common/kafka/access-global-kafka-connections");
-jest.mock("server-common/kafka/topic");
+jest.mock("server-common/kafka/topic-with-cache");
 const mockTopics = require("mock-test-data/data/mock-topics");
 const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
 const accessGlobalKafkaConnections = require("server-common/kafka/access-global-kafka-connections");
 
-const topic = require("server-common/kafka/topic");
+const topicWithCache = require("server-common/kafka/topic-with-cache");
 
-topic.mockImplementation(jest.requireActual("server-common/kafka/topic"));
+topicWithCache.mockImplementation(
+  jest.requireActual("server-common/kafka/topic-with-cache")
+);
 
 accessGlobalKafkaConnections.mockReturnValue(
   mockAccessGlobalKafkaConnectionsImp()
@@ -44,7 +46,7 @@ describe("topicsResolver", () => {
       mockContext
     );
 
-    expect(topic).toBeCalledTimes(1);
+    expect(topicWithCache).toBeCalledTimes(1);
     expect(actual).toEqual(expected);
   });
 });
