@@ -75,6 +75,7 @@
     "server-common": "file:_server-common",
     "sqlite3": "^4.0.6",
     "style-loader": "0.23.1",
+    "tcp-ping": "^0.1.1",
     "terser-webpack-plugin": "1.2.2",
     "url-loader": "1.1.2",
     "webpack": "4.28.3",

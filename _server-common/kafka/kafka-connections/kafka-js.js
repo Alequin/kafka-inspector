@@ -1,10 +1,9 @@
 const { Kafka } = require("kafkajs");
-const kafkaConfig = require("../kafka-config");
 
-const kafkaJs = () => {
+const kafkaJs = kafkaBrokers => {
   const kafkaJsClient = new Kafka({
     clientId: "k-inspect.kafkaJs",
-    brokers: kafkaConfig.brokers
+    brokers: kafkaBrokers
   });
   let kafkaJsAdmin = null;
 

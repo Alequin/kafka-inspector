@@ -1,7 +1,6 @@
 const kafka = require("kafka-node");
-const kafkaConfig = require("../kafka-config");
 
-const kafkaNode = () => {
+const kafkaNode = kafkaBrokers => {
   let kafkaNodeClient = null;
   let kafkaNodeAdmin = null;
   let kafkaNodeOffset = null;
@@ -10,7 +9,7 @@ const kafkaNode = () => {
     const isKafkaNodeConnected = kafkaNodeClient && !kafkaNodeClient.closing;
     if (!isKafkaNodeConnected) {
       kafkaNodeClient = new kafka.KafkaClient({
-        kafkaHost: kafkaConfig.brokers.join(",")
+        kafkaHost: kafkaBrokers.join(",")
       });
       kafkaNodeAdmin = new kafka.Admin(kafkaNodeClient);
       kafkaNodeOffset = new kafka.Offset(kafkaNodeClient);

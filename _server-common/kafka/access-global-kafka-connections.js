@@ -1,16 +1,18 @@
-require("events").EventEmitter.defaultMaxListeners = 1000;
+const newClusterConnection = require("./kafka-connections/new-cluster-connection");
 
-const kafkaNode = require("./kafka-connections/kafka-node");
-const kafkaJs = require("./kafka-connections/kafka-js");
+const clusters = {};
+const accessGlobalKafkaConnections = kafkaConnectionConfig => {
+  if (!kafkaConnectionConfig || !kafkaConnectionConfig.kafkaBrokers)
+    throw new Error(
+      "No Kafka brokers have been defined in kafkaConnectionConfig. This is required"
+    );
 
-const accessGlobalKafkaNodeConnection = kafkaNode();
-const accessGlobalKafkaJsConnection = kafkaJs();
+  const { kafkaBrokers } = kafkaConnectionConfig;
+  if (!clusters[kafkaBrokers]) {
+    clusters[kafkaBrokers] = newClusterConnection(kafkaBrokers);
+  }
 
-const accessGlobalKafkaConnections = () => {
-  return {
-    kafkaNode: accessGlobalKafkaNodeConnection(),
-    kafkaJs: accessGlobalKafkaJsConnection()
-  };
+  return clusters[kafkaBrokers];
 };
 
 module.exports = accessGlobalKafkaConnections;
