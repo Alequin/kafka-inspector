@@ -10,6 +10,8 @@ accessGlobalKafkaConnections.mockReturnValue(
 const topicsConfigResolver = require("./topic-config-resolver");
 
 describe("topicsConfigResolver", () => {
+  const mockContext = { kafkaConnectionConfig: { kafkaBroker: [] } };
+
   it("Returns a list of config values", async () => {
     const expected = [
       {
@@ -23,9 +25,7 @@ describe("topicsConfigResolver", () => {
     const actual = await topicsConfigResolver(
       { name: mockTopics.topic1 },
       {},
-      {
-        kafkaBroker: []
-      }
+      mockContext
     );
     expect(actual).toEqual(expected);
   });

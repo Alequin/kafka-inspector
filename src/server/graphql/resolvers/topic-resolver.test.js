@@ -15,6 +15,8 @@ accessGlobalKafkaConnections.mockReturnValue(
 const topicResolver = require("./topic-resolver");
 
 describe("topicsResolver", () => {
+  const mockContext = { kafkaConnectionConfig: { kafkaBroker: [] } };
+
   it("Request details for one topic", async () => {
     const expected = {
       name: mockTopics.topic1,
@@ -39,7 +41,7 @@ describe("topicsResolver", () => {
     const actual = await topicResolver(
       {},
       { topicName: mockTopics.topic1 },
-      { kafkaBrokers: [] }
+      mockContext
     );
 
     expect(topic).toBeCalledTimes(1);
