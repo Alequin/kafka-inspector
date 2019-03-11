@@ -6,7 +6,7 @@ const accessGlobalKafkaConnections = require("../access-global-kafka-connections
 
 const consumerGroupOffsets = require("./consumer-group-offsets");
 
-describe("consumerGroupOffsets", async () => {
+describe("consumerGroupOffsets", () => {
   it("Should gather and return a summary of offset details from the requested consumer group", async () => {
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp()
