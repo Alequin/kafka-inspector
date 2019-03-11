@@ -1,8 +1,11 @@
+const mockDisconnect = jest.fn();
+
 const mockAdminReturnValue = {
   events: {
     DISCONNECT: "DISCONNECT"
   },
-  on: () => {}
+  on: () => {},
+  disconnect: mockDisconnect
 };
 
 const mockAdmin = jest.fn().mockImplementation(() => mockAdminReturnValue);
@@ -20,9 +23,10 @@ jest.mock("kafkajs", () => {
 });
 const kafkaJs = require("./kafka-js");
 
+const mockBroker = ["broker1:9092", "broker2:9092"];
+
 describe("kafkaJs", () => {
   it("Creates both a kafkajs client and admin", () => {
-    const mockBroker = ["broker1", "broker2"];
     const testConnection = kafkaJs(mockBroker);
     testConnection();
     expect(mockClient).toBeCalledTimes(1);
@@ -30,7 +34,6 @@ describe("kafkaJs", () => {
   });
 
   it("Creates the kafkajs client with the given brokers", () => {
-    const mockBroker = ["broker1", "broker2"];
     const testConnection = kafkaJs(mockBroker);
     testConnection();
     expect(mockClient).toBeCalledWith({
@@ -40,7 +43,6 @@ describe("kafkaJs", () => {
   });
 
   it("Returns the kafka client and admin", () => {
-    const mockBroker = ["broker1", "broker2"];
     const testConnection = kafkaJs(mockBroker);
 
     const expected = {
@@ -51,5 +53,15 @@ describe("kafkaJs", () => {
     const actual = testConnection();
 
     expect(actual).toEqual(expected);
+  });
+
+  it("Sets connected to false and calls disconnect when close is called", () => {
+    const testConnection = kafkaJs(mockBroker);
+    const actual = testConnection();
+
+    actual.admin.close();
+
+    expect(mockDisconnect).toHaveBeenCalledTimes(1);
+    expect(actual.admin.connected).toBe(false);
   });
 });
