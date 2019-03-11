@@ -6,11 +6,11 @@ const kafkaJs = require("./kafka-js");
 
 const newClusterConnection = kafkaBrokers => {
   confirmRequestedBrokersAreValid(kafkaBrokers);
-  const accessGlobalKafkaNodeConnection = kafkaNode(kafkaBrokers);
-  const accessGlobalKafkaJsConnection = kafkaJs(kafkaBrokers);
+  const accessKafkaNodeConnection = kafkaNode(kafkaBrokers);
+  const accessKafkaJsConnection = kafkaJs(kafkaBrokers);
   return {
-    kafkaNode: accessGlobalKafkaNodeConnection(),
-    kafkaJs: accessGlobalKafkaJsConnection()
+    kafkaNode: accessKafkaNodeConnection(),
+    kafkaJs: accessKafkaJsConnection()
   };
 };
 
