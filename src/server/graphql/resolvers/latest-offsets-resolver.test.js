@@ -18,6 +18,8 @@ accessGlobalKafkaConnections.mockReturnValue(
 const latestOffsetsResolver = require("./latest-offsets-resolver");
 
 describe("latestOffsetsResolver", () => {
+  const mockContext = { kafkaConnectionConfig: { kafkaBroker: [] } };
+
   beforeEach(() => {
     fetchLatestOffsetsWithCache.mockClear();
   });
@@ -25,10 +27,14 @@ describe("latestOffsetsResolver", () => {
   it("Should return the specific latest offset for the current partition", async () => {
     const targetPartition1 = 0;
     const expected1 = mockTopicOffsets[targetPartition1];
-    const actual1 = await latestOffsetsResolver({
-      partitionNumber: 0,
-      metadata: { topic: mockTopic.topic1 }
-    });
+    const actual1 = await latestOffsetsResolver(
+      {
+        partitionNumber: 0,
+        metadata: { topic: mockTopic.topic1 }
+      },
+      {},
+      mockContext
+    );
 
     expect(actual1).toEqual(expected1);
 
@@ -36,21 +42,32 @@ describe("latestOffsetsResolver", () => {
 
     const targetPartition2 = 0;
     const expected2 = mockTopicOffsets[targetPartition2];
-    const actual2 = await latestOffsetsResolver({
-      partitionNumber: 0,
-      metadata: { topic: mockTopic.topic1 }
-    });
+    const actual2 = await latestOffsetsResolver(
+      {
+        partitionNumber: 0,
+        metadata: { topic: mockTopic.topic1 }
+      },
+      {},
+      mockContext
+    );
 
     expect(actual2).toEqual(expected2);
   });
 
   it("Uses the cached version of fetchLatestOffsets, passing the topic name as an argument", async () => {
-    await latestOffsetsResolver({
-      partitionNumber: 0,
-      metadata: { topic: mockTopic.topic1 }
-    });
+    await latestOffsetsResolver(
+      {
+        partitionNumber: 0,
+        metadata: { topic: mockTopic.topic1 }
+      },
+      {},
+      mockContext
+    );
 
     expect(fetchLatestOffsetsWithCache).toBeCalledTimes(1);
-    expect(fetchLatestOffsetsWithCache).toBeCalledWith(mockTopic.topic1);
+    expect(fetchLatestOffsetsWithCache).toBeCalledWith(
+      mockTopic.topic1,
+      mockContext.kafkaConnectionConfig
+    );
   });
 });
