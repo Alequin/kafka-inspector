@@ -18,7 +18,7 @@ describe("fetchConfigs", () => {
     });
 
     it("Should call describeConfigs with requested topic", async () => {
-      await topicConfig(mockTopic);
+      await topicConfig(mockTopic, { kafkaBroker: [] });
 
       expect(mockDescribeConfigs).toBeCalledWith({
         resources: [{ name: mockTopic, type: RESOURCE_TYPES.TOPIC }]

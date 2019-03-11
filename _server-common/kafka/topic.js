@@ -39,10 +39,10 @@ const transformPartition = (topicName, partitions) => {
   )(partitions);
 };
 
-const topic = async topicName => {
+const topic = async (topicName, kafkaConnectionConfig) => {
   const {
     kafkaJs: { admin }
-  } = accessGlobalKafkaConnections();
+  } = accessGlobalKafkaConnections(kafkaConnectionConfig);
 
   const {
     topics: [{ partitions }]

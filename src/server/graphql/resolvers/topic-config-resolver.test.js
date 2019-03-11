@@ -20,7 +20,13 @@ describe("topicsConfigResolver", () => {
         isSensitive: false
       }
     ];
-    const actual = await topicsConfigResolver(mockTopics.topic1);
+    const actual = await topicsConfigResolver(
+      { name: mockTopics.topic1 },
+      {},
+      {
+        kafkaBroker: []
+      }
+    );
     expect(actual).toEqual(expected);
   });
 });

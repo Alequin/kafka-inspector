@@ -1,8 +1,12 @@
 const { omit } = require("lodash");
 const { topicConfigWithCache } = require("server-common/kafka/fetch-configs");
 
-const topicsConfigResolver = async ({ name: topicName }) => {
-  const configs = await topicConfigWithCache(topicName);
+const topicsConfigResolver = async (
+  { name: topicName },
+  _args,
+  { kafkaConnectionConfig }
+) => {
+  const configs = await topicConfigWithCache(topicName, kafkaConnectionConfig);
   return configs.map(config => {
     return {
       ...omit(config, ["configName", "configValue"]),

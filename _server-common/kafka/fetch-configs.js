@@ -8,19 +8,20 @@ const accessGlobalKafkaConnections = require("./access-global-kafka-connections"
 // For all types view https://github.com/tulios/kafkajs/blob/master/src/protocol/resourceTypes.js
 const RESOURCE_TYPES = omit(ResourceTypes, ["ANY", "UNKNOWN"]);
 
-const fetchConfigs = async resources => {
+const fetchConfigs = async (resources, kafkaConnectionConfig) => {
   const {
     kafkaJs: { admin }
-  } = accessGlobalKafkaConnections();
+  } = accessGlobalKafkaConnections(kafkaConnectionConfig);
 
   return await admin.describeConfigs({ resources });
 };
 
 const fetchConfigForSingleResource = resourceType => {
-  return async resourceName => {
-    const config = await fetchConfigs([
-      { name: resourceName, type: resourceType }
-    ]);
+  return async (resourceName, kafkaConnectionConfig) => {
+    const config = await fetchConfigs(
+      [{ name: resourceName, type: resourceType }],
+      kafkaConnectionConfig
+    );
 
     const { errorCode, errorMessage, configEntries } = first(config.resources);
 
