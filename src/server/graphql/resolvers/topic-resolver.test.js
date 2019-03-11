@@ -36,7 +36,11 @@ describe("topicsResolver", () => {
       ]
     };
 
-    const actual = await topicResolver({}, { topicName: mockTopics.topic1 });
+    const actual = await topicResolver(
+      {},
+      { topicName: mockTopics.topic1 },
+      { kafkaBrokers: [] }
+    );
 
     expect(topic).toBeCalledTimes(1);
     expect(actual).toEqual(expected);
