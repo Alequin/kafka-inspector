@@ -41,7 +41,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    cluster(kafkaBrokers: String!): Cluster
+    cluster(kafkaBrokers: [String!]): Cluster
   }
 `;
 

@@ -37,7 +37,7 @@ describe("topicsResolver", () => {
       }
     ];
 
-    const actual = await topicsResolver();
+    const actual = await topicsResolver({}, {}, { kafkaBrokers: [] });
 
     expect(listTopicsWithCache).toBeCalledTimes(1);
     expect(actual).toEqual(expected);

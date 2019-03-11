@@ -28,8 +28,8 @@ const transformToTopicList = flow(
   mapTopicsDetailsToList
 );
 
-const listTopics = async () => {
-  const { kafkaNode } = accessGlobalKafkaConnections();
+const listTopics = async kafkaConnectionConfig => {
+  const { kafkaNode } = accessGlobalKafkaConnections(kafkaConnectionConfig);
 
   return new Promise((resolve, reject) => {
     kafkaNode.admin.listTopics((error, response) => {
