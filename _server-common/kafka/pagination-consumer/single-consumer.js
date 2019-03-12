@@ -6,12 +6,15 @@ const CONSUMER_OPTIONS = {
   fromOffset: true
 };
 
-const singleConsumer = async ({ topicName, partition, offsetRange }) => {
+const singleConsumer = async (
+  { topicName, partition, offsetRange },
+  kafkaConnectionConfig
+) => {
   const minOffset = Math.max(offsetRange.min, 0);
 
   const {
     kafkaNode: { consumer }
-  } = accessGlobalKafkaConnections();
+  } = accessGlobalKafkaConnections(kafkaConnectionConfig);
 
   const consumerToUse = consumer(
     [{ topic: topicName, partition, offset: minOffset }],
