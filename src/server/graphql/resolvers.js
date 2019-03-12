@@ -4,7 +4,8 @@ const resolvers = {
   },
   Cluster: {
     topic: require("./resolvers/topic-resolver"),
-    topics: require("./resolvers/topics-resolver")
+    topics: require("./resolvers/topics-resolver"),
+    consumerGroup: require("./resolvers/consumer-group-resolver")
   },
   Topic: {
     partitions: require("./resolvers/partitions-resolver"),

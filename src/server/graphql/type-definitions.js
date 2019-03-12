@@ -1,6 +1,34 @@
 const { gql } = require("apollo-server");
 
 const typeDefs = gql`
+  type memberAssignment {
+    topicName: String!
+    partitionNumbers: [Int!]!
+  }
+
+  type memberMetadata {
+    subscription: [String!]!
+    version: Int!
+    userData: String
+    id: String!
+  }
+
+  type consumerGroupMember {
+    memberId: String!
+    clientId: String!
+    clientHost: String!
+    memberMetadata: memberMetadata!
+    memberAssignment: [memberAssignment]!
+  }
+
+  type ConsumerGroup {
+    members: [consumerGroupMember!]!
+    state: String!
+    protocolType: String!
+    protocol: String!
+    brokerId: String!
+  }
+
   type PartitionMetadata {
     leader: Int!
     replicas: [Int!]!
@@ -21,14 +49,6 @@ const typeDefs = gql`
     isSensitive: Boolean!
   }
 
-  type ConfigList {
-    name: String!
-    value: String
-    readOnly: Boolean!
-    isDefault: Boolean!
-    isSensitive: Boolean!
-  }
-
   type Topic {
     name: String!
     partitions(partitionNumbers: [Int!]): [Partition!]!
@@ -38,6 +58,7 @@ const typeDefs = gql`
   type Cluster {
     topic(topicName: String!): Topic!
     topics: [Topic!]!
+    consumerGroup(groupName: String!): ConsumerGroup!
   }
 
   type Query {
