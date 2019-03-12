@@ -1,13 +1,17 @@
 const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+const transformGroupInformation = require("./transform-group-information");
 
-const consumerGroupInformation = consumerGroupName => {
+const consumerGroupInformation = (
+  consumerGroupNames,
+  kafkaConnectionConfig
+) => {
   const {
     kafkaNode: { admin }
-  } = accessGlobalKafkaConnections();
+  } = accessGlobalKafkaConnections(kafkaConnectionConfig);
 
   return new Promise((resolve, reject) => {
-    admin.describeGroups([consumerGroupName], (error, response) => {
-      error ? reject(error) : resolve(response[consumerGroupName]);
+    admin.describeGroups(consumerGroupNames, (error, response) => {
+      error ? reject(error) : resolve(transformGroupInformation(response));
     });
   });
 };
