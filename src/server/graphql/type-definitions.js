@@ -22,6 +22,7 @@ const typeDefs = gql`
   }
 
   type ConsumerGroup {
+    groupId: String!
     members: [consumerGroupMember!]!
     state: String!
     protocolType: String!
@@ -59,6 +60,7 @@ const typeDefs = gql`
     topic(topicName: String!): Topic!
     topics: [Topic!]!
     consumerGroup(groupName: String!): ConsumerGroup!
+    consumerGroups: [ConsumerGroup!]!
   }
 
   type Query {

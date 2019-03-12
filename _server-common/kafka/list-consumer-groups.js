@@ -4,8 +4,8 @@ const mapConsumerGroupsToList = consumerGroupsObject => {
   return Object.keys(consumerGroupsObject);
 };
 
-const listConsumerGroups = async () => {
-  const { kafkaNode } = accessGlobalKafkaConnections();
+const listConsumerGroups = async kafkaConnectionConfig => {
+  const { kafkaNode } = accessGlobalKafkaConnections(kafkaConnectionConfig);
 
   return new Promise((resolve, reject) => {
     kafkaNode.admin.listGroups((error, response) => {
