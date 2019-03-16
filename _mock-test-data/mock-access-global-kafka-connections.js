@@ -39,10 +39,23 @@ module.exports = (overrides = []) => {
       consumer: jest.fn().mockImplementation(() => {
         return {
           on: (_eventType, callback) => {
-            const message = { offset: 1000 };
+            const message = { offset: 1, partition: 0 };
             callback(message);
           },
-          close: () => {}
+          removeTopics: jest.fn().mockImplementation((_topics, callback) => {
+            const error = false;
+            callback(error);
+          }),
+          addTopics: jest.fn().mockImplementation((_topics, callback) => {
+            const error = false;
+            callback(error);
+          }),
+          close: () => {},
+          payloads: [
+            {
+              partition: 0
+            }
+          ]
         };
       })
     },
