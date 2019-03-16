@@ -10,13 +10,13 @@ const removeCurrentPartition = (currentPartition, partitions) => {
 
 const consumeMessage = (
   consumer,
-  { topicName, minOffset, maxOffsets, partitions },
+  { topicName, minOffset, maxOffsets, partitionsToConsumerFrom },
   onMessageConsumedCallback
 ) => {
   const processedPartitions = {};
   const remainingPartitions = removeCurrentPartition(
     first(consumer.payloads).partition,
-    partitions
+    partitionsToConsumerFrom
   );
   return new Promise(resolve => {
     consumer.on("message", async message => {
@@ -99,7 +99,7 @@ const validMinOffset = requestedMinOffset => Math.max(requestedMinOffset, 0);
 const paginationConsumer = async (
   {
     topicName,
-    partitions,
+    partitionsToConsumerFrom,
     requestedMinOffset = 0,
     requestedMaxOffset = 999999
   },
@@ -109,7 +109,11 @@ const paginationConsumer = async (
   const minOffset = validMinOffset(requestedMinOffset);
 
   const firstPartitionToConsumeFrom = [
-    { topic: topicName, partition: first(partitions), offset: minOffset }
+    {
+      topic: topicName,
+      partition: first(partitionsToConsumerFrom),
+      offset: minOffset
+    }
   ];
   const consumerToUse = consumer(
     firstPartitionToConsumeFrom,
@@ -123,7 +127,7 @@ const paginationConsumer = async (
   );
   return consumeMessage(
     consumerToUse,
-    { topicName, minOffset, maxOffsets, partitions },
+    { topicName, minOffset, maxOffsets, partitionsToConsumerFrom },
     onMessageConsumedCallback
   );
 };

@@ -51,7 +51,7 @@ describe("paginationConsumer", () => {
   it("Passes consumed messages to the given callback", async () => {
     const mockTopicOptions = {
       topicName: mockTopics.topic1,
-      partitions: [0],
+      partitionsToConsumerFrom: [0],
       offsetRange: { min: 0, max: 10 }
     };
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
@@ -80,7 +80,7 @@ describe("paginationConsumer", () => {
   in below or equal to the max offset range`, async () => {
     const mockTopicOptions = {
       topicName: mockTopics.topic1,
-      partitions: [0],
+      partitionsToConsumerFrom: [0],
       offsetRange: { min: 0, max: 10 }
     };
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
@@ -108,7 +108,7 @@ describe("paginationConsumer", () => {
   it(`Closes the consumer when done`, async () => {
     const mockTopicOptions = {
       topicName: mockTopics.topic1,
-      partitions: [0],
+      partitionsToConsumerFrom: [0],
       offsetRange: { min: 0, max: 10 }
     };
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
@@ -126,7 +126,7 @@ describe("paginationConsumer", () => {
   it(`Changes to the next topic when the max offset has been reached`, async () => {
     const mockTopicOptions = {
       topicName: mockTopics.topic1,
-      partitions: [0, 1],
+      partitionsToConsumerFrom: [0, 1],
       offsetRange: { min: 0, max: 10 }
     };
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
@@ -154,7 +154,7 @@ describe("paginationConsumer", () => {
   it(`Negative min offsets should default to 0`, async () => {
     const mockTopicOptions = {
       topicName: mockTopics.topic1,
-      partitions: [0, 1],
+      partitionsToConsumerFrom: [0, 1],
       offsetRange: { min: -999999, max: 10 }
     };
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
@@ -189,7 +189,7 @@ describe("paginationConsumer", () => {
   it(`Defaults the requested max offset to the last messages offset if it is to high`, async () => {
     const mockTopicOptions = {
       topicName: mockTopics.topic1,
-      partitions: [0],
+      partitionsToConsumerFrom: [0],
       offsetRange: { min: 0, max: 10000 }
     };
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };

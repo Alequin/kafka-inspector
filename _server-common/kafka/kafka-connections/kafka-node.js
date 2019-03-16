@@ -1,5 +1,11 @@
 const kafka = require("kafka-node");
 
+const newClient = kafkaBrokers => {
+  return new kafka.KafkaClient({
+    kafkaHost: kafkaBrokers.join(",")
+  });
+};
+
 const kafkaNode = kafkaBrokers => {
   let kafkaNodeClient = null;
   let kafkaNodeAdmin = null;
@@ -8,9 +14,7 @@ const kafkaNode = kafkaBrokers => {
   return () => {
     const isKafkaNodeConnected = kafkaNodeClient && !kafkaNodeClient.closing;
     if (!isKafkaNodeConnected) {
-      kafkaNodeClient = new kafka.KafkaClient({
-        kafkaHost: kafkaBrokers.join(",")
-      });
+      kafkaNodeClient = newClient(kafkaBrokers);
       kafkaNodeAdmin = new kafka.Admin(kafkaNodeClient);
       kafkaNodeOffset = new kafka.Offset(kafkaNodeClient);
     }
@@ -20,7 +24,7 @@ const kafkaNode = kafkaBrokers => {
       admin: kafkaNodeAdmin,
       offset: kafkaNodeOffset,
       consumer: (topics, options) => {
-        return new kafka.Consumer(kafkaNodeClient, topics, options);
+        return new kafka.Consumer(newClient(kafkaBrokers), topics, options);
       },
       consumerGroupStream: options => {
         return new kafka.ConsumerGroupStream(
