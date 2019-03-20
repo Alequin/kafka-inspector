@@ -50,6 +50,15 @@ const typeDefs = gql`
     isSensitive: Boolean!
   }
 
+  type Message {
+    topic: String!
+    partition: Int!
+    offset: Int!
+    key: String!
+    value: String!
+    highWaterOffset: Int!
+  }
+
   type Topic {
     name: String!
     partitions(partitionNumbers: [Int!]): [Partition!]!
@@ -59,12 +68,18 @@ const typeDefs = gql`
   type Cluster {
     topic(topicName: String!): Topic!
     topics: [Topic!]!
+    consumer(
+      topicName: String!
+      partitions: [Int!]
+      minOffset: Int
+      maxOffset: Int
+    ): [Message!]!
     consumerGroup(groupName: String!): ConsumerGroup!
     consumerGroups: [ConsumerGroup!]!
   }
 
   type Query {
-    cluster(kafkaBrokers: [String!]): Cluster
+    cluster(kafkaBrokers: [String!]!): Cluster
   }
 `;
 

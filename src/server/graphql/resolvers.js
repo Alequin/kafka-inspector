@@ -5,6 +5,7 @@ const resolvers = {
   Cluster: {
     topic: require("./resolvers/topic-resolver"),
     topics: require("./resolvers/topics-resolver"),
+    consumer: require("./resolvers/consumer-resolver"),
     consumerGroup: require("./resolvers/consumer-group-resolver"),
     consumerGroups: require("./resolvers/consumer-groups-resolver")
   },
