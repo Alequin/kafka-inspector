@@ -20,6 +20,8 @@ const setupGraphql = expressServer => {
     app: expressServer,
     path: GRAPHQL_ENDPOINT
   });
+
+  return apolloServer;
 };
 
 module.exports = setupGraphql;

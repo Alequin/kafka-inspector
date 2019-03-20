@@ -1,5 +1,6 @@
 require("./process-input-args");
 
+const { createServer } = require("http");
 const {
   currentEnvironment,
   isServerOnly
@@ -16,7 +17,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-setupGraphql(app);
+const apolloServer = setupGraphql(app);
 
 const requestForAssets = /.js$|.css$|.json$|.map$|.ico$/;
 app.get(requestForAssets, (req, res) => {
@@ -33,7 +34,10 @@ app.get(allRoutes, (_req, res) => {
 });
 
 const PORT = 4000;
-app.listen(PORT, () => {
+const wrappedServer = createServer(app);
+apolloServer.installSubscriptionHandlers(wrappedServer);
+
+wrappedServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log("Environment:", currentEnvironment);
   isServerOnly && console.log("Server only mode is on");
