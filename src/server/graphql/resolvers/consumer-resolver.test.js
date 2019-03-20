@@ -71,4 +71,23 @@ describe("consumerResolver", () => {
       topics: [mockTopic]
     });
   });
+
+  it("Returns an array of the values passed to the paginationConsumer callback", async () => {
+    const mockMessages = ["message1", "message2", "message3"];
+    paginationConsumer.mockImplementation(
+      (_topicOptions, _kafkaSettings, onMessageCallback) => {
+        mockMessages.forEach(onMessageCallback);
+      }
+    );
+
+    const actual = await consumerResolver(
+      {},
+      {
+        topicName: mockTopic
+      },
+      { kafkaBrokers: ["broker"] }
+    );
+
+    expect(actual).toEqual(mockMessages);
+  });
 });
