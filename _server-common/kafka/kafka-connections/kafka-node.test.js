@@ -20,12 +20,10 @@ const mockOffset = jest.fn().mockImplementation(mockOffsetConstructor);
 const mockConsumerConstructor = mockConstuctorFor("consumer");
 const mockConsumer = jest.fn().mockImplementation(mockConsumerConstructor);
 
-const mockConsumerGroupStreamConstructor = mockConstuctorFor(
-  "consumerGroupStream"
-);
-const mockConsumerGroupStream = jest
+const mockConsumerGroupConstructor = mockConstuctorFor("consumerGroup");
+const mockConsumerGroup = jest
   .fn()
-  .mockImplementation(mockConsumerGroupStreamConstructor);
+  .mockImplementation(mockConsumerGroupConstructor);
 
 jest.mock("kafka-node", () => {
   return {
@@ -33,7 +31,7 @@ jest.mock("kafka-node", () => {
     Admin: mockAdmin,
     Offset: mockOffset,
     Consumer: mockConsumer,
-    ConsumerGroupStream: mockConsumerGroupStream
+    ConsumerGroup: mockConsumerGroup
   };
 });
 
@@ -97,21 +95,33 @@ describe("kafkaNode", () => {
     );
   });
 
-  it("Returns a function which calls the consumerGroupStream constructor", () => {
+  it("Returns a function which calls the consumerGroup constructor", () => {
     const mockBroker = ["broker1", "broker2"];
     const testConnection = kafkaNode(mockBroker);
 
     const mockOptions = { topicNames: ["topic"] };
 
     const actual = testConnection();
-    actual.consumerGroupStream(mockOptions);
+    actual.consumerGroup(mockOptions);
 
-    expect(mockConsumerGroupStream).toHaveBeenCalledWith(
+    expect(mockConsumerGroup).toHaveBeenCalledWith(
       {
         ...new mockClientConstructor().options,
         ...mockOptions
       },
       mockOptions.topicNames
     );
+  });
+
+  it("Throws an error when consumerGroup is called with an consumerGroupName that is not a string", () => {
+    const mockBroker = ["broker1", "broker2"];
+    const testConnection = kafkaNode(mockBroker);
+
+    const mockOptions = { topicNames: ["topic"], groupId: 123 };
+
+    const kafakNode = testConnection();
+    expect(() => {
+      kafakNode.consumerGroup(mockOptions);
+    }).toThrow();
   });
 });

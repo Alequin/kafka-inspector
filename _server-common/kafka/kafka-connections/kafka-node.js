@@ -1,4 +1,5 @@
 const kafka = require("kafka-node");
+const { isString } = require("lodash");
 
 const newClient = kafkaBrokers => {
   return new kafka.KafkaClient({
@@ -26,8 +27,12 @@ const kafkaNode = kafkaBrokers => {
       consumer: (topics, options) => {
         return new kafka.Consumer(newClient(kafkaBrokers), topics, options);
       },
-      consumerGroupStream: options => {
-        return new kafka.ConsumerGroupStream(
+      consumerGroup: options => {
+        const consumerGroupName = options.groupId || undefined;
+        if (consumerGroupName && !isString(consumerGroupName)) {
+          throw new Error("Requested groupId must be a string");
+        }
+        return new kafka.ConsumerGroup(
           {
             ...kafkaNodeClient.options,
             ...options
