@@ -1,10 +1,7 @@
 require("./process-input-args");
 
 const { createServer } = require("http");
-const {
-  currentEnvironment,
-  isServerOnly
-} = require("server-common/config/environment");
+const { currentEnvironment } = require("server-common/config/environment");
 const { appHtml, findInAssetFolder } = require("server-common/config/paths");
 
 const express = require("express");
@@ -40,5 +37,4 @@ apolloServer.installSubscriptionHandlers(wrappedServer);
 wrappedServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log("Environment:", currentEnvironment);
-  isServerOnly && console.log("Server only mode is on");
 });

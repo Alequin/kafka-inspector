@@ -8,16 +8,12 @@ if (isDevelopment) {
   process.env.BABEL_ENV = DEVELOPMENT;
   process.env.NODE_ENV = DEVELOPMENT;
 }
-// For development purposes when testing non client components
-// Should never be true is environment is production
-const isServerOnly = process.env.SERVER_ONLY === "true" && !isProduction;
 
 const { freeze } = Object;
 const environmentVariables = {
   isProduction,
   isDevelopment,
-  isTest,
-  isServerOnly
+  isTest
 };
 
 module.exports = freeze({
