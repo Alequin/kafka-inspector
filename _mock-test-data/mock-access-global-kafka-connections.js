@@ -57,6 +57,28 @@ module.exports = (overrides = []) => {
             }
           ]
         };
+      }),
+      consumerGroup: jest.fn().mockImplementation(() => {
+        return {
+          on: (_eventType, callback) => {
+            const message = { offset: 1, partition: 0 };
+            callback(message);
+          },
+          removeTopics: jest.fn().mockImplementation((_topics, callback) => {
+            const error = false;
+            callback(error);
+          }),
+          addTopics: jest.fn().mockImplementation((_topics, callback) => {
+            const error = false;
+            callback(error);
+          }),
+          close: jest.fn(),
+          payloads: [
+            {
+              partition: 0
+            }
+          ]
+        };
       })
     },
     kafkaJs: {
