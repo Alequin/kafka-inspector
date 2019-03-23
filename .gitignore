@@ -29,6 +29,6 @@ test-sqlite-database-journal
 #-------
 
 kafka-config.js
-play.js
+_play*
 next.md
 dist
