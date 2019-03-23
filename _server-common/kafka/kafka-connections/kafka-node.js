@@ -7,6 +7,13 @@ const newClient = kafkaBrokers => {
   });
 };
 
+const validateConsumerGroupName = name => {
+  const consumerGroupName = name || undefined;
+  if (consumerGroupName && !isString(consumerGroupName)) {
+    throw new Error("Requested groupId must be a string");
+  }
+};
+
 const kafkaNode = kafkaBrokers => {
   let kafkaNodeClient = null;
   let kafkaNodeAdmin = null;
@@ -28,10 +35,7 @@ const kafkaNode = kafkaBrokers => {
         return new kafka.Consumer(newClient(kafkaBrokers), topics, options);
       },
       consumerGroup: options => {
-        const consumerGroupName = options.groupId || undefined;
-        if (consumerGroupName && !isString(consumerGroupName)) {
-          throw new Error("Requested groupId must be a string");
-        }
+        validateConsumerGroupName(options.groupId);
         return new kafka.ConsumerGroup(
           {
             ...kafkaNodeClient.options,
