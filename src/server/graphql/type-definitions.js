@@ -68,18 +68,26 @@ const typeDefs = gql`
   type Cluster {
     topic(topicName: String!): Topic!
     topics: [Topic!]!
-    consumer(
+    queryConsumer(
       topicName: String!
       partitions: [Int!]
       minOffset: Int
       maxOffset: Int
     ): [Message!]!
+
     consumerGroup(groupName: String!): ConsumerGroup!
     consumerGroups: [ConsumerGroup!]!
   }
 
   type Query {
     cluster(kafkaBrokers: [String!]!): Cluster
+  }
+
+  type Subscription {
+    latestOffsetConsumer(
+      kafkaBrokers: [String!]!
+      topicName: String!
+    ): [Message!]!
   }
 `;
 
