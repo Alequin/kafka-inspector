@@ -9,8 +9,10 @@ accessGlobalKafkaConnections.mockReturnValue(
   ])
 );
 
+const { JSON_ENCODING } = require("../enums/parsing-options");
 jest.mock("server-common/kafka/targeted-consumer/targeted-consumer");
 const targetedConsumer = require("server-common/kafka/targeted-consumer/targeted-consumer");
+
 const conditionalConsumerResolver = require("./conditional-consumer-resolver");
 
 describe("conditionalConsumerResolver", () => {
@@ -32,7 +34,11 @@ describe("conditionalConsumerResolver", () => {
         topicName: mockTopic,
         partitions: mockPartitions,
         minOffset: mockMinOffset,
-        maxOffset: mockMaxOffset
+        maxOffset: mockMaxOffset,
+        conditions: {
+          encoding: JSON_ENCODING,
+          conditions: []
+        }
       },
       { kafkaBrokers: ["broker"] }
     );
@@ -63,7 +69,11 @@ describe("conditionalConsumerResolver", () => {
       {
         topicName: mockTopic,
         minOffset: mockMinOffset,
-        maxOffset: mockMaxOffset
+        maxOffset: mockMaxOffset,
+        conditions: {
+          encoding: JSON_ENCODING,
+          conditions: []
+        }
       },
       { kafkaBrokers: ["broker"] }
     );
