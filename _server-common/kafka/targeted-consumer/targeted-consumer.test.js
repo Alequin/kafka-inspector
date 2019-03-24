@@ -38,9 +38,9 @@ accessGlobalKafkaConnections.mockReturnValue(
   ])
 );
 
-const conditionalConsumer = require("./conditional-consumer");
+const targetedConsumer = require("./targeted-consumer");
 
-describe("conditionalConsumer", () => {
+describe("targetedConsumer", () => {
   beforeEach(() => {
     mockCloseConsumer.mockReset();
     mockRemoveTopics.mockReset();
@@ -48,7 +48,7 @@ describe("conditionalConsumer", () => {
     mockConsumerFunc.mockClear();
   });
 
-  it("Passes consumed messages to the given callback and returns the matching and rejected message count", async () => {
+  it("Passes consumed messages to the given callback", async () => {
     const mockTopicOptions = {
       topicName: mockTopics.topic1,
       partitionsToConsumerFrom: [0],
@@ -69,18 +69,11 @@ describe("conditionalConsumer", () => {
       expect(mockMessages.includes(message)).toBe(true);
     };
 
-    const {
-      matchingMessagesCount,
-      rejectedMessagesCount
-    } = await conditionalConsumer(
+    await targetedConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
     );
-
-    expect(matchingMessagesCount).toBe(2);
-    // Rejected messages do not include messages outside the offset range
-    expect(rejectedMessagesCount).toBe(0);
   });
 
   it(`Only calls the given callback as long a the message offset 
@@ -103,7 +96,7 @@ describe("conditionalConsumer", () => {
 
     const callback = jest.fn();
 
-    await conditionalConsumer(
+    await targetedConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -121,7 +114,7 @@ describe("conditionalConsumer", () => {
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
     const callback = jest.fn();
 
-    await conditionalConsumer(
+    await targetedConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -148,7 +141,7 @@ describe("conditionalConsumer", () => {
 
     const callback = jest.fn();
 
-    await conditionalConsumer(
+    await targetedConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -176,7 +169,7 @@ describe("conditionalConsumer", () => {
 
     const callback = jest.fn();
 
-    await conditionalConsumer(
+    await targetedConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -208,7 +201,7 @@ describe("conditionalConsumer", () => {
 
     const callback = jest.fn();
 
-    await conditionalConsumer(
+    await targetedConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback

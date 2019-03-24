@@ -19,14 +19,11 @@ const consumeMessage = (
     partitionsToConsumerFrom
   );
   return new Promise(resolve => {
-    let matchingMessagesCount = 0;
-    let rejectedMessagesCount = 0;
     consumer.on("message", async message => {
       const currentMaxOffset = maxOffsets[message.partition];
 
       const isMessageWithinOffsetRange = message.offset <= currentMaxOffset;
       if (isMessageWithinOffsetRange) {
-        matchingMessagesCount++;
         onMessageConsumedCallback(message, message.partition);
       }
 
@@ -45,7 +42,7 @@ const consumeMessage = (
           });
         } else {
           consumer.close();
-          resolve({ matchingMessagesCount, rejectedMessagesCount });
+          resolve();
         }
       }
     });
@@ -54,7 +51,7 @@ const consumeMessage = (
 
 const validMinOffset = requestedMinOffset => Math.max(requestedMinOffset, 0);
 
-const conditionalConsumer = async (
+const targetedConsumer = async (
   {
     topicName,
     partitionsToConsumerFrom,
@@ -91,4 +88,4 @@ const conditionalConsumer = async (
   );
 };
 
-module.exports = conditionalConsumer;
+module.exports = targetedConsumer;

@@ -9,8 +9,8 @@ accessGlobalKafkaConnections.mockReturnValue(
   ])
 );
 
-jest.mock("server-common/kafka/conditional-consumer/conditional-consumer");
-const conditionalConsumer = require("server-common/kafka/conditional-consumer/conditional-consumer");
+jest.mock("server-common/kafka/targeted-consumer/targeted-consumer");
+const targetedConsumer = require("server-common/kafka/targeted-consumer/targeted-consumer");
 const conditionalConsumerResolver = require("./conditional-consumer-resolver");
 
 describe("conditionalConsumerResolver", () => {
@@ -37,7 +37,7 @@ describe("conditionalConsumerResolver", () => {
       { kafkaBrokers: ["broker"] }
     );
 
-    expect(conditionalConsumer.mock.calls[0][0]).toEqual({
+    expect(targetedConsumer.mock.calls[0][0]).toEqual({
       topicName: mockTopic,
       partitionsToConsumerFrom: mockPartitions,
       requestedMinOffset: mockMinOffset,
@@ -74,10 +74,10 @@ describe("conditionalConsumerResolver", () => {
     });
   });
 
-  it("Returns the consumed messages as an array and the return value from conditionalConsumer", async () => {
+  it("Returns the consumed messages as an array and the return value from targetedConsumer", async () => {
     const returnValueToInclude = { test: "im am included in the response" };
     const mockMessages = ["message1", "message2", "message3"];
-    conditionalConsumer.mockImplementation(
+    targetedConsumer.mockImplementation(
       (_topicOptions, _kafkaSettings, onMessageCallback) => {
         mockMessages.forEach(onMessageCallback);
         return returnValueToInclude;
