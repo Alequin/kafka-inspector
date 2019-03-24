@@ -9,11 +9,11 @@ accessGlobalKafkaConnections.mockReturnValue(
   ])
 );
 
-jest.mock("server-common/kafka/pagination-consumer/pagination-consumer");
-const paginationConsumer = require("server-common/kafka/pagination-consumer/pagination-consumer");
-const consumerResolver = require("./consumer-resolver");
+jest.mock("server-common/kafka/conditional-consumer/conditional-consumer");
+const paginationConsumer = require("server-common/kafka/conditional-consumer/conditional-consumer");
+const conditionalConsumerResolver = require("./conditional-consumer-resolver");
 
-describe("consumerResolver", () => {
+describe("conditionalConsumerResolver", () => {
   const mockTopic = "topic";
   const mockPartitions = [0];
   const mockMinOffset = 0;
@@ -24,7 +24,7 @@ describe("consumerResolver", () => {
       mockAccessGlobalKafkaConnectionsImp()
     );
 
-    await consumerResolver(
+    await conditionalConsumerResolver(
       {},
       {
         topicName: mockTopic,
@@ -56,7 +56,7 @@ describe("consumerResolver", () => {
       ])
     );
 
-    await consumerResolver(
+    await conditionalConsumerResolver(
       {},
       {
         topicName: mockTopic,
@@ -80,7 +80,7 @@ describe("consumerResolver", () => {
       }
     );
 
-    const actual = await consumerResolver(
+    const actual = await conditionalConsumerResolver(
       {},
       {
         topicName: mockTopic

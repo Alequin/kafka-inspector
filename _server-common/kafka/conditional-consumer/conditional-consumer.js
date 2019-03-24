@@ -51,7 +51,7 @@ const consumeMessage = (
 
 const validMinOffset = requestedMinOffset => Math.max(requestedMinOffset, 0);
 
-const paginationConsumer = async (
+const conditionalConsumer = async (
   {
     topicName,
     partitionsToConsumerFrom,
@@ -87,4 +87,4 @@ const paginationConsumer = async (
   );
 };
 
-module.exports = paginationConsumer;
+module.exports = conditionalConsumer;

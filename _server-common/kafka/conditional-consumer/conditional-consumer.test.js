@@ -38,9 +38,9 @@ accessGlobalKafkaConnections.mockReturnValue(
   ])
 );
 
-const paginationConsumer = require("./pagination-consumer");
+const conditionalConsumer = require("./conditional-consumer");
 
-describe("paginationConsumer", () => {
+describe("conditionalConsumer", () => {
   beforeEach(() => {
     mockCloseConsumer.mockReset();
     mockRemoveTopics.mockReset();
@@ -69,7 +69,7 @@ describe("paginationConsumer", () => {
       expect(mockMessages.includes(message)).toBe(true);
     };
 
-    await paginationConsumer(
+    await conditionalConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -96,7 +96,7 @@ describe("paginationConsumer", () => {
 
     const callback = jest.fn();
 
-    await paginationConsumer(
+    await conditionalConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -114,7 +114,7 @@ describe("paginationConsumer", () => {
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
     const callback = jest.fn();
 
-    await paginationConsumer(
+    await conditionalConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -141,7 +141,7 @@ describe("paginationConsumer", () => {
 
     const callback = jest.fn();
 
-    await paginationConsumer(
+    await conditionalConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -169,7 +169,7 @@ describe("paginationConsumer", () => {
 
     const callback = jest.fn();
 
-    await paginationConsumer(
+    await conditionalConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback
@@ -201,7 +201,7 @@ describe("paginationConsumer", () => {
 
     const callback = jest.fn();
 
-    await paginationConsumer(
+    await conditionalConsumer(
       mockTopicOptions,
       mockKafkaConnectionConfig,
       callback

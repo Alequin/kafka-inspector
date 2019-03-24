@@ -10,7 +10,7 @@ const resolvers = {
   Cluster: {
     topic: require("./resolvers/topic-resolver"),
     topics: require("./resolvers/topics-resolver"),
-    queryConsumer: require("./resolvers/consumer-resolver"),
+    conditionalConsumer: require("./resolvers/conditional-consumer-resolver"),
     consumerGroup: require("./resolvers/consumer-group-resolver"),
     consumerGroups: require("./resolvers/consumer-groups-resolver")
   },

@@ -1,4 +1,4 @@
-const paginationConsumer = require("server-common/kafka/pagination-consumer/pagination-consumer");
+const paginationConsumer = require("server-common/kafka/conditional-consumer/conditional-consumer");
 const topic = require("server-common/kafka/topic-with-cache");
 
 const allPartitionsFor = async (topicName, kafkaConnectionConfig) => {
