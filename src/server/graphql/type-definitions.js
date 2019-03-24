@@ -68,9 +68,9 @@ const typeDefs = gql`
     comparator: Comparator!
   }
 
-  enum ENCODING {
-    ${parsingOptions.JSON}
-    ${parsingOptions.AVRO}
+  enum Encoding {
+    ${parsingOptions.JSON_ENCODING}
+    ${parsingOptions.AVRO_ENCODING}
   }
 
   type Message {
@@ -95,7 +95,7 @@ const typeDefs = gql`
   }
 
   input ConsumerConditions {
-    encoding: ENCODING!
+    encoding: Encoding!
     conditions: [[Condition!]!]!
   }
 
