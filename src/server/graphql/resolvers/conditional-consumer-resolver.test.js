@@ -10,7 +10,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 );
 
 jest.mock("server-common/kafka/conditional-consumer/conditional-consumer");
-const paginationConsumer = require("server-common/kafka/conditional-consumer/conditional-consumer");
+const conditionalConsumer = require("server-common/kafka/conditional-consumer/conditional-consumer");
 const conditionalConsumerResolver = require("./conditional-consumer-resolver");
 
 describe("conditionalConsumerResolver", () => {
@@ -19,11 +19,13 @@ describe("conditionalConsumerResolver", () => {
   const mockMinOffset = 0;
   const mockMaxOffset = 100;
 
-  it("Calls the consumer with the requested options", async () => {
+  beforeEach(() => {
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp()
     );
+  });
 
+  it("Calls the consumer with the requested options", async () => {
     await conditionalConsumerResolver(
       {},
       {
@@ -35,7 +37,7 @@ describe("conditionalConsumerResolver", () => {
       { kafkaBrokers: ["broker"] }
     );
 
-    expect(paginationConsumer.mock.calls[0][0]).toEqual({
+    expect(conditionalConsumer.mock.calls[0][0]).toEqual({
       topicName: mockTopic,
       partitionsToConsumerFrom: mockPartitions,
       requestedMinOffset: mockMinOffset,
@@ -72,14 +74,20 @@ describe("conditionalConsumerResolver", () => {
     });
   });
 
-  it("Returns an array of the values passed to the paginationConsumer callback", async () => {
+  it("Returns the consumed messages as an array and the return value from conditionalConsumer", async () => {
+    const returnValueToInclude = { test: "im am included in the response" };
     const mockMessages = ["message1", "message2", "message3"];
-    paginationConsumer.mockImplementation(
+    conditionalConsumer.mockImplementation(
       (_topicOptions, _kafkaSettings, onMessageCallback) => {
         mockMessages.forEach(onMessageCallback);
+        return returnValueToInclude;
       }
     );
 
+    const expected = {
+      messages: mockMessages,
+      ...returnValueToInclude
+    };
     const actual = await conditionalConsumerResolver(
       {},
       {
@@ -88,6 +96,6 @@ describe("conditionalConsumerResolver", () => {
       { kafkaBrokers: ["broker"] }
     );
 
-    expect(actual).toEqual(mockMessages);
+    expect(actual).toEqual(expected);
   });
 });

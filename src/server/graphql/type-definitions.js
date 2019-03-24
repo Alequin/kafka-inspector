@@ -50,6 +50,26 @@ const typeDefs = gql`
     isSensitive: Boolean!
   }
 
+  enum Comparator {
+    EQUAL_TO
+    LESS_THAN
+    LESS_THAN_OR_EQUAL_TO
+    GREATER_THAN
+    GREATER_THAN_OR_EQUAL_TO
+    REGEXP
+  }
+
+  input Condition {
+    comparator: Comparator!
+    objectPath: String!
+    valueToCompare: String!
+  }
+
+  enum ENCODING {
+    JSON
+    AVRO
+  }
+
   type Message {
     topic: String!
     partition: Int!
@@ -59,21 +79,33 @@ const typeDefs = gql`
     highWaterOffset: Int!
   }
 
+  type ConditionalConsumerResults {
+    matchingMessagesCount: Int!
+    rejectedMessagesCount: Int!
+    messages: [Message!]!
+  }
+
   type Topic {
     name: String!
     partitions(partitionNumbers: [Int!]): [Partition!]!
     config: [Config!]!
   }
 
+  input ConsumerConditions {
+    encoding: ENCODING!
+    conditions: [[Condition!]!]!
+  }
+
   type Cluster {
     topic(topicName: String!): Topic!
     topics: [Topic!]!
-    queryConsumer(
+    conditionalConsumer(
       topicName: String!
       partitions: [Int!]
       minOffset: Int
       maxOffset: Int
-    ): [Message!]!
+      conditions: ConsumerConditions
+    ): ConditionalConsumerResults!
 
     consumerGroup(groupName: String!): ConsumerGroup!
     consumerGroups: [ConsumerGroup!]!

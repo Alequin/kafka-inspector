@@ -19,11 +19,14 @@ const consumeMessage = (
     partitionsToConsumerFrom
   );
   return new Promise(resolve => {
+    let matchingMessagesCount = 0;
+    let rejectedMessagesCount = 0;
     consumer.on("message", async message => {
       const currentMaxOffset = maxOffsets[message.partition];
 
       const isMessageWithinOffsetRange = message.offset <= currentMaxOffset;
       if (isMessageWithinOffsetRange) {
+        matchingMessagesCount++;
         onMessageConsumedCallback(message, message.partition);
       }
 
@@ -42,7 +45,7 @@ const consumeMessage = (
           });
         } else {
           consumer.close();
-          resolve();
+          resolve({ matchingMessagesCount, rejectedMessagesCount });
         }
       }
     });
@@ -80,7 +83,8 @@ const conditionalConsumer = async (
     requestedMaxOffset,
     kafkaConnectionConfig
   );
-  return consumeMessage(
+
+  return await consumeMessage(
     consumerToUse,
     { topicName, minOffset, maxOffsets, partitionsToConsumerFrom },
     onMessageConsumedCallback

@@ -1,4 +1,4 @@
-const paginationConsumer = require("server-common/kafka/conditional-consumer/conditional-consumer");
+const conditionalConsumer = require("server-common/kafka/conditional-consumer/conditional-consumer");
 const topic = require("server-common/kafka/topic-with-cache");
 
 const allPartitionsFor = async (topicName, kafkaConnectionConfig) => {
@@ -20,7 +20,7 @@ const consumerResolver = async (
     messages.push(message);
   };
 
-  await paginationConsumer(
+  const consumedMessagesCountDetails = await conditionalConsumer(
     {
       topicName,
       partitionsToConsumerFrom: partitionsToConsumerFrom,
@@ -31,7 +31,10 @@ const consumerResolver = async (
     onMessage
   );
 
-  return messages;
+  return {
+    messages,
+    ...consumedMessagesCountDetails
+  };
 };
 
 module.exports = consumerResolver;
