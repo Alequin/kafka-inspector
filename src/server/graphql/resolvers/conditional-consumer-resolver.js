@@ -6,7 +6,7 @@ const allPartitionsFor = async (topicName, kafkaConnectionConfig) => {
   return partitions.map((_partition, index) => index);
 };
 
-const consumerResolver = async (
+const conditionalConsumerResolver = async (
   _parent,
   { topicName, partitions, minOffset, maxOffset },
   { kafkaConnectionConfig }
@@ -15,12 +15,15 @@ const consumerResolver = async (
     ? partitions
     : await allPartitionsFor(topicName, kafkaConnectionConfig);
 
+  let matchingMessagesCount = 0;
+  let rejectedMessagesCount = 0;
   const messages = [];
   const onMessage = message => {
+    matchingMessagesCount++;
     messages.push(message);
   };
 
-  const consumedMessagesCountDetails = await targetedConsumer(
+  await targetedConsumer(
     {
       topicName,
       partitionsToConsumerFrom: partitionsToConsumerFrom,
@@ -33,8 +36,9 @@ const consumerResolver = async (
 
   return {
     messages,
-    ...consumedMessagesCountDetails
+    matchingMessagesCount,
+    rejectedMessagesCount
   };
 };
 
-module.exports = consumerResolver;
+module.exports = conditionalConsumerResolver;

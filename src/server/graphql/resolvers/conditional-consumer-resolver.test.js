@@ -75,18 +75,17 @@ describe("conditionalConsumerResolver", () => {
   });
 
   it("Returns the consumed messages as an array and the return value from targetedConsumer", async () => {
-    const returnValueToInclude = { test: "im am included in the response" };
     const mockMessages = ["message1", "message2", "message3"];
     targetedConsumer.mockImplementation(
       (_topicOptions, _kafkaSettings, onMessageCallback) => {
         mockMessages.forEach(onMessageCallback);
-        return returnValueToInclude;
       }
     );
 
     const expected = {
       messages: mockMessages,
-      ...returnValueToInclude
+      matchingMessagesCount: 3,
+      rejectedMessagesCount: 0
     };
     const actual = await conditionalConsumerResolver(
       {},
