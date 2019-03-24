@@ -1,4 +1,6 @@
 const { gql } = require("apollo-server");
+const parsingOptions = require("./enums/parsing-options");
+const comparatorOptions = require("./enums/comparator-options");
 
 const typeDefs = gql`
   type memberAssignment {
@@ -51,12 +53,13 @@ const typeDefs = gql`
   }
 
   enum Comparator {
-    EQUAL_TO
-    LESS_THAN
-    LESS_THAN_OR_EQUAL_TO
-    GREATER_THAN
-    GREATER_THAN_OR_EQUAL_TO
-    REGEXP
+    ${comparatorOptions.EQUAL_TO}
+    ${comparatorOptions.NOT_EQUAL_TO}
+    ${comparatorOptions.LESS_THAN}
+    ${comparatorOptions.LESS_THAN_OR_EQUAL_TO}
+    ${comparatorOptions.GREATER_THAN}
+    ${comparatorOptions.GREATER_THAN_OR_EQUAL_TO}
+    ${comparatorOptions.REGEXP}
   }
 
   input Condition {
@@ -66,8 +69,8 @@ const typeDefs = gql`
   }
 
   enum ENCODING {
-    JSON
-    AVRO
+    ${parsingOptions.JSON}
+    ${parsingOptions.AVRO}
   }
 
   type Message {
