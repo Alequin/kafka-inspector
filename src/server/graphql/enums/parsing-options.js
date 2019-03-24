@@ -1,4 +1,4 @@
 module.exports = Object.freeze({
-  JSON: "JSON",
-  AVRO: "AVRO"
+  JSON_ENCODING: "JSON",
+  AVRO_ENCODING: "AVRO"
 });

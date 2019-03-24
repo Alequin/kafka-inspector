@@ -63,9 +63,9 @@ const typeDefs = gql`
   }
 
   input Condition {
-    comparator: Comparator!
+    value: String!
     objectPath: String!
-    valueToCompare: String!
+    comparator: Comparator!
   }
 
   enum ENCODING {
