@@ -30,7 +30,10 @@ const metadata = {
   }
 };
 
-const response = [mockBrokers, { metadata }];
+const response = [
+  mockBrokers,
+  { metadata, clusterMetadata: { controllerId: 2 } }
+];
 
 module.exports = {
   response,

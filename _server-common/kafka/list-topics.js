@@ -1,6 +1,4 @@
-const flow = require("lodash/flow");
-const map = require("lodash/map");
-const pickBy = require("lodash/pickBy");
+const { flow, map, pickBy } = require("lodash");
 const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 
 function mapTopicsDetailsToList(topics) {
