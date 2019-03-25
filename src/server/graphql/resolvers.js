@@ -8,6 +8,7 @@ const resolvers = {
     cluster: require("./resolvers/cluster-resolver")
   },
   Cluster: {
+    brokers: require("./resolvers/brokers-resolver"),
     topic: require("./resolvers/topic-resolver"),
     topics: require("./resolvers/topics-resolver"),
     conditionalConsumer: require("./resolvers/conditional-consumer-resolver"),

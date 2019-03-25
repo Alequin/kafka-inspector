@@ -99,7 +99,14 @@ const typeDefs = gql`
     conditions: [[Condition!]!]!
   }
 
+  type Broker {
+    id: Int!
+    host: String!
+    isController: Boolean!
+  }
+
   type Cluster {
+    brokers: [Broker!]!
     topic(topicName: String!): Topic!
     topics: [Topic!]!
     conditionalConsumer(
