@@ -5,20 +5,19 @@ const transformToBrokerList = response => {
   const brokerList = response[0];
   const { controllerId } = response[1].clusterMetadata;
 
-  return {
-    controllerId,
-    brokers: map(brokerList, broker => {
-      return {
-        ...omitBy(broker, ["nodeId"]),
-        id: broker.nodeId
-      };
-    })
-  };
+  return map(brokerList, broker => {
+    const id = broker.nodeId;
+    return {
+      ...omitBy(broker, ["nodeId"]),
+      id,
+      isController: id === controllerId
+    };
+  });
 };
 
 const brokers = async kafkaConnectionConfig => {
-  return transformToBrokerList(
-    await fetchBrokerDetailsAndTopicNames(kafkaConnectionConfig)
+  return fetchBrokerDetailsAndTopicNames(kafkaConnectionConfig).then(
+    transformToBrokerList
   );
 };
 

@@ -14,17 +14,15 @@ describe("brokers", () => {
 
     const toExpectedBrokerObjShape = obj => ({
       ...obj,
-      id: obj.nodeId
+      id: obj.nodeId,
+      isController: obj.nodeId === 2
     });
 
     const actual = await brokers({ kafkaBrokers: [mockBrokers["1"].host] });
-    expect(actual).toEqual({
-      brokers: [
-        toExpectedBrokerObjShape(mockBrokers["1"]),
-        toExpectedBrokerObjShape(mockBrokers["2"]),
-        toExpectedBrokerObjShape(mockBrokers["3"])
-      ],
-      controllerId: 2
-    });
+    expect(actual).toEqual([
+      toExpectedBrokerObjShape(mockBrokers["1"]),
+      toExpectedBrokerObjShape(mockBrokers["2"]),
+      toExpectedBrokerObjShape(mockBrokers["3"])
+    ]);
   });
 });
