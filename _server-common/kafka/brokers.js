@@ -1,5 +1,5 @@
 const { map, omitBy } = require("lodash");
-const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
+const fetchBrokerDetailsAndTopicNames = require("./utils/fetch-broker-details-and-topics-names");
 
 const transformToBrokerList = response => {
   const brokerList = response[0];
@@ -16,16 +16,10 @@ const transformToBrokerList = response => {
   };
 };
 
-const brokers = kafkaConnectionConfig => {
-  const {
-    kafkaNode: { admin }
-  } = accessGlobalKafkaConnections(kafkaConnectionConfig);
-
-  return new Promise((resolve, reject) => {
-    admin.listTopics((error, response) => {
-      error ? reject(error) : resolve(transformToBrokerList(response));
-    });
-  });
+const brokers = async kafkaConnectionConfig => {
+  return transformToBrokerList(
+    await fetchBrokerDetailsAndTopicNames(kafkaConnectionConfig)
+  );
 };
 
 module.exports = brokers;
