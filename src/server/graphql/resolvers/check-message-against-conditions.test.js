@@ -7,8 +7,8 @@ const {
   GREATER_THAN,
   GREATER_THAN_OR_EQUAL_TO,
   REGEXP
-} = require("../enums/comparator-options");
-const { JSON_ENCODING } = require("../enums/parsing-options");
+} = require("../constants/comparator-options");
+const { JSON_ENCODING } = require("../constants/parsing-options");
 const checkMessageAgainstConditions = require("./check-message-against-conditions");
 
 describe("checkMessageAgainstConditions", () => {

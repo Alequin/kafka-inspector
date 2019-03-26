@@ -1,6 +1,6 @@
 const { get, isNumber } = require("lodash");
 const DIVIDER = require("server-common/divider");
-const { JSON_ENCODING } = require("../enums/parsing-options");
+const { JSON_ENCODING } = require("../constants/parsing-options");
 const {
   EQUAL_TO,
   NOT_EQUAL_TO,
@@ -9,7 +9,7 @@ const {
   GREATER_THAN,
   GREATER_THAN_OR_EQUAL_TO,
   REGEXP
-} = require("../enums/comparator-options");
+} = require("../constants/comparator-options");
 
 const parse = {
   [JSON_ENCODING]: JSON.parse

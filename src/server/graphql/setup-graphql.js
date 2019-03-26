@@ -1,12 +1,13 @@
 const { ApolloServer } = require("apollo-server-express");
 const { makeExecutableSchema } = require("graphql-tools");
 const resolvers = require("./resolvers");
+const { gql } = require("apollo-server");
 const typeDefinitions = require("./type-definitions");
 
 const GRAPHQL_ENDPOINT = "/graphql";
 
 const schema = makeExecutableSchema({
-  typeDefs: typeDefinitions,
+  typeDefs: gql(typeDefinitions),
   resolvers
 });
 

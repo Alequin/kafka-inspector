@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "print-schema": "node scripts/print-schema",
     "start": "node src/server/server.js production",
     "start:dev": "node src/server/server.js",
     "build": "rm -rf build && node scripts/build.js",

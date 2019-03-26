@@ -9,7 +9,7 @@ accessGlobalKafkaConnections.mockReturnValue(
   ])
 );
 
-const { JSON_ENCODING } = require("../enums/parsing-options");
+const { JSON_ENCODING } = require("../constants/parsing-options");
 jest.mock("server-common/kafka/targeted-consumer/targeted-consumer");
 const targetedConsumer = require("server-common/kafka/targeted-consumer/targeted-consumer");
 
