@@ -24,7 +24,7 @@ const consumeMessage = (
 
       const isMessageWithinOffsetRange = message.offset <= currentMaxOffset;
       if (isMessageWithinOffsetRange) {
-        onMessageConsumedCallback(message, message.partition);
+        onMessageConsumedCallback(message, consumer);
       }
 
       const shouldProgressToNextPartition =

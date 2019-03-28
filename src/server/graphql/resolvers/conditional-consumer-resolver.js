@@ -1,6 +1,16 @@
+const { PubSub } = require("graphql-subscriptions");
+const uuid = require("uuid/v4");
+const { seconds } = require("server-common/time-to-milliseconds");
 const targetedConsumer = require("server-common/kafka/targeted-consumer/targeted-consumer");
 const topic = require("server-common/kafka/topic-with-cache");
 const checkMessageAgainstConditions = require("./check-message-against-conditions");
+
+const pubSub = new PubSub();
+
+const anySubscriptionsExistFor = subscriptionKey => {
+  const subscriptions = Object.keys(pubSub.ee._events);
+  return subscriptions.includes(subscriptionKey);
+};
 
 const allPartitionsFor = async (topicName, kafkaConnectionConfig) => {
   const { partitions } = await topic(topicName, kafkaConnectionConfig);
@@ -9,44 +19,63 @@ const allPartitionsFor = async (topicName, kafkaConnectionConfig) => {
 
 const conditionalConsumerResolver = async (
   _parent,
-  { topicName, partitions, minOffset, maxOffset, conditions },
-  { kafkaConnectionConfig }
+  { kafkaBrokers, topicName, partitions, minOffset, maxOffset, conditions }
 ) => {
+  const subscriptionKey = uuid();
+  const subscription = pubSub.asyncIterator([subscriptionKey]);
+
   const partitionsToConsumerFrom = partitions
     ? partitions
-    : await allPartitionsFor(topicName, kafkaConnectionConfig);
+    : await allPartitionsFor(topicName, { kafkaBrokers });
 
   let matchingMessagesCount = 0;
   let rejectedMessagesCount = 0;
-  const messages = [];
-  const onMessage = message => {
+  let publishMessagesTimeout = null;
+  const messageQueue = [];
+  const onMessage = (message, consumer) => {
     const messageMatchesConditions =
       !conditions || checkMessageAgainstConditions(message, conditions);
 
     if (messageMatchesConditions) {
-      messages.push(message);
+      messageQueue.push(message);
       matchingMessagesCount++;
     } else {
       rejectedMessagesCount++;
     }
+
+    const shouldTimeoutBeSet = !publishMessagesTimeout;
+    if (shouldTimeoutBeSet) {
+      publishMessagesTimeout = setTimeout(() => {
+        const shouldCloseConsumer = !anySubscriptionsExistFor(subscriptionKey);
+        if (shouldCloseConsumer) {
+          consumer.close(() => {});
+        } else {
+          const messagesToPublish = messageQueue.splice(0);
+          pubSub.publish(subscriptionKey, {
+            conditionalConsumer: {
+              matchingMessagesCount,
+              rejectedMessagesCount,
+              messages: messagesToPublish
+            }
+          });
+          publishMessagesTimeout = null;
+        }
+      }, seconds(2));
+    }
   };
 
-  await targetedConsumer(
+  targetedConsumer(
     {
       topicName,
       partitionsToConsumerFrom: partitionsToConsumerFrom,
       requestedMinOffset: minOffset,
       requestedMaxOffset: maxOffset
     },
-    kafkaConnectionConfig,
+    { kafkaBrokers },
     onMessage
   );
 
-  return {
-    messages,
-    matchingMessagesCount,
-    rejectedMessagesCount
-  };
+  return subscription;
 };
 
 module.exports = conditionalConsumerResolver;

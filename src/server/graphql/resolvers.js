@@ -2,6 +2,9 @@ const resolvers = {
   Subscription: {
     latestOffsetConsumer: {
       subscribe: require("./resolvers/latest-offset-consumer-resolver")
+    },
+    conditionalConsumer: {
+      subscribe: require("./resolvers/conditional-consumer-resolver")
     }
   },
   Query: {
@@ -11,7 +14,6 @@ const resolvers = {
     brokers: require("./resolvers/brokers-resolver"),
     topic: require("./resolvers/topic-resolver"),
     topics: require("./resolvers/topics-resolver"),
-    conditionalConsumer: require("./resolvers/conditional-consumer-resolver"),
     consumerGroup: require("./resolvers/consumer-group-resolver"),
     consumerGroups: require("./resolvers/consumer-groups-resolver")
   },
