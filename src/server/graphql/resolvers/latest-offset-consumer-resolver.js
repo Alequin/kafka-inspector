@@ -2,13 +2,9 @@ const uuid = require("uuid/v4");
 const { PubSub } = require("graphql-subscriptions");
 const { seconds } = require("server-common/time-to-milliseconds");
 const accessGlobalKafkaConnections = require("server-common/kafka/access-global-kafka-connections");
+const anySubscriptionsExistFor = require("./utils/any-subscriptions-exist-for");
 
 const pubSub = new PubSub();
-
-const anySubscriptionsExistFor = subscriptionKey => {
-  const subscriptions = Object.keys(pubSub.ee._events);
-  return subscriptions.includes(subscriptionKey);
-};
 
 const consumeMessages = (consumer, subscriptionKey, onEmptyMessageQueue) => {
   let emptyQueueTimeout = null;
@@ -20,7 +16,10 @@ const consumeMessages = (consumer, subscriptionKey, onEmptyMessageQueue) => {
 
     if (shouldTimeoutBeSet) {
       emptyQueueTimeout = setTimeout(() => {
-        const shouldCloseConsumer = !anySubscriptionsExistFor(subscriptionKey);
+        const shouldCloseConsumer = !anySubscriptionsExistFor(
+          subscriptionKey,
+          pubSub
+        );
 
         if (shouldCloseConsumer) {
           consumer.close(() => {});
@@ -36,7 +35,7 @@ const consumeMessages = (consumer, subscriptionKey, onEmptyMessageQueue) => {
 const latestOffsetConsumerResolver = (_parent, { topicName, kafkaBrokers }) => {
   const subscriptionKey = `${kafkaBrokers.join("")}-${topicName}`;
 
-  const isAlreadyConsuming = anySubscriptionsExistFor(subscriptionKey);
+  const isAlreadyConsuming = anySubscriptionsExistFor(subscriptionKey, pubSub);
   const subAsyncIterator = pubSub.asyncIterator([subscriptionKey]);
   if (isAlreadyConsuming) return subAsyncIterator;
 

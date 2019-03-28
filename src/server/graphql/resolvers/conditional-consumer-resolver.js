@@ -3,14 +3,10 @@ const uuid = require("uuid/v4");
 const { seconds } = require("server-common/time-to-milliseconds");
 const targetedConsumer = require("server-common/kafka/targeted-consumer/targeted-consumer");
 const topic = require("server-common/kafka/topic-with-cache");
+const anySubscriptionsExistFor = require("./utils/any-subscriptions-exist-for");
 const checkMessageAgainstConditions = require("./check-message-against-conditions");
 
 const pubSub = new PubSub();
-
-const anySubscriptionsExistFor = subscriptionKey => {
-  const subscriptions = Object.keys(pubSub.ee._events);
-  return subscriptions.includes(subscriptionKey);
-};
 
 const allPartitionsFor = async (topicName, kafkaConnectionConfig) => {
   const { partitions } = await topic(topicName, kafkaConnectionConfig);
@@ -46,7 +42,10 @@ const conditionalConsumerResolver = async (
     const shouldTimeoutBeSet = !publishMessagesTimeout;
     if (shouldTimeoutBeSet) {
       publishMessagesTimeout = setTimeout(() => {
-        const shouldCloseConsumer = !anySubscriptionsExistFor(subscriptionKey);
+        const shouldCloseConsumer = !anySubscriptionsExistFor(
+          subscriptionKey,
+          pubSub
+        );
         if (shouldCloseConsumer) {
           consumer.close(() => {});
         } else {
