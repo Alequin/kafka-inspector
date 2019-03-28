@@ -3,7 +3,7 @@ jest.mock("graphql-subscriptions");
 const { PubSub } = require("graphql-subscriptions");
 
 const mockAsyncIterator = jest.fn();
-const mockAsyncIteratorReturnValue = {};
+const mockAsyncIteratorReturnValue = Symbol();
 const mockPublish = jest.fn();
 const mockSubscribedEvents = {};
 
@@ -152,6 +152,7 @@ describe("latestOffsetConsumerResolver", () => {
         { topicName: mockTopicName, kafkaBrokers: mockBrokers }
       );
 
+      // Clear subscriptions to indicate the use is no longer listening
       forEach(mockSubscribedEvents, (_value, key) => {
         delete mockSubscribedEvents[key];
       });
