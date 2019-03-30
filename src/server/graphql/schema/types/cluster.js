@@ -5,5 +5,6 @@ module.exports = `
     topics: [Topic!]!
     consumerGroup(groupName: String!): ConsumerGroup!
     consumerGroups: [ConsumerGroup!]!
+    offsets(topicName: String! consumerGroupName: String!): Offsets!
   }
 `;

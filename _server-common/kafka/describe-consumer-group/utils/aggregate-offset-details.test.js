@@ -5,13 +5,13 @@ const aggregateOffsetDetails = require("./aggregate-offset-details");
 
 describe("aggregateOffsetDetails", () => {
   const mockLatestOffsets = mockTopicOffsets;
-  const mockCommittedOffsets = mockFetchOffsets.response;
+  const mockCommittedOffsets = mockFetchOffsets.transformedResponse;
 
   it("Should find latest offset and calculate the message lag", () => {
     const expected = [
-      { partition: 0, latestOffset: 10, lag: 6 },
-      { partition: 1, latestOffset: 20, lag: 11 },
-      { partition: 2, latestOffset: 30, lag: 16 }
+      { partitionNumber: 0, latestOffset: 10, committedOffset: 4, lag: 6 },
+      { partitionNumber: 1, latestOffset: 20, committedOffset: 9, lag: 11 },
+      { partitionNumber: 2, latestOffset: 30, committedOffset: 14, lag: 16 }
     ];
 
     const actual = aggregateOffsetDetails(
@@ -25,8 +25,8 @@ describe("aggregateOffsetDetails", () => {
   it(`Should throw an error if the partitions known by the latest offsets 
   and those known by committed offsets do not match`, () => {
     const mockCommittedOffsets = [
-      { partition: 0, offset: 4 },
-      { partition: 2, offset: 14 }
+      { partition: 0, committedOffset: 4 },
+      { partition: 2, committedOffset: 14 }
     ];
 
     expect(() =>

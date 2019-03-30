@@ -14,11 +14,12 @@ describe("consumerGroupOffsets", () => {
 
     const expected = {
       sumOfLatestOffsets: 60,
+      sumOfCommittedOffsets: 27,
       sumOfLag: 33,
       partitions: [
-        { partition: 0, latestOffset: 10, lag: 6 },
-        { partition: 1, latestOffset: 20, lag: 11 },
-        { partition: 2, latestOffset: 30, lag: 16 }
+        { partitionNumber: 0, latestOffset: 10, committedOffset: 4, lag: 6 },
+        { partitionNumber: 1, latestOffset: 20, committedOffset: 9, lag: 11 },
+        { partitionNumber: 2, latestOffset: 30, committedOffset: 14, lag: 16 }
       ]
     };
     const actual = await consumerGroupOffsets(

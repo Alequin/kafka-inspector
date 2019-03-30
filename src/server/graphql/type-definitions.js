@@ -22,6 +22,8 @@ const typeDefs = `
   ${type("config")}
   ${type("conditional-consumer-results")}
   ${type("message")}
+  ${type("partition-offsets")}
+  ${type("offsets")}
   ${type("topic")}
   ${type("broker")}
   ${type("cluster")}

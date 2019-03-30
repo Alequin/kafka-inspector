@@ -15,7 +15,8 @@ const resolvers = {
     topic: require("./resolvers/topic-resolver"),
     topics: require("./resolvers/topics-resolver"),
     consumerGroup: require("./resolvers/consumer-group-resolver"),
-    consumerGroups: require("./resolvers/consumer-groups-resolver")
+    consumerGroups: require("./resolvers/consumer-groups-resolver"),
+    offsets: require("./resolvers/offsets-resolver")
   },
   Topic: {
     partitions: require("./resolvers/partitions-resolver"),

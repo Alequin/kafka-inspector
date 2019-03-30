@@ -8,9 +8,23 @@ accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
 const fetchCommittedOffsets = require("./fetch-committed-offsets");
 
 describe("fetchCommittedOffsets", () => {
-  it("Should call describeConfigs with requested topic", async () => {
-    const mockFetchOffsets = mockKafkaConnections.kafkaJs.admin.fetchOffsets;
+  const mockFetchOffsets = mockKafkaConnections.kafkaJs.admin.fetchOffsets;
+  beforeEach(() => {
+    mockFetchOffsets.mockClear();
+  });
 
+  it("Should call describeConfigs with requested topic", async () => {
+    const topicName = "topic1";
+    const consumerGroupName = "group1";
+    await fetchCommittedOffsets(topicName, consumerGroupName);
+
+    expect(mockFetchOffsets).toBeCalledWith({
+      topic: topicName,
+      groupId: consumerGroupName
+    });
+  });
+
+  it("Parses the offsets from strings to integers", async () => {
     const topicName = "topic1";
     const consumerGroupName = "group1";
     await fetchCommittedOffsets(topicName, consumerGroupName);

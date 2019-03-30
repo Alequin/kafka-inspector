@@ -18,11 +18,14 @@ const aggregateOffsetDetails = (latestOffsets, committedOffsets) => {
       "Latest offsets and committed offsets have different partitions"
     );
 
-  return committedOffsets.map(({ partition, offset: committedOffset }) => {
+  return committedOffsets.map(({ partition, committedOffset }) => {
     const latestOffset = latestOffsets[partition];
-    return latestOffset
-      ? { partition, latestOffset, lag: latestOffset - committedOffset }
-      : null;
+    return {
+      partitionNumber: partition,
+      latestOffset,
+      committedOffset,
+      lag: latestOffset - committedOffset
+    };
   });
 };
 
