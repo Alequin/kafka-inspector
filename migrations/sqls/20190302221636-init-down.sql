@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS topicsAndConsumerGroups;
+DROP TABLE IF EXISTS clusters;
