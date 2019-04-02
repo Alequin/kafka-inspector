@@ -1,18 +1,24 @@
-jest.mock("server-common/kafka/brokers");
-const brokers = require("server-common/kafka/brokers");
+jest.mock("server-common/kafka/access-global-kafka-connections");
+const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
+const accessGlobalKafkaConnections = require("server-common/kafka/access-global-kafka-connections");
+accessGlobalKafkaConnections.mockReturnValue(
+  mockAccessGlobalKafkaConnectionsImp()
+);
+
 const brokersResolver = require("./brokers-resolver");
 
 describe("brokersResolver", () => {
   it("Makes a request for the broker list and returns the response unmodified", async () => {
-    const mockReturnValue = "I should be returned";
-    brokers.mockResolvedValue(mockReturnValue);
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker"] };
     const mockContext = { kafkaConnectionConfig: mockKafkaConnectionConfig };
 
-    const actual = await brokersResolver({}, {}, mockContext);
+    const expected = [
+      { nodeId: 1, host: "broker1", port: 9092, id: 1, isController: false },
+      { nodeId: 2, host: "broker2", port: 9092, id: 2, isController: true },
+      { nodeId: 3, host: "broker3", port: 9092, id: 3, isController: false }
+    ];
 
-    expect(brokers).toHaveBeenCalledTimes(1);
-    expect(brokers).toHaveBeenCalledWith(mockKafkaConnectionConfig);
-    expect(actual).toBe(mockReturnValue);
+    const actual = await brokersResolver({}, {}, mockContext);
+    expect(actual).toEqual(expected);
   });
 });
