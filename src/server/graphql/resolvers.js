@@ -11,6 +11,7 @@ const resolvers = {
     addCluster: require("./resolvers/add-cluster-resolver")
   },
   Query: {
+    storedClusters: require("./resolvers/stored-clusters-resolver"),
     cluster: require("./resolvers/cluster-resolver")
   },
   Cluster: {

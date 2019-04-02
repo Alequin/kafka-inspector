@@ -27,8 +27,10 @@ const typeDefs = `
   ${type("topic")}
   ${type("broker")}
   ${type("cluster")}
+  ${type("stored-cluster")}
 
   type Query {
+    storedClusters: [StoredCluster!]!
     cluster(kafkaBrokers: [String!]!): Cluster
   }
 
