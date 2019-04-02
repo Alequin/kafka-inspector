@@ -1,5 +1,5 @@
 const deleteClusterById = require("./delete-cluster-by-id");
-const testDatabaseMigration = require("../test-database-migration");
+const testDatabaseMigration = require("mock-test-data/test-database-migration");
 const runQuery = require("server-common/database/run-query");
 
 describe("deleteClusterById", () => {
