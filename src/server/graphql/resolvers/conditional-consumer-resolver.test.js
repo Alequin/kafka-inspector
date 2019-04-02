@@ -139,7 +139,7 @@ describe("conditionalConsumerResolver", () => {
     expect(mockConsumerClose).toHaveBeenCalledTimes(1);
   });
 
-  it("Publishes consumed messages as an array and the return value from targetedConsumer", async () => {
+  it("Publishes consumed messages as an array", async () => {
     const mockMessages = ["message1", "message2", "message3"];
     targetedConsumer.mockImplementation(
       (_topicOptions, _kafkaSettings, onMessageCallback) => {
