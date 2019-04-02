@@ -7,6 +7,9 @@ const resolvers = {
       subscribe: require("./resolvers/conditional-consumer-resolver")
     }
   },
+  Mutation: {
+    addCluster: require("./resolvers/add-cluster-resolver")
+  },
   Query: {
     cluster: require("./resolvers/cluster-resolver")
   },

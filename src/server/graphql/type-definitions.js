@@ -32,6 +32,10 @@ const typeDefs = `
     cluster(kafkaBrokers: [String!]!): Cluster
   }
 
+  type Mutation {
+    addCluster(kafkaBrokers: [String!]!): String!
+  }
+
   type Subscription {
     latestOffsetConsumer(
       kafkaBrokers: [String!]!
