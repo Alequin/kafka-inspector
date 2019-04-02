@@ -36,6 +36,7 @@ const typeDefs = `
 
   type Mutation {
     addCluster(kafkaBrokers: [String!]!): String!
+    deleteCluster(clusterRowId: ID!): String!
   }
 
   type Subscription {

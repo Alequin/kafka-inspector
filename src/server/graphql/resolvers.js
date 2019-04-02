@@ -8,7 +8,8 @@ const resolvers = {
     }
   },
   Mutation: {
-    addCluster: require("./resolvers/add-cluster-resolver")
+    addCluster: require("./resolvers/add-cluster-resolver"),
+    deleteCluster: require("./resolvers/delete-cluster-resolver")
   },
   Query: {
     storedClusters: require("./resolvers/stored-clusters-resolver"),
