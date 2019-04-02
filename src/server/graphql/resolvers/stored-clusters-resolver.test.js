@@ -3,10 +3,6 @@ const runQuery = require("server-common/database/run-query");
 
 const storedClusterResolver = require("./stored-clusters-resolver");
 
-const mockArgs = {
-  kafkaBrokers: ["broker1:9092", "broker2:9092", "broker3:9092"]
-};
-
 describe("storedClusterResolver", () => {
   let db = null;
 

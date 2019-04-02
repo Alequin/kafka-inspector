@@ -1,4 +1,3 @@
-const { map } = require("lodash");
 const mockDescribeGroups = require("mock-test-data/kafka-node/mock-describe-groups");
 jest.mock("server-common/kafka/access-global-kafka-connections");
 const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
