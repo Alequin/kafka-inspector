@@ -2,10 +2,10 @@ const runQuery = require("../run-query");
 
 const addCluster = async () => {
   const clusters = await runQuery(`SELECT * FROM clusters`);
-  return clusters.map(({ id, brokers }) => {
+  return clusters.map(cluster => {
     return {
-      id,
-      brokers: brokers.split(",")
+      ...cluster,
+      brokers: cluster.brokers.split(",")
     };
   });
 };

@@ -1,4 +1,5 @@
 CREATE TABLE clusters (
   id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
   brokers TEXT NOT NULL
 );

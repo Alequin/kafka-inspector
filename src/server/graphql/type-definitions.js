@@ -35,7 +35,7 @@ const typeDefs = `
   }
 
   type Mutation {
-    addCluster(kafkaBrokers: [String!]!): String!
+    addCluster(name: String! kafkaBrokers: [String!]!): String!
     deleteCluster(clusterRowId: ID!): String!
   }
 

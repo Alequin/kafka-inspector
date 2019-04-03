@@ -16,14 +16,13 @@ describe("deleteClusterById", () => {
 
   it("Deletes a kafka cluster", async () => {
     // Manually insert cluster to test with
-    await runQuery(`INSERT INTO clusters (brokers) VALUES (?)`, [
+    await runQuery(`INSERT INTO clusters (name, brokers) VALUES (?, ?)`, [
+      "cluster name",
       "broker1:9092,broker2:9092,broker3:9092"
     ]);
 
     // Check if inserting cluster worked
-    expect(await runQuery("SELECT * FROM clusters")).toEqual([
-      { brokers: "broker1:9092,broker2:9092,broker3:9092", id: 1 }
-    ]);
+    expect(await runQuery("SELECT * FROM clusters")).toHaveLength(1);
 
     // Delete the cluster
     await deleteClusterById(1);

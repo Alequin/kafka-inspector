@@ -7,6 +7,7 @@ const tcpPing = require("tcp-ping");
 
 const addClusterResolver = require("./add-cluster-resolver");
 const mockArgs = {
+  name: "cool cluster",
   kafkaBrokers: ["broker1:9092", "broker2:9092", "broker3:9092"]
 };
 
@@ -32,7 +33,11 @@ describe("addClusterResolver", () => {
     await addClusterResolver({}, mockArgs);
 
     const expected = [
-      { id: 1, brokers: "broker1:9092,broker2:9092,broker3:9092" }
+      {
+        id: 1,
+        name: "cool cluster",
+        brokers: "broker1:9092,broker2:9092,broker3:9092"
+      }
     ];
     const actual = await runQuery("SELECT * FROM clusters");
     expect(actual).toEqual(expected);

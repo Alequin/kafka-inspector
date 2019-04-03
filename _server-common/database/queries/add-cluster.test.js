@@ -15,10 +15,18 @@ describe("addCluster", () => {
   });
 
   it("Adds a kafka cluster", async () => {
-    await addCluster(["broker1:9092", "broker2:9092", "broker3:9092"]);
+    await addCluster("cool cluster", [
+      "broker1:9092",
+      "broker2:9092",
+      "broker3:9092"
+    ]);
 
     const expected = [
-      { id: 1, brokers: "broker1:9092,broker2:9092,broker3:9092" }
+      {
+        id: 1,
+        name: "cool cluster",
+        brokers: "broker1:9092,broker2:9092,broker3:9092"
+      }
     ];
     const actual = await runQuery("SELECT * FROM clusters");
     expect(actual).toEqual(expected);
