@@ -15,6 +15,8 @@ const messageProcessor = (subscriptionKey, conditions) => {
   const messageQueue = [];
 
   return (message, consumer) => {
+    console.log("message", matchingMessagesCount, rejectedMessagesCount);
+
     const messageMatchesConditions =
       !conditions || checkMessageAgainstConditions(message, conditions);
 
