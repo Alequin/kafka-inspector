@@ -27,9 +27,10 @@ const transformToTopicList = flow(
 );
 
 const listTopics = async kafkaConnectionConfig => {
-  return fetchBrokerDetailsAndTopicNames(kafkaConnectionConfig).then(
-    transformToTopicList
+  const topicList = await fetchBrokerDetailsAndTopicNames(
+    kafkaConnectionConfig
   );
+  return transformToTopicList(topicList);
 };
 
 module.exports = listTopics;

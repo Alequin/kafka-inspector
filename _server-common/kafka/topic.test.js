@@ -1,22 +1,11 @@
 const { cloneDeep, isError } = require("lodash");
 const mockTopics = require("mock-test-data/data/mock-topics");
 const mockGetTopicMetadata = require("mock-test-data/kafkajs/mock-get-topic-metadata");
-jest.mock("./access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
-
-accessGlobalKafkaConnections.mockReturnValue(
-  mockAccessGlobalKafkaConnectionsImp()
-);
 
 const topic = require("./topic");
 
 describe.skip("topic", () => {
   it("Return details on the requested topic", async () => {
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp()
-    );
-
     const expected = {
       name: mockTopics.topic1,
       partitions: [
