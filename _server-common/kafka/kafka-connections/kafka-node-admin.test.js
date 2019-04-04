@@ -21,7 +21,9 @@ describe("kafkaNodeAdmin", () => {
     expect(kafkaNode.KafkaClient).toBeCalledTimes(1);
     expect(kafkaNode.Admin).toBeCalledTimes(1);
 
-    expect(kafkaNode.KafkaClient).toBeCalledWith("broker1:9092,broker2:9092");
+    expect(kafkaNode.KafkaClient).toBeCalledWith({
+      kafkaHost: "broker1:9092,broker2:9092"
+    });
     expect(kafkaNode.Admin).toBeCalledWith(new MockClient());
     expect(actual).toEqual(new MockAdmin());
   });
