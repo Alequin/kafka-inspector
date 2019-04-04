@@ -1,28 +1,45 @@
-const mockBrokers = require("mock-test-data/data/mock-brokers");
+const mockBrokers = {
+  "1": { nodeId: 1, host: "broker1", port: 9092 },
+  "2": { nodeId: 2, host: "broker2", port: 9092 },
+  "3": { nodeId: 3, host: "broker3", port: 9092 }
+};
+const metadata = {};
 
-jest.mock("./access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
+const listTopicsResponse = [
+  mockBrokers,
+  { metadata, clusterMetadata: { controllerId: 2 } }
+];
+
+jest.mock("./utils/fetch-broker-details-and-topics-names");
+const fetchBrokerDetailsAndTopicNames = require("./utils/fetch-broker-details-and-topics-names");
+fetchBrokerDetailsAndTopicNames.mockResolvedValue(listTopicsResponse);
 
 const brokers = require("./brokers");
 
-describe.skip("brokers", () => {
-  it("Should return a list of all brokers and the id of the current controller", async () => {
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp()
-    );
+describe("brokers", () => {
+  it("Should return a list of all brokers and identify the current controller", async () => {
+    const expected = [
+      {
+        id: 1,
+        host: "broker1",
+        port: 9092,
+        isController: false
+      },
+      {
+        id: 2,
+        host: "broker2",
+        port: 9092,
+        isController: true
+      },
+      {
+        id: 3,
+        host: "broker3",
+        port: 9092,
+        isController: false
+      }
+    ];
 
-    const toExpectedBrokerObjShape = obj => ({
-      ...obj,
-      id: obj.nodeId,
-      isController: obj.nodeId === 2
-    });
-
-    const actual = await brokers({ kafkaBrokers: [mockBrokers["1"].host] });
-    expect(actual).toEqual([
-      toExpectedBrokerObjShape(mockBrokers["1"]),
-      toExpectedBrokerObjShape(mockBrokers["2"]),
-      toExpectedBrokerObjShape(mockBrokers["3"])
-    ]);
+    const actual = await brokers({ kafkaBrokers: ["broker1:9092"] });
+    expect(actual).toEqual(expected);
   });
 });

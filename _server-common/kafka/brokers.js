@@ -1,4 +1,4 @@
-const { map, omitBy } = require("lodash");
+const { map, omit } = require("lodash");
 const fetchBrokerDetailsAndTopicNames = require("./utils/fetch-broker-details-and-topics-names");
 
 const transformToBrokerList = response => {
@@ -7,8 +7,9 @@ const transformToBrokerList = response => {
 
   return map(brokerList, broker => {
     const id = broker.nodeId;
+
     return {
-      ...omitBy(broker, ["nodeId"]),
+      ...omit(broker, ["nodeId"]),
       id,
       isController: id === controllerId
     };
