@@ -1,9 +1,7 @@
-const kafkaNode = require("kafka-node");
+const kafkaNodeAdmin = require("../kafka-connections/kafka-node-admin");
 
-const fetchBrokerDetailsAndTopicNames = async ({ kafkaBrokers }) => {
-  const client = new kafkaNode.KafkaClient(kafkaBrokers.join(","));
-  const admin = new kafkaNode.Admin(client);
-
+const fetchBrokerDetailsAndTopicNames = async kafkaConfigSettings => {
+  const admin = kafkaNodeAdmin(kafkaConfigSettings);
   return new Promise((resolve, reject) => {
     admin.listTopics((error, response) => {
       error ? reject(error) : resolve(response);

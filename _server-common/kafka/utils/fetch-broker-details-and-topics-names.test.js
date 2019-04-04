@@ -26,24 +26,18 @@ const listTopicsResponse = [
   { metadata, clusterMetadata: { controllerId: 2 } }
 ];
 
-jest.mock("kafka-node");
-const kafkaNode = require("kafka-node");
-
-const mockClient = jest.fn().mockImplementation();
-const mockAdmin = jest.fn();
-
-kafkaNode.KafkaClient = mockClient;
-kafkaNode.Admin = mockAdmin;
+jest.mock("../kafka-connections/kafka-node-admin");
+const kafkaNodeAdmin = require("../kafka-connections/kafka-node-admin");
 
 const fetchBrokerDetailsAndTopicNames = require("./fetch-broker-details-and-topics-names");
 
 describe("fetchBrokerDetailsAndTopicNames", () => {
   it("Should resolve the response from listTopics", async () => {
-    mockAdmin.mockImplementation(function() {
-      this.listTopics = callback => {
+    kafkaNodeAdmin.mockReturnValue({
+      listTopics: callback => {
         const error = false;
         callback(error, listTopicsResponse);
-      };
+      }
     });
 
     const expected = listTopicsResponse;
@@ -55,11 +49,11 @@ describe("fetchBrokerDetailsAndTopicNames", () => {
 
   it("Should throw an error if listTopics fails", done => {
     const mockErrorMessage = "list topics error message";
-    mockAdmin.mockImplementation(function() {
-      this.listTopics = callback => {
+    kafkaNodeAdmin.mockReturnValue({
+      listTopics: callback => {
         const error = mockErrorMessage;
         callback(error, listTopicsResponse);
-      };
+      }
     });
 
     fetchBrokerDetailsAndTopicNames({
