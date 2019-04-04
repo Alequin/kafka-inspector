@@ -5,7 +5,7 @@ const accessGlobalKafkaConnections = require("./access-global-kafka-connections"
 
 const listConsumerGroups = require("./list-consumer-groups");
 
-describe("listConsumerGroups", () => {
+describe.skip("listConsumerGroups", () => {
   it("Should return a list of all consumer groups", async () => {
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp()

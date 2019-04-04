@@ -11,7 +11,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 
 const topic = require("./topic");
 
-describe("topic", () => {
+describe.skip("topic", () => {
   it("Return details on the requested topic", async () => {
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp()

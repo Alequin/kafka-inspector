@@ -17,7 +17,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 
 const topicsResolver = require("./topics-resolver");
 
-describe("topicsResolver", () => {
+describe.skip("topicsResolver", () => {
   const mockContext = { kafkaConnectionConfig: { kafkaBroker: [] } };
 
   it("makes a request for the cached list of topics and returns the value unmodified", async () => {

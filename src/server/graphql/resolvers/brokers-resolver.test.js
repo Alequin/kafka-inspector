@@ -7,7 +7,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 
 const brokersResolver = require("./brokers-resolver");
 
-describe("brokersResolver", () => {
+describe.skip("brokersResolver", () => {
   it("Makes a request for the broker list and returns the response unmodified", async () => {
     const mockKafkaConnectionConfig = { kafkaBrokers: ["broker"] };
     const mockContext = { kafkaConnectionConfig: mockKafkaConnectionConfig };

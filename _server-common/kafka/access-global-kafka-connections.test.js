@@ -8,7 +8,7 @@ newClusterConnection.mockReturnValue(mockKafkaConnectionObject);
 
 const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
 
-describe("accessGlobalKafkaConnections", () => {
+describe.skip("accessGlobalKafkaConnections", () => {
   beforeEach(() => {
     newClusterConnection.mockClear();
   });

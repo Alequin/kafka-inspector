@@ -47,7 +47,7 @@ jest.mock("kafkajs", () => {
 
 const newClusterConnection = require("./new-cluster-connection");
 
-describe("newClusterConnection", () => {
+describe.skip("newClusterConnection", () => {
   it("Should open new connections to kafka", () => {
     const actual = newClusterConnection(["broker1:9092"]);
 

@@ -5,7 +5,7 @@ const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-
 const accessGlobalKafkaConnections = require("server-common/kafka/access-global-kafka-connections");
 const offsetsResolver = require("./offsets-resolver");
 
-describe("offsetsResolver", () => {
+describe.skip("offsetsResolver", () => {
   it("Gather and returns a summary of offset details from the requested consumer group", async () => {
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp()

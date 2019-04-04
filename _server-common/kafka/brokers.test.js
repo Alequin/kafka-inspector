@@ -6,7 +6,7 @@ const accessGlobalKafkaConnections = require("./access-global-kafka-connections"
 
 const brokers = require("./brokers");
 
-describe("brokers", () => {
+describe.skip("brokers", () => {
   it("Should return a list of all brokers and the id of the current controller", async () => {
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp()

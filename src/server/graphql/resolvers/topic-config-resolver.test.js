@@ -9,7 +9,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 
 const topicsConfigResolver = require("./topic-config-resolver");
 
-describe("topicsConfigResolver", () => {
+describe.skip("topicsConfigResolver", () => {
   const mockContext = { kafkaConnectionConfig: { kafkaBroker: [] } };
 
   it("Returns a list of config values", async () => {

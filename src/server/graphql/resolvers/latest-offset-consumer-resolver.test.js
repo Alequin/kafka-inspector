@@ -28,7 +28,7 @@ const accessGlobalKafkaConnections = require("server-common/kafka/access-global-
 
 const latestOffsetConsumerResolver = require("./latest-offset-consumer-resolver");
 
-describe("latestOffsetConsumerResolver", () => {
+describe.skip("latestOffsetConsumerResolver", () => {
   jest.useFakeTimers();
 
   const mockBrokers = ["broker1", "broker2"];
@@ -42,7 +42,7 @@ describe("latestOffsetConsumerResolver", () => {
     });
   });
 
-  describe("when there is a matching subscription key exists", () => {
+  describe.skip("when there is a matching subscription key exists", () => {
     const mockConsumerGroupConstructor = jest.fn();
 
     beforeEach(() => {
@@ -77,7 +77,7 @@ describe("latestOffsetConsumerResolver", () => {
     });
   });
 
-  describe("when there is not a matching subscription key exists", () => {
+  describe.skip("when there is not a matching subscription key exists", () => {
     const mockConsumerGroup = jest.fn();
     const mockCloseConsumerGroup = jest.fn();
 

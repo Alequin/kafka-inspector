@@ -37,7 +37,7 @@ jest.mock("kafka-node", () => {
 
 const kafkaNode = require("./kafka-node");
 
-describe("kafkaNode", () => {
+describe.skip("kafkaNode", () => {
   it("Initialises the client with the given brokers", () => {
     const mockBroker = ["broker1", "broker2"];
     const testConnection = kafkaNode(mockBroker);

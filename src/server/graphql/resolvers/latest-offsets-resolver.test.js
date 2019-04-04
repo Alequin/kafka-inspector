@@ -17,7 +17,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 
 const latestOffsetsResolver = require("./latest-offsets-resolver");
 
-describe("latestOffsetsResolver", () => {
+describe.skip("latestOffsetsResolver", () => {
   const mockContext = { kafkaConnectionConfig: { kafkaBroker: [] } };
 
   beforeEach(() => {

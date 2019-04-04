@@ -3,7 +3,7 @@ const mockFetchOffsets = require("mock-test-data/kafkajs/mock-fetch-offsets");
 
 const aggregateOffsetDetails = require("./aggregate-offset-details");
 
-describe("aggregateOffsetDetails", () => {
+describe.skip("aggregateOffsetDetails", () => {
   const mockLatestOffsets = mockTopicOffsets;
   const mockCommittedOffsets = mockFetchOffsets.transformedResponse;
 

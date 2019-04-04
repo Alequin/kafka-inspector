@@ -25,7 +25,7 @@ const kafkaJs = require("./kafka-js");
 
 const mockBroker = ["broker1:9092", "broker2:9092"];
 
-describe("kafkaJs", () => {
+describe.skip("kafkaJs", () => {
   it("Creates both a kafkajs client and admin", () => {
     const testConnection = kafkaJs(mockBroker);
     testConnection();

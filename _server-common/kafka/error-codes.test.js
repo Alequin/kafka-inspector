@@ -1,7 +1,7 @@
 const { identifyError, failure } = require("./error-codes");
 
-describe("errorCodes", () => {
-  describe("failure", () => {
+describe.skip("errorCodes", () => {
+  describe.skip("failure", () => {
     const SUCCESS_CODE = 0;
 
     it("Returns false when given the success code", () => {
@@ -16,7 +16,7 @@ describe("errorCodes", () => {
     });
   });
 
-  describe("identifyError", () => {
+  describe.skip("identifyError", () => {
     it("Returns details on the given error code", () => {
       const successMock = {
         type: "NONE",

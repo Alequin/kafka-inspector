@@ -1,6 +1,6 @@
 const clusterResolver = require("./cluster-resolver");
 
-describe("clusterResolver", () => {
+describe.skip("clusterResolver", () => {
   it("Should set the given kafkaBrokers in the context", () => {
     const args = {
       kafkaBrokers: "broker1,broker2,broker3"

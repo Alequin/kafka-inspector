@@ -1,5 +1,6 @@
 import React from "react";
 import { Query } from "react-apollo";
+import styled from "styled-components";
 import gql from "graphql-tag";
 
 const STORED_CLUSTERS_QUERY = gql`
@@ -22,6 +23,10 @@ const ClusterSelect = () => {
       }}
     </Query>
   );
+};
+
+const Cluster = ({ name, brokers }) => {
+  return <section />;
 };
 
 export default ClusterSelect;

@@ -8,7 +8,7 @@ const accessGlobalKafkaConnections = require("./access-global-kafka-connections"
 
 const fetchLatestOffsets = require("./fetch-latest-offsets");
 
-describe("fetchLatestOffsets", () => {
+describe.skip("fetchLatestOffsets", () => {
   let mockFetchLatestOffsets = null;
 
   beforeEach(() => {

@@ -11,7 +11,7 @@ const mockArgs = {
   kafkaBrokers: ["broker1:9092", "broker2:9092", "broker3:9092"]
 };
 
-describe("addClusterResolver", () => {
+describe.skip("addClusterResolver", () => {
   let db = null;
 
   beforeEach(async () => {

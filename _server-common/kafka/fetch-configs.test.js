@@ -7,8 +7,8 @@ const { topicConfig, RESOURCE_TYPES } = require("./fetch-configs");
 
 const mockTopic = "topic-name";
 
-describe("fetchConfigs", () => {
-  describe("topicConfig", () => {
+describe.skip("fetchConfigs", () => {
+  describe.skip("topicConfig", () => {
     let mockDescribeConfigs = null;
 
     beforeEach(() => {

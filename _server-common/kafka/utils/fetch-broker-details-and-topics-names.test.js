@@ -6,7 +6,7 @@ const accessGlobalKafkaConnections = require("../access-global-kafka-connections
 
 const fetchBrokerDetailsAndTopicNames = require("./fetch-broker-details-and-topics-names");
 
-describe("fetchBrokerDetailsAndTopicNames", () => {
+describe.skip("fetchBrokerDetailsAndTopicNames", () => {
   it("Should resolve the response from listTopics", async () => {
     accessGlobalKafkaConnections.mockReturnValue(
       mockAccessGlobalKafkaConnectionsImp()

@@ -1,7 +1,7 @@
 const simpleCache = require("./simple-cache");
 const { milliseconds } = require("server-common/time-to-milliseconds");
 
-describe("simpleCache", () => {
+describe.skip("simpleCache", () => {
   const mockResponse = {
     food: "Eggs"
   };

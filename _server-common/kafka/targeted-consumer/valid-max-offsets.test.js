@@ -8,7 +8,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 
 const validMaxOffsets = require("./valid-max-offsets");
 
-describe("validMaxOffsets", () => {
+describe.skip("validMaxOffsets", () => {
   const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
 
   it("Returns the requested max offset when it is less than all partitions latest offsets", async () => {

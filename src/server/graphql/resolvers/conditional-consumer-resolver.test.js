@@ -41,7 +41,7 @@ const { EQUAL_TO } = require("../constants/comparator-options");
 
 const conditionalConsumerResolver = require("./conditional-consumer-resolver");
 
-describe("conditionalConsumerResolver", () => {
+describe.skip("conditionalConsumerResolver", () => {
   jest.useFakeTimers();
   const mockTopic = "topic";
   const mockPartitions = [0];

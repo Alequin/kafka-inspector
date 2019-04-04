@@ -40,7 +40,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 
 const targetedConsumer = require("./targeted-consumer");
 
-describe("targetedConsumer", () => {
+describe.skip("targetedConsumer", () => {
   beforeEach(() => {
     mockCloseConsumer.mockReset();
     mockRemoveTopics.mockReset();

@@ -13,7 +13,7 @@ accessGlobalKafkaConnections.mockReturnValue(
 
 const consumer = require("./consumer");
 
-describe("consumer", () => {
+describe.skip("consumer", () => {
   it("Returns a kafkaNode consumer", () => {
     const toConsumerFrom = {};
     const actual = consumer(toConsumerFrom, {});
