@@ -27,4 +27,12 @@ describe("kafkaNodeAdmin", () => {
     expect(kafkaNode.Admin).toBeCalledWith(new MockClient());
     expect(actual).toEqual(new MockAdmin());
   });
+
+  it("Throws an error if at least one of the broker formats is wrong", () => {
+    expect(() =>
+      kafkaNodeAdmin({
+        kafkaBrokers: ["broker1:9092", "broker2"]
+      })
+    ).toThrow();
+  });
 });
