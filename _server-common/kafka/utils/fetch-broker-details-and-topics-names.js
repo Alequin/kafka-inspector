@@ -1,10 +1,11 @@
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+const kafkaNode = require("kafka-node");
 
-const fetchBrokerDetailsAndTopicNames = async kafkaConnectionConfig => {
-  const { kafkaNode } = accessGlobalKafkaConnections(kafkaConnectionConfig);
+const fetchBrokerDetailsAndTopicNames = async ({ kafkaBrokers }) => {
+  const client = new kafkaNode.KafkaClient(kafkaBrokers.join(","));
+  const admin = new kafkaNode.Admin(client);
 
   return new Promise((resolve, reject) => {
-    kafkaNode.admin.listTopics((error, response) => {
+    admin.listTopics((error, response) => {
       error ? reject(error) : resolve(response);
     });
   });

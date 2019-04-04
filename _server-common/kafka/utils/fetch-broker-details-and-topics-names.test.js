@@ -1,37 +1,70 @@
-const mockListTopics = require("mock-test-data/kafka-node/mock-list-topics");
+const mockPartitionData = (topicName, partition) => {
+  return {
+    topic: topicName,
+    partition,
+    leader: 1,
+    replicas: [3, 1, 2],
+    isr: [1, 3, 2]
+  };
+};
 
-jest.mock("../access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+const metadata = {
+  topic1: {
+    "0": mockPartitionData("topic1", 0),
+    "1": mockPartitionData("topic1", 1)
+  },
+  privateTopic1: {
+    "0": mockPartitionData("_privateTopic1", 0),
+    "1": mockPartitionData("_privateTopic1", 1)
+  }
+};
+
+const listTopicsResponse = [
+  {
+    "1": { nodeId: 1, host: "broker1", port: 9092 }
+  },
+  { metadata, clusterMetadata: { controllerId: 2 } }
+];
+
+jest.mock("kafka-node");
+const kafkaNode = require("kafka-node");
+
+const mockClient = jest.fn().mockImplementation();
+const mockAdmin = jest.fn();
+
+kafkaNode.KafkaClient = mockClient;
+kafkaNode.Admin = mockAdmin;
 
 const fetchBrokerDetailsAndTopicNames = require("./fetch-broker-details-and-topics-names");
 
-describe.skip("fetchBrokerDetailsAndTopicNames", () => {
+describe("fetchBrokerDetailsAndTopicNames", () => {
   it("Should resolve the response from listTopics", async () => {
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp()
-    );
+    mockAdmin.mockImplementation(function() {
+      this.listTopics = callback => {
+        const error = false;
+        callback(error, listTopicsResponse);
+      };
+    });
 
-    const expected = mockListTopics.response;
-    const actual = await fetchBrokerDetailsAndTopicNames();
+    const expected = listTopicsResponse;
+    const actual = await fetchBrokerDetailsAndTopicNames({
+      kafkaBrokers: ["broker1:9092"]
+    });
     expect(actual).toBe(expected);
   });
 
   it("Should throw an error if listTopics fails", done => {
     const mockErrorMessage = "list topics error message";
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp([
-        {
-          path: "kafkaNode.admin.listTopics",
-          override: callback => {
-            const error = mockErrorMessage;
-            callback(error, null);
-          }
-        }
-      ])
-    );
+    mockAdmin.mockImplementation(function() {
+      this.listTopics = callback => {
+        const error = mockErrorMessage;
+        callback(error, listTopicsResponse);
+      };
+    });
 
-    fetchBrokerDetailsAndTopicNames().catch(error => {
+    fetchBrokerDetailsAndTopicNames({
+      kafkaBrokers: ["broker1:9092"]
+    }).catch(error => {
       expect(error).toBe(mockErrorMessage);
       done();
     });
