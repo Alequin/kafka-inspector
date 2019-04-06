@@ -31,7 +31,7 @@ kafkaNodeConsumer.mockImplementation(
 
 const targetedConsumer = require("./targeted-consumer");
 
-describe.skip("targetedConsumer", () => {
+describe("targetedConsumer", () => {
   beforeEach(() => {
     mockCloseConsumer.mockClear();
     mockRemoveTopics.mockClear();
@@ -95,7 +95,7 @@ describe.skip("targetedConsumer", () => {
     expect(callback).toHaveBeenCalledTimes(2);
   });
 
-  it.only(`Changes to the next partition when the max offset has been reached`, async () => {
+  it(`Changes to the next partition when the max offset has been reached`, async () => {
     const mockTopicOptions = {
       topicName: "topic1",
       partitionsToConsumerFrom: [0, 1],
@@ -123,7 +123,7 @@ describe.skip("targetedConsumer", () => {
     expect(mockAddTopics).toHaveBeenCalledTimes(1);
   });
 
-  it.only(`Negative min offsets should default to 0`, async () => {
+  it(`Negative min offsets should default to 0`, async () => {
     const mockTopicOptions = {
       topicName: "topic1",
       partitionsToConsumerFrom: [0, 1],
@@ -158,7 +158,7 @@ describe.skip("targetedConsumer", () => {
     expect(actualMinOffset2).toBe(expectedMinOffset);
   });
 
-  it.only(`Defaults the requested max offset to the last messages offset if it is to high`, async () => {
+  it(`Defaults the requested max offset to the last messages offset if it is to high`, async () => {
     const mockTopicOptions = {
       topicName: "topic1",
       partitionsToConsumerFrom: [0],

@@ -66,4 +66,16 @@ describe("kafkaNodeAdmin", () => {
       expect(mockCloseFunction).toHaveBeenCalledTimes(1);
     });
   });
+
+  it("If the callback calls the close function it will not be called again when the handler finishes", async () => {
+    const mockConnection = {};
+    await handleKafkaConnectionCallback(
+      mockConnection,
+      mockCloseFunction,
+      async (_connection, closeConnection) => {
+        closeConnection();
+      }
+    );
+    expect(mockCloseFunction).toHaveBeenCalledTimes(1);
+  });
 });
