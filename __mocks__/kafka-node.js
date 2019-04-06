@@ -64,7 +64,8 @@ const kafkaNode = {
       };
       callback(error, offsetDetails);
     };
-  })
+  }),
+  Consumer: jest.fn()
 };
 
 module.exports = kafkaNode;

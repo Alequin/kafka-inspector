@@ -1,4 +1,3 @@
-const { isError } = require("lodash");
 jest.mock("kafka-node");
 const kafkaNode = require("kafka-node");
 
