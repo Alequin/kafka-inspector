@@ -11,7 +11,10 @@ const kafkaNodeConsumer = (kafkaConnectionConfig, options, callback) => {
     { ...options }
   );
 
-  const closeConnection = client.close;
+  const closeConnection = () => {
+    consumer.close();
+    client.close();
+  };
   return handleKafkaConnectionCallback(consumer, closeConnection, callback);
 };
 

@@ -5,8 +5,9 @@ const mockCloseClient = jest.fn();
 const MockClient = function() {
   this.close = mockCloseClient;
 };
+const mockCloseConsumer = jest.fn();
 const MockConsumer = function() {
-  return "consumerId";
+  this.close = mockCloseConsumer;
 };
 
 kafkaNode.KafkaClient.mockImplementation(MockClient);
@@ -27,6 +28,7 @@ describe("kafkaNodeConsumer", () => {
     kafkaNode.KafkaClient.mockClear();
     kafkaNode.Admin.mockClear();
     mockCloseClient.mockClear();
+    mockCloseConsumer.mockClear();
   });
 
   it("Connects to kafka and calls the callback with the a preparedConsumer", async () => {
@@ -57,6 +59,7 @@ describe("kafkaNodeConsumer", () => {
       consumerOptions,
       (mockKafkaConnectionConfig, () => {})
     );
+    expect(mockCloseConsumer).toHaveBeenCalledTimes(1);
     expect(mockCloseClient).toHaveBeenCalledTimes(1);
   });
 });

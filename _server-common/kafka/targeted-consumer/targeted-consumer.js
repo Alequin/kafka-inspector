@@ -1,5 +1,5 @@
 const { first } = require("lodash");
-const consumer = require("./consumer");
+const kafkaNodeConsumer = require("../kafka-connections/kafka-node-consumer");
 const validMaxOffsets = require("./valid-max-offsets");
 const removeTopicFromConsumer = require("./remove-topic-from-consumer");
 const addNewTopicToConsumer = require("./add-new-topic-to-consumer");
@@ -41,7 +41,6 @@ const consumeMessage = (
             startingOffset: minOffset
           });
         } else {
-          consumer.close();
           resolve();
         }
       }
@@ -63,28 +62,26 @@ const targetedConsumer = async (
 ) => {
   const minOffset = validMinOffset(requestedMinOffset);
 
-  const firstPartitionToConsumeFrom = [
-    {
-      topic: topicName,
-      partition: first(partitionsToConsumerFrom),
-      offset: minOffset
-    }
-  ];
-  const consumerToUse = consumer(
-    firstPartitionToConsumeFrom,
-    kafkaConnectionConfig
-  );
-
   const maxOffsets = await validMaxOffsets(
     topicName,
     requestedMaxOffset,
     kafkaConnectionConfig
   );
 
-  return await consumeMessage(
-    consumerToUse,
-    { topicName, minOffset, maxOffsets, partitionsToConsumerFrom },
-    onMessageConsumedCallback
+  return await kafkaNodeConsumer(
+    kafkaConnectionConfig,
+    {
+      topicsToConsumerFrom: [topicName],
+      partition: first(partitionsToConsumerFrom),
+      offset: minOffset
+    },
+    consumer => {
+      return consumeMessage(
+        consumer,
+        { topicName, minOffset, maxOffsets, partitionsToConsumerFrom },
+        onMessageConsumedCallback
+      );
+    }
   );
 };
 

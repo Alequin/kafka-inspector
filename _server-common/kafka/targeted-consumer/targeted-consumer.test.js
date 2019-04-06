@@ -1,56 +1,46 @@
-const mockTopics = require("mock-test-data/data/mock-topics");
-jest.mock("../access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+jest.mock("../kafka-connections/kafka-node-consumer");
+const kafkaNodeConsumer = require("../kafka-connections/kafka-node-consumer");
 
-const mockConsumerFunc = jest.fn();
 const mockOnConsumerMessage = jest.fn();
 const mockCloseConsumer = jest.fn();
 const mockRemoveTopics = jest.fn();
 const mockAddTopics = jest.fn();
 
-accessGlobalKafkaConnections.mockReturnValue(
-  mockAccessGlobalKafkaConnectionsImp([
+const mockConsumer = {
+  on: mockOnConsumerMessage,
+  removeTopics: mockRemoveTopics.mockImplementation((_topics, callback) => {
+    const error = false;
+    callback(error);
+  }),
+  addTopics: mockAddTopics.mockImplementation((_topics, callback) => {
+    const error = false;
+    callback(error);
+  }),
+  payloads: [
     {
-      path: "kafkaNode.consumer",
-      override: mockConsumerFunc.mockImplementation(() => {
-        return {
-          on: mockOnConsumerMessage,
-          removeTopics: mockRemoveTopics.mockImplementation(
-            (_topics, callback) => {
-              const error = false;
-              callback(error);
-            }
-          ),
-          addTopics: mockAddTopics.mockImplementation((_topics, callback) => {
-            const error = false;
-            callback(error);
-          }),
-          close: mockCloseConsumer,
-          payloads: [
-            {
-              partition: 0
-            }
-          ]
-        };
-      })
+      partition: 0
     }
-  ])
+  ]
+};
+
+kafkaNodeConsumer.mockImplementation(
+  (_kafkaConnectionConfig, _options, callback) => {
+    return callback(mockConsumer);
+  }
 );
 
 const targetedConsumer = require("./targeted-consumer");
 
 describe.skip("targetedConsumer", () => {
   beforeEach(() => {
-    mockCloseConsumer.mockReset();
-    mockRemoveTopics.mockReset();
-    mockAddTopics.mockReset();
-    mockConsumerFunc.mockClear();
+    mockCloseConsumer.mockClear();
+    mockRemoveTopics.mockClear();
+    mockAddTopics.mockClear();
   });
 
   it("Passes consumed messages to the given callback", async () => {
     const mockTopicOptions = {
-      topicName: mockTopics.topic1,
+      topicName: "topic1",
       partitionsToConsumerFrom: [0],
       offsetRange: { min: 0, max: 10 }
     };
@@ -76,10 +66,10 @@ describe.skip("targetedConsumer", () => {
     );
   });
 
-  it(`Only calls the given callback as long a the message offset 
-  in below or equal to the max offset range`, async () => {
+  it(`Only calls the given callback as long the message offset 
+  is below or equal to the max offset range`, async () => {
     const mockTopicOptions = {
-      topicName: mockTopics.topic1,
+      topicName: "topic1",
       partitionsToConsumerFrom: [0],
       offsetRange: { min: 0, max: 10 }
     };
@@ -105,27 +95,9 @@ describe.skip("targetedConsumer", () => {
     expect(callback).toHaveBeenCalledTimes(2);
   });
 
-  it(`Closes the consumer when done`, async () => {
+  it.only(`Changes to the next partition when the max offset has been reached`, async () => {
     const mockTopicOptions = {
-      topicName: mockTopics.topic1,
-      partitionsToConsumerFrom: [0],
-      offsetRange: { min: 0, max: 10 }
-    };
-    const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
-    const callback = jest.fn();
-
-    await targetedConsumer(
-      mockTopicOptions,
-      mockKafkaConnectionConfig,
-      callback
-    );
-
-    expect(mockCloseConsumer).toHaveBeenCalledTimes(1);
-  });
-
-  it(`Changes to the next partition when the max offset has been reached`, async () => {
-    const mockTopicOptions = {
-      topicName: mockTopics.topic1,
+      topicName: "topic1",
       partitionsToConsumerFrom: [0, 1],
       offsetRange: { min: 0, max: 10 }
     };
@@ -151,9 +123,9 @@ describe.skip("targetedConsumer", () => {
     expect(mockAddTopics).toHaveBeenCalledTimes(1);
   });
 
-  it(`Negative min offsets should default to 0`, async () => {
+  it.only(`Negative min offsets should default to 0`, async () => {
     const mockTopicOptions = {
-      topicName: mockTopics.topic1,
+      topicName: "topic1",
       partitionsToConsumerFrom: [0, 1],
       offsetRange: { min: -999999, max: 10 }
     };
@@ -178,17 +150,17 @@ describe.skip("targetedConsumer", () => {
     const expectedMinOffset = 0;
 
     // The offset the consumer is instantiated with
-    const actualMinOffset1 = mockConsumerFunc.mock.calls[0][0][0].offset;
-    expect(actualMinOffset1).toBe(expectedMinOffset);
+    const actualMinOffset1 = kafkaNodeConsumer.mock.calls[0][1].offset;
+    expect(actualMinOffset1).toBe(0);
 
     // The offset new partitions are instructed to start from
     const actualMinOffset2 = mockAddTopics.mock.calls[0][0][0].offset;
     expect(actualMinOffset2).toBe(expectedMinOffset);
   });
 
-  it(`Defaults the requested max offset to the last messages offset if it is to high`, async () => {
+  it.only(`Defaults the requested max offset to the last messages offset if it is to high`, async () => {
     const mockTopicOptions = {
-      topicName: mockTopics.topic1,
+      topicName: "topic1",
       partitionsToConsumerFrom: [0],
       offsetRange: { min: 0, max: 10000 }
     };
@@ -210,7 +182,5 @@ describe.skip("targetedConsumer", () => {
     // Should pass the consumed message to the callback
     // as it is equal to / less than the maxOffset
     expect(callback).toHaveBeenCalledTimes(1);
-    // Close is called as the max offset has been set to 9, the last message
-    expect(mockCloseConsumer).toHaveBeenCalled();
   });
 });

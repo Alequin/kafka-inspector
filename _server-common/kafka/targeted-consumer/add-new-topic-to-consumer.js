@@ -1,4 +1,4 @@
-const FROM_REQUESTED_OFFSET = true;
+const START_FROM_REQUESTED_OFFSET = true;
 
 const addNewTopicToConsumer = (
   consumer,
@@ -7,10 +7,10 @@ const addNewTopicToConsumer = (
   return new Promise((resolve, reject) => {
     consumer.addTopics(
       [{ topic: topicName, partition, offset: startingOffset }],
-      (error, added) => {
+      (error, _added) => {
         error ? reject(error) : resolve();
       },
-      FROM_REQUESTED_OFFSET
+      START_FROM_REQUESTED_OFFSET
     );
   });
 };
