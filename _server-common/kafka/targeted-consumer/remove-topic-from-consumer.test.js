@@ -1,6 +1,6 @@
 const removeTopicFromConsumer = require("./remove-topic-from-consumer");
 
-describe.skip("removeTopicFromConsumer", () => {
+describe("removeTopicFromConsumer", () => {
   it("Should attempt to remove topic and resolve without issues when there are no errors", async () => {
     const mockTopicName = "topicName";
     const mockRemoveTopics = jest

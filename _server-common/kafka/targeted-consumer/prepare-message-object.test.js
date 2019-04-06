@@ -1,6 +1,6 @@
 const prepareMessagesObject = require("./prepare-message-object");
 
-describe.skip("prepareMessagesObject", () => {
+describe("prepareMessagesObject", () => {
   it("Creates an object with each property as a partition number and each value an empty array", () => {
     const expected = {
       "0": [],

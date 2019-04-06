@@ -1,6 +1,6 @@
 const addNewTopicToConsumer = require("./add-new-topic-to-consumer");
 
-describe.skip("addNewTopicToConsumer", () => {
+describe("addNewTopicToConsumer", () => {
   it("Should add new topic and resolve without issues when there are no errors", async () => {
     const mockTopicOptions = {
       topicName: "mockTopicName",

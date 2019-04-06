@@ -1,15 +1,9 @@
 const mockTopics = require("mock-test-data/data/mock-topics");
-jest.mock("../access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
-accessGlobalKafkaConnections.mockReturnValue(
-  mockAccessGlobalKafkaConnectionsImp()
-);
 
 const validMaxOffsets = require("./valid-max-offsets");
 
-describe.skip("validMaxOffsets", () => {
-  const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
+describe("validMaxOffsets", () => {
+  const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1:9092"] };
 
   it("Returns the requested max offset when it is less than all partitions latest offsets", async () => {
     const mockRequestedMaxOffset = 2;
