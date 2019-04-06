@@ -60,7 +60,6 @@ describe("kafkaNodeAdmin", () => {
     const kafkaNodeAdmin = useKafkaNode("Admin");
     kafkaNodeAdmin(mockKafkaConnectionConfig, (admin, client) => {
       expect(admin).toEqual(new MockAdmin());
-      expect(client).toEqual(new MockClient());
       done();
     });
   });

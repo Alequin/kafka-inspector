@@ -8,7 +8,7 @@ const useKafkaNode = requestedAspect => {
     const aspectToUse = new kafkaNode[requestedAspect](client);
 
     try {
-      return callback(aspectToUse, client);
+      return callback(aspectToUse);
     } catch (error) {
       throw error;
     } finally {
