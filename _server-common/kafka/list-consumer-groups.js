@@ -1,17 +1,18 @@
-const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
+const kafkaNodeAdmin = require("./kafka-connections/kafka-node-admin");
 
 const mapConsumerGroupsToList = consumerGroupsObject => {
   return Object.keys(consumerGroupsObject);
 };
 
-const listConsumerGroups = async kafkaConnectionConfig => {
-  const { kafkaNode } = accessGlobalKafkaConnections(kafkaConnectionConfig);
-
-  return new Promise((resolve, reject) => {
-    kafkaNode.admin.listGroups((error, response) => {
+const resolveConsumerGroups = admin =>
+  new Promise((resolve, reject) => {
+    admin.listGroups((error, response) => {
       error ? reject(error) : resolve(mapConsumerGroupsToList(response));
     });
   });
+
+const listConsumerGroups = async kafkaConnectionConfig => {
+  return kafkaNodeAdmin(kafkaConnectionConfig, resolveConsumerGroups);
 };
 
 module.exports = listConsumerGroups;

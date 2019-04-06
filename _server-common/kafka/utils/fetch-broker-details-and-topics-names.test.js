@@ -34,12 +34,14 @@ const fetchBrokerDetailsAndTopicNames = require("./fetch-broker-details-and-topi
 describe("fetchBrokerDetailsAndTopicNames", () => {
   it("Should resolve the response from listTopics", async () => {
     kafkaNodeAdmin.mockImplementation((_kafkaConfig, callback) => {
-      return callback({
+      const mockAdmin = {
         listTopics: callback => {
           const error = false;
           callback(error, listTopicsResponse);
         }
-      });
+      };
+
+      return callback(mockAdmin);
     });
 
     const expected = listTopicsResponse;
@@ -52,12 +54,14 @@ describe("fetchBrokerDetailsAndTopicNames", () => {
   it("Should throw an error if listTopics fails", done => {
     const mockErrorMessage = "list topics error message";
     kafkaNodeAdmin.mockImplementation((_kafkaConfig, callback) => {
-      return callback({
+      const mockAdmin = {
         listTopics: callback => {
           const error = mockErrorMessage;
           callback(error, listTopicsResponse);
         }
-      });
+      };
+
+      return callback(mockAdmin);
     });
 
     fetchBrokerDetailsAndTopicNames({
