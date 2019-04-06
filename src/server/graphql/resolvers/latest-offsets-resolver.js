@@ -3,11 +3,11 @@ const fetchLatestOffsetsWithCache = require("server-common/kafka/fetch-latest-of
 const latestOffsetsResolver = async (
   { partitionNumber, metadata: { topic: topicName } },
   _args,
-  { kafkaConnectionConfig }
+  { kafkaConfigSettings }
 ) => {
   const latestOffsets = await fetchLatestOffsetsWithCache(
     topicName,
-    kafkaConnectionConfig
+    kafkaConfigSettings
   );
   return latestOffsets[partitionNumber];
 };

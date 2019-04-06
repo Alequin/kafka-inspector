@@ -52,7 +52,19 @@ const kafkaNode = {
       callback(error, describeGroupsReturnValue);
     };
   }),
-  Offset: jest.fn()
+  Offset: jest.fn().mockImplementation(function() {
+    this.fetchLatestOffsets = (_topicNames, callback) => {
+      const error = false;
+      const offsetDetails = {
+        topic1: {
+          "0": 10,
+          "1": 20,
+          "2": 30
+        }
+      };
+      callback(error, offsetDetails);
+    };
+  })
 };
 
 module.exports = kafkaNode;
