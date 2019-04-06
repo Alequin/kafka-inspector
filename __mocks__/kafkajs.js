@@ -22,10 +22,30 @@ const mockGetTopicMetadataReturnValue = {
   ]
 };
 
+const mockConfigEntry = [
+  {
+    configName: "compression.type",
+    configValue: "producer",
+    readOnly: false,
+    isDefault: true,
+    isSensitive: false
+  }
+];
+const mockDescribeConfigsReturnValue = {
+  resources: [
+    {
+      errorCode: 0,
+      errorMessage: null,
+      configEntries: mockConfigEntry
+    }
+  ]
+};
+
 module.exports = {
   Kafka: function() {
     this.admin = () => {
       return {
+        describeConfigs: () => mockDescribeConfigsReturnValue,
         getTopicMetadata: () => mockGetTopicMetadataReturnValue,
         disconnect: () => {}
       };
