@@ -3,9 +3,17 @@ const mockFetchOffsets = require("mock-test-data/kafkajs/mock-fetch-offsets");
 
 const aggregateOffsetDetails = require("./aggregate-offset-details");
 
-describe.skip("aggregateOffsetDetails", () => {
-  const mockLatestOffsets = mockTopicOffsets;
-  const mockCommittedOffsets = mockFetchOffsets.transformedResponse;
+describe("aggregateOffsetDetails", () => {
+  const mockLatestOffsets = {
+    "0": 10,
+    "1": 20,
+    "2": 30
+  };
+  const mockCommittedOffsets = [
+    { partition: 0, committedOffset: 4 },
+    { partition: 1, committedOffset: 9 },
+    { partition: 2, committedOffset: 14 }
+  ];
 
   it("Should find latest offset and calculate the message lag", () => {
     const expected = [
