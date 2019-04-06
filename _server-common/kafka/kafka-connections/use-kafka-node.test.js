@@ -15,7 +15,7 @@ const MockOffset = function() {
 
 kafkaNode.KafkaClient.mockImplementation(MockClient);
 kafkaNode.Admin.mockImplementation(MockAdmin);
-const mockkafkaConnectionConfig = {
+const mockKafkaConnectionConfig = {
   kafkaBrokers: ["broker1:9092", "broker2:9092"]
 };
 kafkaNode.Offset.mockImplementation(MockOffset);
@@ -32,7 +32,7 @@ describe("kafkaNodeAdmin", () => {
 
   it("Connects to kafka and calls the callback with the admin when it is requested", async () => {
     const kafkaNodeAdmin = useKafkaNode("Admin");
-    await kafkaNodeAdmin(mockkafkaConnectionConfig, () => {});
+    await kafkaNodeAdmin(mockKafkaConnectionConfig, () => {});
 
     expect(kafkaNode.KafkaClient).toBeCalledTimes(1);
     expect(kafkaNode.Admin).toBeCalledTimes(1);
@@ -45,7 +45,7 @@ describe("kafkaNodeAdmin", () => {
 
   it("Connects to kafka and calls the callback with the offset when it is requested", async () => {
     const kafkaNodeOffset = useKafkaNode("Offset");
-    await kafkaNodeOffset(mockkafkaConnectionConfig, () => {});
+    await kafkaNodeOffset(mockKafkaConnectionConfig, () => {});
 
     expect(kafkaNode.KafkaClient).toBeCalledTimes(1);
     expect(kafkaNode.Offset).toBeCalledTimes(1);
@@ -58,7 +58,7 @@ describe("kafkaNodeAdmin", () => {
 
   it("Provides the request aspect to the callback", done => {
     const kafkaNodeAdmin = useKafkaNode("Admin");
-    kafkaNodeAdmin(mockkafkaConnectionConfig, (admin, client) => {
+    kafkaNodeAdmin(mockKafkaConnectionConfig, (admin, client) => {
       expect(admin).toEqual(new MockAdmin());
       expect(client).toEqual(new MockClient());
       done();
@@ -69,7 +69,7 @@ describe("kafkaNodeAdmin", () => {
     const kafkaNodeAdmin = useKafkaNode("Admin");
     const expected = {};
     const actual = await kafkaNodeAdmin(
-      mockkafkaConnectionConfig,
+      mockKafkaConnectionConfig,
       async () => expected
     );
     expect(actual).toBe(expected);
@@ -77,14 +77,14 @@ describe("kafkaNodeAdmin", () => {
 
   it("Closes the kafka client once the function resolves", async () => {
     const kafkaNodeAdmin = useKafkaNode("Admin");
-    await kafkaNodeAdmin(mockkafkaConnectionConfig, () => {});
+    await kafkaNodeAdmin(mockKafkaConnectionConfig, () => {});
     expect(mockCloseClient).toBeCalledTimes(1);
   });
 
   it("Closes the Kafka client if the callback throws an error", async () => {
     const kafkaNodeAdmin = useKafkaNode("Admin");
     try {
-      kafkaNodeAdmin(mockkafkaConnectionConfig, () => {
+      kafkaNodeAdmin(mockKafkaConnectionConfig, () => {
         throw new Error();
       });
     } catch {
@@ -94,7 +94,7 @@ describe("kafkaNodeAdmin", () => {
 
   it("Closes the Kafka client if the callback rejects a promise", async () => {
     const kafkaNodeAdmin = useKafkaNode("Admin");
-    await kafkaNodeAdmin(mockkafkaConnectionConfig, async () => {
+    await kafkaNodeAdmin(mockKafkaConnectionConfig, async () => {
       throw new Error();
     }).catch(error => {
       expect(isError(error)).toBe(true);

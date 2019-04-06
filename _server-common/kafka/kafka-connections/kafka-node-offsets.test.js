@@ -12,7 +12,7 @@ const MockOffset = function() {
 
 kafkaNode.KafkaClient.mockImplementation(MockClient);
 kafkaNode.Offset.mockImplementation(MockOffset);
-const mockkafkaConnectionConfig = {
+const mockKafkaConnectionConfig = {
   kafkaBrokers: ["broker1:9092", "broker2:9092"]
 };
 
@@ -26,7 +26,7 @@ describe("kafkaNodeOffset", () => {
   });
 
   it("Connects to kafka and calls the callback with the offset", async () => {
-    await kafkaNodeOffset(mockkafkaConnectionConfig, (offset, client) => {
+    await kafkaNodeOffset(mockKafkaConnectionConfig, (offset, client) => {
       expect(offset).toEqual(new MockOffset());
     });
 

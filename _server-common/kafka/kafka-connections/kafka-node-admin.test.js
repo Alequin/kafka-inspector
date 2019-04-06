@@ -12,7 +12,7 @@ const MockAdmin = function() {
 
 kafkaNode.KafkaClient.mockImplementation(MockClient);
 kafkaNode.Admin.mockImplementation(MockAdmin);
-const mockkafkaConnectionConfig = {
+const mockKafkaConnectionConfig = {
   kafkaBrokers: ["broker1:9092", "broker2:9092"]
 };
 
@@ -26,7 +26,7 @@ describe("kafkaNodeAdmin", () => {
   });
 
   it("Connects to kafka and calls the callback with the offset", async () => {
-    await kafkaNodeAdmin(mockkafkaConnectionConfig, (offset, client) => {
+    await kafkaNodeAdmin(mockKafkaConnectionConfig, (offset, client) => {
       expect(offset).toEqual(new MockAdmin());
     });
 
