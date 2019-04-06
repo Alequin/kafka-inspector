@@ -30,39 +30,8 @@ describe("kafkaJsAdmin", () => {
     });
   });
 
-  it("Returns the result of the callback, resolving any promises", async () => {
-    const expected = {};
-    const actual = await kafkaJsAdmin(
-      mockKafkaConnectionConfig,
-      async () => expected
-    );
-    expect(actual).toBe(expected);
-  });
-
   it("Disconnects the admin once the function has completed", async () => {
     await kafkaJsAdmin(mockKafkaConnectionConfig, () => {});
     expect(mockAdmin.disconnect).toHaveBeenCalledTimes(1);
-  });
-
-  it("Disconnects the admin if the callback throws an error", async () => {
-    const error = new Error("kafka js admin throw error");
-    try {
-      kafkaJsAdmin(mockKafkaConnectionConfig, () => {
-        throw error;
-      });
-    } catch (error) {
-      expect(error).toBe(error);
-      expect(mockAdmin.disconnect).toHaveBeenCalledTimes(1);
-    }
-  });
-
-  it("Disconnects the admin if the callback rejects a promise", async () => {
-    const error = new Error("kafka js admin reject error");
-    kafkaJsAdmin(mockKafkaConnectionConfig, async () => {
-      throw error;
-    }).catch(error => {
-      expect(error).toBe(error);
-      expect(mockAdmin.disconnect).toHaveBeenCalledTimes(1);
-    });
   });
 });

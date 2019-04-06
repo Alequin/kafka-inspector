@@ -1,4 +1,5 @@
 const { Kafka } = require("kafkajs");
+const handleKafkaConnectionCallback = require("./handle-kafka-connection-callback");
 
 const kafkaJsAdmin = ({ kafkaBrokers }, callback) => {
   const kafkaJsClient = new Kafka({
@@ -7,13 +8,8 @@ const kafkaJsAdmin = ({ kafkaBrokers }, callback) => {
   });
   const admin = kafkaJsClient.admin();
 
-  try {
-    return callback(admin);
-  } catch (error) {
-    throw error;
-  } finally {
-    admin.disconnect();
-  }
+  const closeConnection = admin.disconnect;
+  return handleKafkaConnectionCallback(admin, closeConnection, callback);
 };
 
 module.exports = kafkaJsAdmin;
