@@ -5,7 +5,7 @@ const latestOffsetsResolver = require("./latest-offsets-resolver");
 
 describe.skip("latestOffsetsResolver", () => {
   const mockContext = {
-    kafkaConfigSettings: { kafkaBrokers: ["broker1:9092"] }
+    kafkaConnectionConfig: { kafkaBrokers: ["broker1:9092"] }
   };
 
   it.only("Should return the specific latest offset for the current partition", async () => {

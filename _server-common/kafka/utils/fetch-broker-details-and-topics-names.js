@@ -1,7 +1,7 @@
 const kafkaNodeAdmin = require("../kafka-connections/kafka-node-admin");
 
-const fetchBrokerDetailsAndTopicNames = async kafkaConfigSettings => {
-  return kafkaNodeAdmin(kafkaConfigSettings, resolveBrokerDetails);
+const fetchBrokerDetailsAndTopicNames = async kafkaConnectionConfig => {
+  return kafkaNodeAdmin(kafkaConnectionConfig, resolveBrokerDetails);
 };
 
 const resolveBrokerDetails = admin =>

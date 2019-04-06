@@ -3,7 +3,7 @@ const kafkaNodeOffset = require("./kafka-connections/kafka-node-offset");
 const mockOffset = {
   fetchLatestOffsets: jest.fn()
 };
-kafkaNodeOffset.mockImplementation((_kafkaConfigSettings, callback) => {
+kafkaNodeOffset.mockImplementation((_kafkaConnectionConfig, callback) => {
   return callback(mockOffset);
 });
 

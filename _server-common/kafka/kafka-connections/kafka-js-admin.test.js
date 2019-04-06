@@ -12,7 +12,7 @@ jest.mock("kafkajs", () => {
   };
 });
 
-const mockKafkaConfigSettings = {
+const mockkafkaConnectionConfig = {
   kafkaBrokers: ["broker1:9092", "broker2:9092"]
 };
 
@@ -24,7 +24,7 @@ describe("kafkaJsAdmin", () => {
   });
 
   it("Calls the given callback, passing the admin as an argument", done => {
-    kafkaJsAdmin(mockKafkaConfigSettings, admin => {
+    kafkaJsAdmin(mockkafkaConnectionConfig, admin => {
       expect(admin).toBe(mockAdmin);
       done();
     });
@@ -33,21 +33,21 @@ describe("kafkaJsAdmin", () => {
   it("Returns the result of the callback, resolving any promises", async () => {
     const expected = {};
     const actual = await kafkaJsAdmin(
-      mockKafkaConfigSettings,
+      mockkafkaConnectionConfig,
       async () => expected
     );
     expect(actual).toBe(expected);
   });
 
   it("Disconnects the admin once the function has completed", async () => {
-    await kafkaJsAdmin(mockKafkaConfigSettings, () => {});
+    await kafkaJsAdmin(mockkafkaConnectionConfig, () => {});
     expect(mockAdmin.disconnect).toHaveBeenCalledTimes(1);
   });
 
   it("Disconnects the admin if the callback throws an error", async () => {
     const error = new Error("kafka js admin throw error");
     try {
-      kafkaJsAdmin(mockKafkaConfigSettings, () => {
+      kafkaJsAdmin(mockkafkaConnectionConfig, () => {
         throw error;
       });
     } catch (error) {
@@ -58,7 +58,7 @@ describe("kafkaJsAdmin", () => {
 
   it("Disconnects the admin if the callback rejects a promise", async () => {
     const error = new Error("kafka js admin reject error");
-    kafkaJsAdmin(mockKafkaConfigSettings, async () => {
+    kafkaJsAdmin(mockkafkaConnectionConfig, async () => {
       throw error;
     }).catch(error => {
       expect(error).toBe(error);

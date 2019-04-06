@@ -5,7 +5,7 @@ const mockGetTopicMetadata = jest.fn();
 const mockAdmin = {
   getTopicMetadata: mockGetTopicMetadata
 };
-kafkaJsAdmin.mockImplementation((_kafkaConfigSettings, callback) => {
+kafkaJsAdmin.mockImplementation((_kafkaConnectionConfig, callback) => {
   return callback(mockAdmin);
 });
 

@@ -12,7 +12,7 @@ const MockAdmin = function() {
 
 kafkaNode.KafkaClient.mockImplementation(MockClient);
 kafkaNode.Admin.mockImplementation(MockAdmin);
-const mockKafkaConfigSettings = {
+const mockkafkaConnectionConfig = {
   kafkaBrokers: ["broker1:9092", "broker2:9092"]
 };
 
@@ -26,7 +26,7 @@ describe("kafkaNodeAdmin", () => {
   });
 
   it("Connects to kafka and calls the callback with the admin and client", async () => {
-    await kafkaNodeAdmin(mockKafkaConfigSettings, () => {});
+    await kafkaNodeAdmin(mockkafkaConnectionConfig, () => {});
 
     expect(kafkaNode.KafkaClient).toBeCalledTimes(1);
     expect(kafkaNode.Admin).toBeCalledTimes(1);
@@ -38,7 +38,7 @@ describe("kafkaNodeAdmin", () => {
   });
 
   it("Provides the admin and client to given callback", done => {
-    kafkaNodeAdmin(mockKafkaConfigSettings, (admin, client) => {
+    kafkaNodeAdmin(mockkafkaConnectionConfig, (admin, client) => {
       expect(admin).toEqual(new MockAdmin());
       expect(client).toEqual(new MockClient());
       done();
@@ -48,20 +48,20 @@ describe("kafkaNodeAdmin", () => {
   it("Returns the result of the callback, resolving any promises", async () => {
     const expected = {};
     const actual = await kafkaNodeAdmin(
-      mockKafkaConfigSettings,
+      mockkafkaConnectionConfig,
       async () => expected
     );
     expect(actual).toBe(expected);
   });
 
   it("Closes the kafka client once the function resolves", async () => {
-    await kafkaNodeAdmin(mockKafkaConfigSettings, () => {});
+    await kafkaNodeAdmin(mockkafkaConnectionConfig, () => {});
     expect(mockCloseClient).toBeCalledTimes(1);
   });
 
   it("Closes the Kafka client if the callback throws an error", async () => {
     try {
-      kafkaNodeAdmin(mockKafkaConfigSettings, () => {
+      kafkaNodeAdmin(mockkafkaConnectionConfig, () => {
         throw new Error();
       });
     } catch {
@@ -70,7 +70,7 @@ describe("kafkaNodeAdmin", () => {
   });
 
   it("Closes the Kafka client if the callback rejects a promise", async () => {
-    await kafkaNodeAdmin(mockKafkaConfigSettings, async () => {
+    await kafkaNodeAdmin(mockkafkaConnectionConfig, async () => {
       throw new Error();
     }).catch(error => {
       expect(isError(error)).toBe(true);

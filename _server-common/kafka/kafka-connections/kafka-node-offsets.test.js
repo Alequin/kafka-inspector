@@ -12,7 +12,7 @@ const MockOffset = function() {
 
 kafkaNode.KafkaClient.mockImplementation(MockClient);
 kafkaNode.Offset.mockImplementation(MockOffset);
-const mockKafkaConfigSettings = {
+const mockkafkaConnectionConfig = {
   kafkaBrokers: ["broker1:9092", "broker2:9092"]
 };
 
@@ -26,7 +26,7 @@ describe.skip("kafkaNodeOffset", () => {
   });
 
   it("Connects to kafka and calls the callback with the offset and client", async () => {
-    await kafkaNodeOffset(mockKafkaConfigSettings, () => {});
+    await kafkaNodeOffset(mockkafkaConnectionConfig, () => {});
 
     expect(kafkaNode.KafkaClient).toBeCalledTimes(1);
     expect(kafkaNode.Offset).toBeCalledTimes(1);
@@ -38,7 +38,7 @@ describe.skip("kafkaNodeOffset", () => {
   });
 
   it("Provides the offset and client to given callback", done => {
-    kafkaNodeOffset(mockKafkaConfigSettings, (offset, client) => {
+    kafkaNodeOffset(mockkafkaConnectionConfig, (offset, client) => {
       expect(offset).toEqual(new MockOffset());
       expect(client).toEqual(new MockClient());
       done();
@@ -48,20 +48,20 @@ describe.skip("kafkaNodeOffset", () => {
   it("Returns the result of the callback, resolving any promises", async () => {
     const expected = {};
     const actual = await kafkaNodeOffset(
-      mockKafkaConfigSettings,
+      mockkafkaConnectionConfig,
       async () => expected
     );
     expect(actual).toBe(expected);
   });
 
   it("Closes the kafka client once the function resolves", async () => {
-    await kafkaNodeOffset(mockKafkaConfigSettings, () => {});
+    await kafkaNodeOffset(mockkafkaConnectionConfig, () => {});
     expect(mockCloseClient).toBeCalledTimes(1);
   });
 
   it("Closes the Kafka client if the callback throws an error", async () => {
     try {
-      kafkaNodeOffset(mockKafkaConfigSettings, () => {
+      kafkaNodeOffset(mockkafkaConnectionConfig, () => {
         throw new Error();
       });
     } catch {
@@ -70,7 +70,7 @@ describe.skip("kafkaNodeOffset", () => {
   });
 
   it("Closes the Kafka client if the callback rejects a promise", async () => {
-    await kafkaNodeOffset(mockKafkaConfigSettings, async () => {
+    await kafkaNodeOffset(mockkafkaConnectionConfig, async () => {
       throw new Error();
     }).catch(error => {
       expect(isError(error)).toBe(true);

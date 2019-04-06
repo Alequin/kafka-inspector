@@ -1,8 +1,8 @@
 const kafkaNodeOffset = require("./kafka-connections/kafka-node-offset");
 
-const fetchLatestOffsets = (topicName, kafkaConfigSettings) =>
+const fetchLatestOffsets = (topicName, kafkaConnectionConfig) =>
   kafkaNodeOffset(
-    kafkaConfigSettings,
+    kafkaConnectionConfig,
     offset =>
       new Promise((resolve, reject) =>
         offset.fetchLatestOffsets([topicName], (error, response) =>
