@@ -12,7 +12,7 @@ const validateBrokerFormat = broker => {
   };
 };
 
-const kafkaNodeAdmin = ({ kafkaBrokers }) => {
+const kafkaNodeAdmin = ({ kafkaBrokers }, callback) => {
   const validatedBrokers = kafkaBrokers.map(validateBrokerFormat);
   const invalidBrokers = validatedBrokers.filter(({ isInvalid }) => isInvalid);
   if (!isEmpty(invalidBrokers)) {
@@ -22,7 +22,16 @@ const kafkaNodeAdmin = ({ kafkaBrokers }) => {
   const client = new kafkaNode.KafkaClient({
     kafkaHost: kafkaBrokers.join(",")
   });
-  return new kafkaNode.Admin(client);
+  const admin = new kafkaNode.Admin(client);
+
+  return new Promise(resolve => {
+    resolve(callback(admin, client));
+  })
+    .then(client.close)
+    .catch(error => {
+      client.close();
+      throw error;
+    });
 };
 
 module.exports = kafkaNodeAdmin;
