@@ -6,12 +6,17 @@ const DEFAULT_OPTIONS = {
   refreshCacheAfter: seconds(30)
 };
 
+const isPromise = obj => !!obj.then;
 const simpleCache = (func, options = DEFAULT_OPTIONS) => {
   let cache = new Cache(options.refreshCacheAfter);
-  return async (...args) => {
-    const cacheKey = JSON.stringify(...args) || "empty-args-key";
+  return (...args) => {
+    const cacheKey = JSON.stringify(args) || "empty-args-key";
     if (!cache.get(cacheKey)) cache.put(cacheKey, func(...args));
-    return cloneDeep(await cache.get(cacheKey));
+
+    const cachedValue = cache.get(cacheKey);
+    return isPromise(cachedValue)
+      ? cachedValue.then(cloneDeep)
+      : cloneDeep(cachedValue);
   };
 };
 

@@ -1,37 +1,35 @@
 const simpleCache = require("./simple-cache");
-const { milliseconds } = require("server-common/time-to-milliseconds");
+const { milliseconds, minutes } = require("server-common/time-to-milliseconds");
 
-describe.skip("simpleCache", () => {
-  const mockResponse = {
-    food: "Eggs"
+const mockRequestFunction = jest.fn();
+describe("simpleCache", () => {
+  const count = () => {
+    let count = 1;
+    return () => ({ num: count++ });
   };
-
-  const mockRequestFunction = jest.fn().mockReturnValue(mockResponse);
-
   beforeEach(() => {
-    mockRequestFunction.mockClear();
+    mockRequestFunction.mockImplementation(count());
   });
 
-  it("Should call the given function if cache is empty", async () => {
+  it("Should call the given function if cache is empty", () => {
     const requestFunctionWithCache = simpleCache(mockRequestFunction);
 
-    const expected = mockResponse;
-    const actual = await requestFunctionWithCache();
+    const expected = { num: 1 };
+    const actual = requestFunctionWithCache();
     expect(actual).toEqual(expected);
     expect(mockRequestFunction).toBeCalledTimes(1);
   });
 
-  it("Should not call the given function if cache is available", async () => {
+  it("Should not call the given function if cache is available", () => {
     const requestFunctionWithCache = simpleCache(mockRequestFunction);
 
-    const expected = mockResponse;
     // first call without cache
-    await requestFunctionWithCache();
+    const expected = requestFunctionWithCache();
     // Reset call count to zero
     mockRequestFunction.mockClear();
 
     // second call with cache
-    const actual = await requestFunctionWithCache();
+    const actual = requestFunctionWithCache();
     expect(actual).toEqual(expected);
     expect(mockRequestFunction).toBeCalledTimes(0);
   });
@@ -41,14 +39,73 @@ describe.skip("simpleCache", () => {
       refreshCacheAfter: milliseconds(100)
     });
 
-    const expected = mockResponse;
-    requestFunctionWithCache();
+    const expected = requestFunctionWithCache();
 
     setTimeout(async () => {
-      const actual = await requestFunctionWithCache();
-      expect(actual).toEqual(expected);
+      const actual = requestFunctionWithCache();
+      expect(actual).not.toEqual(expected);
       expect(mockRequestFunction).toBeCalledTimes(2);
       done();
     }, milliseconds(500));
+  });
+
+  it("Should only return cached values when all args match a previous call", () => {
+    const requestFunctionWithCache = simpleCache(mockRequestFunction, {
+      refreshCacheAfter: minutes(10)
+    });
+
+    const args1 = [1, 2, 3, 4, 5];
+    const args2 = [6, 7, 8, 9, 0];
+
+    const call1 = requestFunctionWithCache(...args1);
+    const call2 = requestFunctionWithCache(...args2);
+
+    expect(call1).not.toEqual(call2);
+    expect(call1).toEqual(requestFunctionWithCache(...args1));
+    expect(call2).toEqual(requestFunctionWithCache(...args2));
+  });
+
+  describe("When given function is not async", () => {
+    it("Cached the response as expected", async () => {
+      const returnValue = { a: "b" };
+      const requestFunctionWithCache = simpleCache(() => returnValue, {
+        refreshCacheAfter: minutes(10)
+      });
+
+      const expected = requestFunctionWithCache();
+      expect(requestFunctionWithCache()).toEqual(expected);
+    });
+
+    it("Clones the cached value", async () => {
+      const returnValue = { a: "b" };
+      const requestFunctionWithCache = simpleCache(async () => returnValue, {
+        refreshCacheAfter: minutes(10)
+      });
+
+      const expected = requestFunctionWithCache();
+      expect(requestFunctionWithCache()).not.toBe(expected);
+    });
+  });
+
+  describe("When given function is async", () => {
+    it("Cached the response as expected", async () => {
+      const returnValue = { a: "b" };
+      const requestFunctionWithCache = simpleCache(async () => returnValue, {
+        refreshCacheAfter: minutes(10)
+      });
+
+      const expected = await requestFunctionWithCache();
+      expect(await requestFunctionWithCache()).toEqual(expected);
+    });
+
+    it("Clones the cached value", async () => {
+      const returnValue = { a: "b" };
+      const requestFunctionWithCache = simpleCache(async () => returnValue, {
+        refreshCacheAfter: minutes(10)
+      });
+
+      const expected = await requestFunctionWithCache();
+      expect(await requestFunctionWithCache()).not.toBe(expected);
+    });
   });
 });
