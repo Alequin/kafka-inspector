@@ -18,6 +18,11 @@ const mockKafkaConnectionConfig = {
 const kafkaNodeConsumer = require("./kafka-node-consumer");
 
 describe("kafkaNodeConsumer", () => {
+  const consumerOptions = {
+    topicsToConsumerFrom: ["topic1"],
+    otherOptions: {}
+  };
+
   beforeEach(() => {
     kafkaNode.KafkaClient.mockClear();
     kafkaNode.Admin.mockClear();
@@ -25,10 +30,6 @@ describe("kafkaNodeConsumer", () => {
   });
 
   it("Connects to kafka and calls the callback with the a preparedConsumer", async () => {
-    const consumerOptions = {
-      topicsToConsumerFrom: ["topic1"],
-      otherOptions: {}
-    };
     await kafkaNodeConsumer(
       mockKafkaConnectionConfig,
       consumerOptions,
@@ -48,5 +49,14 @@ describe("kafkaNodeConsumer", () => {
       consumerOptions.topicsToConsumerFrom,
       { ...consumerOptions }
     );
+  });
+
+  it("Calls the correct close function when finished", async () => {
+    await kafkaNodeConsumer(
+      mockKafkaConnectionConfig,
+      consumerOptions,
+      (mockKafkaConnectionConfig, () => {})
+    );
+    expect(mockCloseClient).toHaveBeenCalledTimes(1);
   });
 });

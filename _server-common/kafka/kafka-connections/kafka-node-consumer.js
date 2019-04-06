@@ -1,5 +1,6 @@
 const kafkaNode = require("kafka-node");
 const kafkaNodeClient = require("./kafka-node-client");
+const handleKafkaConnectionCallback = require("./handle-kafka-connection-callback");
 
 const kafkaNodeConsumer = (kafkaConnectionConfig, options, callback) => {
   const client = kafkaNodeClient(kafkaConnectionConfig);
@@ -10,13 +11,8 @@ const kafkaNodeConsumer = (kafkaConnectionConfig, options, callback) => {
     { ...options }
   );
 
-  try {
-    return callback(consumer);
-  } catch (error) {
-    throw error;
-  } finally {
-    client.close();
-  }
+  const closeConnection = client.close;
+  return handleKafkaConnectionCallback(consumer, closeConnection, callback);
 };
 
 module.exports = kafkaNodeConsumer;

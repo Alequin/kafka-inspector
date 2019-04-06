@@ -37,4 +37,12 @@ describe("kafkaNodeAdmin", () => {
     });
     expect(kafkaNode.Admin).toBeCalledWith(new MockClient());
   });
+
+  it("Calls the correct close function when finished", async () => {
+    await kafkaNodeAdmin(
+      mockKafkaConnectionConfig,
+      (mockKafkaConnectionConfig, () => {})
+    );
+    expect(mockCloseClient).toHaveBeenCalledTimes(1);
+  });
 });

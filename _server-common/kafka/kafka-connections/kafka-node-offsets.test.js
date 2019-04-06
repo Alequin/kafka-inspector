@@ -38,4 +38,9 @@ describe("kafkaNodeOffset", () => {
     });
     expect(kafkaNode.Offset).toBeCalledWith(new MockClient());
   });
+
+  it("Calls the correct close function when finished", async () => {
+    await kafkaNodeOffset(mockKafkaConnectionConfig, () => {});
+    expect(mockCloseClient).toHaveBeenCalledTimes(1);
+  });
 });
