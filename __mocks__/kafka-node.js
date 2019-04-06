@@ -35,6 +35,20 @@ const kafkaNode = {
       const error = false;
       callback(error, listTopicsResponse);
     };
+
+    this.listGroups = callback => {
+      const error = false;
+      callback(error, {
+        consumerGroup1: "consumer",
+        "consumer-group-1": "consumer"
+      });
+    };
+
+    const describeGroupsReturnValue = require("./kafka-node/describe-groups");
+    this.describeGroups = (_groupNames, callback) => {
+      const error = false;
+      callback(error, describeGroupsReturnValue);
+    };
   })
 };
 
