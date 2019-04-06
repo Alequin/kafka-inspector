@@ -1,20 +1,17 @@
 const { ResourceTypes } = require("kafkajs");
 const { first, omit } = require("lodash");
 const { seconds } = require("server-common/time-to-milliseconds");
-const simpleCache = require("server-common/kafka/utils/simple-cache");
-const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
+const kafkaJsAdmin = require("./kafka-connections/kafka-js-admin");
+const simpleCache = require("./utils/simple-cache");
 
 // Omit the resource types which dont work with the function 'admin.describeConfigs'
 // For all types view https://github.com/tulios/kafkajs/blob/master/src/protocol/resourceTypes.js
 const RESOURCE_TYPES = omit(ResourceTypes, ["ANY", "UNKNOWN"]);
 
-const fetchConfigs = async (resources, kafkaConnectionConfig) => {
-  const {
-    kafkaJs: { admin }
-  } = accessGlobalKafkaConnections(kafkaConnectionConfig);
-
-  return await admin.describeConfigs({ resources });
-};
+const fetchConfigs = (resources, kafkaConnectionConfig) =>
+  kafkaJsAdmin(kafkaConnectionConfig, admin =>
+    admin.describeConfigs({ resources })
+  );
 
 const fetchConfigForSingleResource = resourceType => {
   return async (resourceName, kafkaConnectionConfig) => {

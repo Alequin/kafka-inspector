@@ -1,24 +1,42 @@
 const { isError } = require("lodash");
-jest.mock("./access-global-kafka-connections");
-const mockConfigEntry = require("mock-test-data/data/mock-config-entry");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
+
+jest.mock("./kafka-connections/kafka-js-admin");
+const kafkaJsAdmin = require("./kafka-connections/kafka-js-admin");
+
+const mockConfigEntry = [
+  {
+    configName: "compression.type",
+    configValue: "producer",
+    readOnly: false,
+    isDefault: true,
+    isSensitive: false
+  }
+];
+const mockDescribeConfigs = jest.fn().mockResolvedValue({
+  resources: [
+    {
+      errorCode: 0,
+      errorMessage: null,
+      configEntries: mockConfigEntry
+    }
+  ]
+});
+const mockAdmin = {
+  describeConfigs: mockDescribeConfigs
+};
+kafkaJsAdmin.mockImplementation((_kafkaConnectionConfig, callback) => {
+  return callback(mockAdmin);
+});
+
 const { topicConfig, RESOURCE_TYPES } = require("./fetch-configs");
 
 const mockTopic = "topic-name";
 
-describe.skip("fetchConfigs", () => {
-  describe.skip("topicConfig", () => {
-    let mockDescribeConfigs = null;
-
-    beforeEach(() => {
-      const mockKafkaConnections = mockAccessGlobalKafkaConnectionsImp();
-      mockDescribeConfigs = mockKafkaConnections.kafkaJs.admin.describeConfigs;
-      accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
-    });
-
+describe("fetchConfigs", () => {
+  describe("topicConfig", () => {
     it("Should call describeConfigs with requested topic", async () => {
-      await topicConfig(mockTopic, { kafkaBroker: [] });
+      const mockTopic = "topic1";
+      await topicConfig(mockTopic, { kafkaBroker: ["broker1:9092"] });
 
       expect(mockDescribeConfigs).toBeCalledWith({
         resources: [{ name: mockTopic, type: RESOURCE_TYPES.TOPIC }]
