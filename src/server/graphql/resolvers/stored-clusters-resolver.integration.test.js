@@ -3,7 +3,7 @@ const runQuery = require("server-common/database/run-query");
 
 const storedClusterResolver = require("./stored-clusters-resolver");
 
-describe.skip("storedClusterResolver", () => {
+describe("storedClusterResolver", () => {
   let db = null;
 
   beforeEach(async () => {

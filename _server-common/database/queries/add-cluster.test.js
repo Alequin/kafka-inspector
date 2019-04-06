@@ -2,7 +2,7 @@ const addCluster = require("./add-cluster");
 const testDatabaseMigration = require("mock-test-data/test-database-migration");
 const runQuery = require("server-common/database/run-query");
 
-describe.skip("addCluster", () => {
+describe("addCluster", () => {
   let db = null;
 
   beforeEach(async () => {
