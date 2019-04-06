@@ -1,86 +1,102 @@
-const { cloneDeep, isError } = require("lodash");
-const mockTopics = require("mock-test-data/data/mock-topics");
-const mockGetTopicMetadata = require("mock-test-data/kafkajs/mock-get-topic-metadata");
+jest.mock("./kafka-connections/kafka-js-admin");
+const kafkaJsAdmin = require("./kafka-connections/kafka-js-admin");
+
+const mockGetTopicMetadata = jest.fn();
+const mockAdmin = {
+  getTopicMetadata: mockGetTopicMetadata
+};
+kafkaJsAdmin.mockImplementation((_kafkaConfigSettings, callback) => {
+  return callback(mockAdmin);
+});
 
 const topic = require("./topic");
 
-describe.skip("topic", () => {
-  it("Return details on the requested topic", async () => {
-    const expected = {
-      name: mockTopics.topic1,
-      partitions: [
+describe("topic", () => {
+  it("Return details on the requested topic, sorting the partition and number", async () => {
+    mockGetTopicMetadata.mockReturnValue({
+      topics: [
         {
-          topic: mockTopics.topic1,
-          partition: 0,
-          leader: 1,
-          replicas: [3, 1, 2],
-          isr: [1, 3, 2]
-        },
-        {
-          topic: mockTopics.topic1,
-          partition: 1,
-          leader: 1,
-          replicas: [3, 1, 2],
-          isr: [1, 3, 2]
+          topics: "topic1",
+          partitions: [
+            {
+              partitionId: 1,
+              partitionErrorCode: 0,
+              leader: 1,
+              replicas: [3, 1, 2],
+              isr: [1, 3, 2]
+            },
+            {
+              partitionId: 0,
+              partitionErrorCode: 0,
+              leader: 1,
+              replicas: [3, 1, 2],
+              isr: [1, 3, 2]
+            }
+          ]
         }
       ]
-    };
-
-    const actual = await topic(mockTopics.topic1);
-    expect(actual).toEqual(expected);
-  });
-
-  it("Sorts the partitions by number ascending", async () => {
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp([
-        {
-          path: "kafkaJs.admin.getTopicMetadata",
-          override: async () => mockGetTopicMetadata.unorderedResponse
-        }
-      ])
-    );
-
-    const expected = {
-      name: mockTopics.topic1,
-      partitions: [
-        {
-          topic: mockTopics.topic1,
-          partition: 0,
-          leader: 1,
-          replicas: [3, 1, 2],
-          isr: [1, 3, 2]
-        },
-        {
-          topic: mockTopics.topic1,
-          partition: 1,
-          leader: 1,
-          replicas: [3, 1, 2],
-          isr: [1, 3, 2]
-        }
-      ]
-    };
-
-    const actual = await topic(mockTopics.topic1);
-    expect(actual).toEqual(expected);
-  });
-
-  it("Throws an error if any partitions have a failing error code", done => {
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp([
-        {
-          path: "kafkaJs.admin.getTopicMetadata",
-          override: async () => {
-            const response = cloneDeep(mockGetTopicMetadata.response);
-            response.topics[0].partitions[0].partitionErrorCode = 1;
-            return response;
-          }
-        }
-      ])
-    );
-
-    topic(mockTopics.topic1).catch(error => {
-      expect(isError(error)).toBe(true);
-      done();
     });
+
+    const expected = {
+      name: "topic1",
+      partitions: [
+        {
+          topic: "topic1",
+          partition: 0,
+          leader: 1,
+          replicas: [3, 1, 2],
+          isr: [1, 3, 2],
+          error: null
+        },
+        {
+          topic: "topic1",
+          partition: 1,
+          leader: 1,
+          replicas: [3, 1, 2],
+          isr: [1, 3, 2],
+          error: null
+        }
+      ]
+    };
+
+    const actual = await topic("topic1", { kafkaBrokers: ["broker1:9092"] });
+    expect(actual).toEqual(expected);
+  });
+
+  it("Identifies the error if a partition has one", async () => {
+    mockGetTopicMetadata.mockReturnValue({
+      topics: [
+        {
+          topics: "topic1",
+          partitions: [
+            {
+              partitionId: 0,
+              partitionErrorCode: 0,
+              leader: 1,
+              replicas: [3, 1, 2],
+              isr: [1, 3, 2],
+              partitionErrorCode: 5
+            }
+          ]
+        }
+      ]
+    });
+
+    const expected = {
+      name: "topic1",
+      partitions: [
+        {
+          topic: "topic1",
+          partition: 0,
+          leader: 1,
+          replicas: [3, 1, 2],
+          isr: [1, 3, 2],
+          error: "Error Code: 5 - LEADER_NOT_AVAILABLE"
+        }
+      ]
+    };
+
+    const actual = await topic("topic1", { kafkaBrokers: ["broker1:9092"] });
+    expect(actual).toEqual(expected);
   });
 });

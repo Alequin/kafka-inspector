@@ -7,7 +7,7 @@ describe("topicsResolver", () => {
     kafkaConnectionConfig: { kafkaBrokers: ["broker:9092"] }
   };
 
-  it.only(`Makes a request for the list of topics and returns the value unmodified
+  it(`Makes a request for the list of topics and returns the value unmodified
   and makes use of cache on the second call`, async () => {
     const expected = [
       {

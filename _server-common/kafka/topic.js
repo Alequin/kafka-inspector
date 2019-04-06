@@ -1,57 +1,47 @@
 const { sortBy, flow } = require("lodash");
-const accessGlobalKafkaConnections = require("./access-global-kafka-connections");
+const kafkaJsAdmin = require("./kafka-connections/kafka-js-admin");
 const { failure, identifyError } = require("./error-codes");
 
-const shapePartitions = topicName => {
-  return partitions => {
-    return partitions.map(partition => {
-      return {
-        topic: topicName,
-        partition: partition.partitionId,
-        leader: partition.leader,
-        replicas: partition.replicas,
-        isr: partition.isr
-      };
-    });
-  };
+const errorMessageForCode = errorCode =>
+  `Error Code: ${errorCode} - ${identifyError(errorCode).type}`;
+
+const shapePartitions = topicName => partitions => {
+  return partitions.map(partition => {
+    return {
+      topic: topicName,
+      partition: partition.partitionId,
+      leader: partition.leader,
+      replicas: partition.replicas,
+      isr: partition.isr,
+      error: failure(partition.partitionErrorCode)
+        ? errorMessageForCode(partition.partitionErrorCode)
+        : null
+    };
+  });
 };
 
 const sortPartitions = partitions => {
   return sortBy(partitions, ({ partitionId }) => partitionId);
 };
 
-const checkForErrors = partitions => {
-  partitions.forEach(({ partitionErrorCode: errorCode }) => {
-    if (failure(errorCode)) {
-      const error = identifyError(errorCode);
-      throw new Error(JSON.stringify(error));
-    }
-  });
-
-  return partitions;
-};
-
 const transformPartition = (topicName, partitions) => {
   return flow(
-    checkForErrors,
     sortPartitions,
     shapePartitions(topicName)
   )(partitions);
 };
 
 const topic = async (topicName, kafkaConnectionConfig) => {
-  const {
-    kafkaJs: { admin }
-  } = accessGlobalKafkaConnections(kafkaConnectionConfig);
+  return kafkaJsAdmin(kafkaConnectionConfig, async admin => {
+    const {
+      topics: [{ partitions }]
+    } = await admin.getTopicMetadata({ topics: [topicName] });
 
-  const {
-    topics: [{ partitions }]
-  } = await admin.getTopicMetadata({ topics: [topicName] });
-
-  return {
-    name: topicName,
-    partitions: transformPartition(topicName, partitions)
-  };
+    return {
+      name: topicName,
+      partitions: transformPartition(topicName, partitions)
+    };
+  });
 };
 
 module.exports = topic;
