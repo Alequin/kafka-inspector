@@ -1,9 +1,8 @@
 const kafkaNode = require("kafka-node");
+const kafkaNodeClient = require("./kafka-node-client");
 
-const kafkaNodeAdmin = ({ kafkaBrokers }, callback) => {
-  const client = new kafkaNode.KafkaClient({
-    kafkaHost: kafkaBrokers.join(",")
-  });
+const kafkaNodeAdmin = (kafkaConfigSettings, callback) => {
+  const client = kafkaNodeClient(kafkaConfigSettings);
   const admin = new kafkaNode.Admin(client);
 
   try {
