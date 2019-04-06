@@ -1,6 +1,6 @@
 const transformGroupInformation = require("./transform-group-information");
 
-describe.skip("transformGroupInformation", () => {
+describe("transformGroupInformation", () => {
   const topicName1 = "topic1";
   const topicName2 = "topic2";
   const groupName1 = "group1";

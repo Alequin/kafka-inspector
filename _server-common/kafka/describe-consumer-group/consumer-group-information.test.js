@@ -1,52 +1,72 @@
-const mockConsumerGroups = require("mock-test-data/data/mock-consumer-groups");
-const mockDescribeGroups = require("mock-test-data/kafka-node/mock-describe-groups");
-jest.mock("../access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+const { isError } = require("lodash");
+jest.mock("../kafka-connections/kafka-node-admin");
+const kafkaNodeAdmin = require("../kafka-connections/kafka-node-admin");
+
+const mockDescribeGroups = jest.fn();
+
+kafkaNodeAdmin.mockImplementation((_kafkaConfig, callback) => {
+  const mockAdmin = {
+    describeGroups: mockDescribeGroups
+  };
+  return callback(mockAdmin);
+});
+
+jest.mock("./transform-group-information");
+const transformGroupInformation = require("./transform-group-information");
+
 const consumerGroupInformation = require("./consumer-group-information");
 
-describe.skip("consumerGroupInformation", () => {
-  let mockDescribeGroupsFunction = null;
-
+describe("consumerGroupInformation", () => {
   beforeEach(() => {
-    const mockKafkaConnections = mockAccessGlobalKafkaConnectionsImp();
-    mockDescribeGroupsFunction =
-      mockKafkaConnections.kafkaNode.admin.describeGroups;
-    accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
+    mockDescribeGroups.mockReset();
+    transformGroupInformation.mockReset();
   });
 
-  it("Should resolve the consumer groups information", async () => {
-    const expected = mockDescribeGroups.response;
-    const actual = await consumerGroupInformation([
-      mockConsumerGroups.consumerGroup1
-    ]);
+  it("Uses kafkaNodeAdmin to access the kafka admin", async () => {
+    mockDescribeGroups.mockImplementation((_groupNames, callback) =>
+      callback()
+    );
+    await consumerGroupInformation(null, {
+      kafkaBrokers: ["broker1:9092"]
+    });
+    expect(kafkaNodeAdmin).toBeCalledTimes(1);
+  });
 
+  it("Resolves the transformed consumer groups", async () => {
+    mockDescribeGroups.mockImplementation((_groupNames, callback) =>
+      callback()
+    );
+    transformGroupInformation.mockReturnValue("expected return value");
+
+    const expected = "expected return value";
+    const actual = await consumerGroupInformation(null, {
+      kafkaBrokers: ["broker1:9092"]
+    });
     expect(actual).toEqual(expected);
   });
 
-  it("Should call describeGroups with given consumerGroupName", async () => {
-    await consumerGroupInformation([mockConsumerGroups.consumerGroup1]);
-    expect(mockDescribeGroupsFunction.mock.calls[0][0]).toEqual([
-      mockConsumerGroups.consumerGroup1
-    ]);
+  it("Should call describeGroups with given consumerGroupNames", done => {
+    const consumerGroupNames = ["name1", "name2", "name3"];
+    mockDescribeGroups.mockImplementation((groupNames, callback) => {
+      expect(groupNames).toEqual(consumerGroupNames);
+      done();
+    });
+
+    consumerGroupInformation(consumerGroupNames, {
+      kafkaBrokers: ["broker1:9092"]
+    });
   });
 
   it("Should reject if there is an error", done => {
-    const mockError = "fetch group information error message";
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp([
-        {
-          path: "kafkaNode.admin.describeGroups",
-          override: (_groupNames, callback) => {
-            const error = mockError;
-            callback(error, null);
-          }
-        }
-      ])
-    );
+    const error = new Error("consumer group information error");
+    mockDescribeGroups.mockImplementation((_groupNames, callback) => {
+      callback(error);
+    });
 
-    consumerGroupInformation(["groupName"]).catch(error => {
-      expect(error).toBe(mockError);
+    consumerGroupInformation(null, {
+      kafkaBrokers: ["broker1:9092"]
+    }).catch(error => {
+      expect(isError(error)).toBe(true);
       done();
     });
   });
