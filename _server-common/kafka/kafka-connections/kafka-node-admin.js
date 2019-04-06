@@ -6,14 +6,13 @@ const kafkaNodeAdmin = ({ kafkaBrokers }, callback) => {
   });
   const admin = new kafkaNode.Admin(client);
 
-  return new Promise(resolve => {
-    resolve(callback(admin, client));
-  })
-    .then(client.close)
-    .catch(error => {
-      client.close();
-      throw error;
-    });
+  try {
+    return callback(admin, client);
+  } catch (error) {
+    throw error;
+  } finally {
+    client.close();
+  }
 };
 
 module.exports = kafkaNodeAdmin;

@@ -29,7 +29,9 @@ const listTopicsResponse = [
 ];
 
 const kafkaNode = {
-  KafkaClient: jest.fn(),
+  KafkaClient: jest.fn().mockImplementation(function() {
+    this.close = () => {};
+  }),
   Admin: jest.fn().mockImplementation(function() {
     this.listTopics = callback => {
       const error = false;

@@ -1,5 +1,4 @@
 const { isError } = require("lodash");
-jest.mock("./broker-format");
 jest.mock("kafka-node");
 const kafkaNode = require("kafka-node");
 
@@ -46,13 +45,32 @@ describe("kafkaNodeAdmin", () => {
     });
   });
 
+  it("Returns the result of the callback, resolving any promises", async () => {
+    const expected = {};
+    const actual = await kafkaNodeAdmin(
+      mockKafkaConfigSettings,
+      async () => expected
+    );
+    expect(actual).toBe(expected);
+  });
+
   it("Closes the kafka client once the function resolves", async () => {
     await kafkaNodeAdmin(mockKafkaConfigSettings, () => {});
     expect(mockCloseClient).toBeCalledTimes(1);
   });
 
   it("Closes the Kafka client if the callback throws an error", async () => {
-    await kafkaNodeAdmin(mockKafkaConfigSettings, () => {
+    try {
+      kafkaNodeAdmin(mockKafkaConfigSettings, () => {
+        throw new Error();
+      });
+    } catch {
+      expect(mockCloseClient).toHaveBeenCalledTimes(1);
+    }
+  });
+
+  it("Closes the Kafka client if the callback rejects a promise", async () => {
+    await kafkaNodeAdmin(mockKafkaConfigSettings, async () => {
       throw new Error();
     }).catch(error => {
       expect(isError(error)).toBe(true);
