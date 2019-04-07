@@ -24,7 +24,7 @@ describe("kafkaNodeAdmin", () => {
     const actual = await handleKafkaConnectionCallback(
       mockConnection,
       mockCloseFunction,
-      _connection => expected
+      _connection => Promise.resolve(expected)
     );
     expect(actual).toBe(expected);
   });
@@ -77,5 +77,20 @@ describe("kafkaNodeAdmin", () => {
       }
     );
     expect(mockCloseFunction).toHaveBeenCalledTimes(1);
+  });
+
+  it("Allows the callback to finish when it is a promise before closing", async () => {
+    const mockConnection = {};
+    await handleKafkaConnectionCallback(
+      mockConnection,
+      mockCloseFunction,
+      async () =>
+        new Promise(resolve => {
+          setTimeout(() => {
+            expect(mockCloseFunction).not.toBeCalled();
+            resolve();
+          }, 200);
+        })
+    );
   });
 });

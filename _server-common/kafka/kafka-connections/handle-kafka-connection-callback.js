@@ -1,3 +1,5 @@
+const isPromise = require("server-common/is-promise");
+
 const onlyCallOnce = func => {
   let hasRun = false;
   return (...args) => {
@@ -13,14 +15,29 @@ const handleKafkaConnectionCallback = (
   closeConnection,
   callback
 ) => {
+  // Ensures that if close is called within the callback it is not called again once it completes
   const closeOnlyOnce = onlyCallOnce(closeConnection);
 
   try {
-    return callback(connection, closeOnlyOnce);
+    const result = callback(connection, closeOnlyOnce);
+
+    if (isPromise(result)) {
+      return result
+        .then(toReturn => {
+          closeOnlyOnce();
+          return toReturn;
+        })
+        .catch(error => {
+          closeOnlyOnce();
+          throw error;
+        });
+    } else {
+      closeOnlyOnce();
+      return result;
+    }
   } catch (error) {
-    throw error;
-  } finally {
     closeOnlyOnce();
+    throw error;
   }
 };
 
