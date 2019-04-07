@@ -1,17 +1,23 @@
-const mockTopicNames = require("mock-test-data/data/mock-topics");
-const mockConsumerGroups = require("mock-test-data/data/mock-consumer-groups");
-jest.mock("../access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("../access-global-kafka-connections");
+jest.mock("../fetch-latest-offsets");
+const fetchLatestOffsets = require("../fetch-latest-offsets");
+fetchLatestOffsets.mockResolvedValue({
+  "0": 10,
+  "1": 20,
+  "2": 30
+});
+
+jest.mock("./utils/fetch-committed-offsets");
+const fetchCommittedOffsets = require("./utils/fetch-committed-offsets");
+fetchCommittedOffsets.mockResolvedValue([
+  { partition: 0, committedOffset: 4 },
+  { partition: 1, committedOffset: 9 },
+  { partition: 2, committedOffset: 14 }
+]);
 
 const consumerGroupOffsets = require("./consumer-group-offsets");
 
-describe.skip("consumerGroupOffsets", () => {
-  it("Should gather and return a summary of offset details from the requested consumer group", async () => {
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp()
-    );
-
+describe("consumerGroupOffsets", () => {
+  it("Gathers and return a summary of offset details from the requested consumer group", async () => {
     const expected = {
       sumOfLatestOffsets: 60,
       sumOfCommittedOffsets: 27,
@@ -22,10 +28,8 @@ describe.skip("consumerGroupOffsets", () => {
         { partitionNumber: 2, latestOffset: 30, committedOffset: 14, lag: 16 }
       ]
     };
-    const actual = await consumerGroupOffsets(
-      mockTopicNames.topic1,
-      mockConsumerGroups.consumerGroup1
-    );
+    const actual = await consumerGroupOffsets("topic1", "consumerGroup1");
+
     expect(actual).toEqual(expected);
   });
 });
