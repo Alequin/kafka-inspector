@@ -8,7 +8,7 @@ jest.mock("tcp-ping", () => {
 
 const confirmRequestedBrokersAreValid = require("./confirm-requested-brokers-are-available");
 
-describe.skip("confirmRequestedBrokersAreValid", () => {
+describe("confirmRequestedBrokersAreValid", () => {
   beforeEach(() => {
     mockProbe.mockReset();
   });
