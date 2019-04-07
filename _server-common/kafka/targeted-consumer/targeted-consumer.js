@@ -55,7 +55,7 @@ const targetedConsumer = async (
     topicName,
     partitionsToConsumerFrom,
     requestedMinOffset = 0,
-    requestedMaxOffset = 999999
+    requestedMaxOffset = Number.MAX_VALUE
   },
   kafkaConnectionConfig,
   onMessageConsumedCallback

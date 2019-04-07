@@ -1,13 +1,3 @@
-const mockTopics = require("mock-test-data/data/mock-topics");
-jest.mock("server-common/kafka/access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("server-common/kafka/access-global-kafka-connections");
-accessGlobalKafkaConnections.mockReturnValue(
-  mockAccessGlobalKafkaConnectionsImp([
-    { path: "kafkaJs.admin.getTopicMetadata", override: () => {} }
-  ])
-);
-
 const { EQUAL_TO } = require("../constants/comparator-options");
 const { JSON_ENCODING } = require("../constants/parsing-options");
 
@@ -34,54 +24,40 @@ PubSub.mockImplementation(() => {
   };
 });
 
+jest.mock("kafka-node");
+const kafkaNode = require("kafka-node");
+const mockCloseKafkaNodeConsumer = jest.fn();
+const mockMessages = [
+  { partition: 0, offset: 1, value: JSON.stringify({ a: 1 }) },
+  { partition: 0, offset: 2, value: JSON.stringify({ a: 1 }) },
+  { partition: 0, offset: 3, value: JSON.stringify({ a: 1 }) }
+];
+kafkaNode.Consumer.mockImplementation(function() {
+  this.on = (_event, callback) => {
+    mockMessages.forEach(callback);
+  };
+  this.close = mockCloseKafkaNodeConsumer;
+  this.payloads = [
+    {
+      partition: 0
+    }
+  ];
+});
+
 const conditionalConsumerResolver = require("./conditional-consumer-resolver");
 
-describe.skip("conditionalConsumerResolver", () => {
+describe("conditionalConsumerResolver", () => {
   jest.useFakeTimers();
   const mockPartitions = [0];
   const mockMinOffset = 0;
   const mockMaxOffset = 100;
 
   it("Publishes the consumed messages", async done => {
-    const mockMessages = [
-      { partition: 0, offset: 1, value: JSON.stringify({ a: 1 }) },
-      { partition: 0, offset: 2, value: JSON.stringify({ a: 1 }) },
-      { partition: 0, offset: 3, value: JSON.stringify({ a: 1 }) }
-    ];
-
-    accessGlobalKafkaConnections.mockReturnValue(
-      mockAccessGlobalKafkaConnectionsImp([
-        {
-          path: "kafkaNode.consumer",
-          override: () => {
-            return {
-              on: (_eventName, callback) => {
-                mockMessages.forEach(callback);
-              },
-              removeTopics: (_topics, callback) => {
-                const error = false;
-                callback(error);
-              },
-              addTopics: (_topics, callback) => {
-                const error = false;
-                callback(error);
-              },
-              close: () => {},
-              payloads: [
-                {
-                  partition: 0
-                }
-              ]
-            };
-          }
-        }
-      ])
-    );
-
     await conditionalConsumerResolver(
       {},
       {
-        topicName: mockTopics.topic1,
+        kafkaBrokers: ["broker:9092"],
+        topicName: "topic1",
         partitions: mockPartitions,
         minOffset: mockMinOffset,
         maxOffset: mockMaxOffset,
@@ -91,8 +67,7 @@ describe.skip("conditionalConsumerResolver", () => {
             [{ value: "0", objectPath: "partition", comparator: EQUAL_TO }]
           ]
         }
-      },
-      { kafkaBrokers: ["broker"] }
+      }
     );
 
     setImmediate(() => {
