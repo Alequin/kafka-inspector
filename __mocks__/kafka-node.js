@@ -65,7 +65,8 @@ const kafkaNode = {
       callback(error, offsetDetails);
     };
   }),
-  Consumer: jest.fn()
+  Consumer: jest.fn(),
+  ConsumerGroup: jest.fn()
 };
 
 module.exports = kafkaNode;
