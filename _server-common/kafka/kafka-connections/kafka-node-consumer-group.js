@@ -10,7 +10,7 @@ const kafkaNodeConsumerGroup = (kafkaConnectionConfig, options, callback) => {
       ...client.options,
       ...options
     },
-    options.topicsToConsumerFrom
+    options.topicsToConsumeFrom
   );
 
   const closeConnection = () => {

@@ -5,10 +5,11 @@ const handleKafkaConnectionCallback = require("./handle-kafka-connection-callbac
 const kafkaNodeConsumer = (kafkaConnectionConfig, options, callback) => {
   const client = kafkaNodeClient(kafkaConnectionConfig);
 
+  const consumerConfig = options.config || {};
   const consumer = new kafkaNode.Consumer(
     client,
-    options.topicsToConsumerFrom,
-    { ...options }
+    options.toConsumeFrom,
+    consumerConfig
   );
 
   const closeConnection = () => {

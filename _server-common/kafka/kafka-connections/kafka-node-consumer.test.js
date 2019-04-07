@@ -20,8 +20,16 @@ const kafkaNodeConsumer = require("./kafka-node-consumer");
 
 describe("kafkaNodeConsumer", () => {
   const consumerOptions = {
-    topicsToConsumerFrom: ["topic1"],
-    otherOptions: {}
+    toConsumeFrom: [
+      {
+        topic: "topic1",
+        offset: 0,
+        partition: 0
+      }
+    ],
+    config: {
+      autoCommit: true
+    }
   };
 
   beforeEach(() => {
@@ -48,8 +56,8 @@ describe("kafkaNodeConsumer", () => {
     });
     expect(kafkaNode.Consumer).toBeCalledWith(
       new MockClient(),
-      consumerOptions.topicsToConsumerFrom,
-      { ...consumerOptions }
+      consumerOptions.toConsumeFrom,
+      consumerOptions.config
     );
   });
 

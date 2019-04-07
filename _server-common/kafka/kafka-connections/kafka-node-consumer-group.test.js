@@ -21,7 +21,7 @@ const kafkaNodeConsumerGroup = require("./kafka-node-consumer-group");
 
 describe("kafkaNodeConsumerGroup", () => {
   const consumerOptions = {
-    topicsToConsumerFrom: ["topic1"],
+    topicsToConsumeFrom: ["topic1"],
     otherOptions: {}
   };
 
@@ -52,7 +52,7 @@ describe("kafkaNodeConsumerGroup", () => {
         ...new MockClient().options,
         ...consumerOptions
       },
-      consumerOptions.topicsToConsumerFrom
+      consumerOptions.topicsToConsumeFrom
     );
   });
 

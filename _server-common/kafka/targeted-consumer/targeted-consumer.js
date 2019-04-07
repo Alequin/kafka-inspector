@@ -30,6 +30,7 @@ const consumeMessage = (
       const shouldProgressToNextPartition =
         message.offset >= currentMaxOffset &&
         !processedPartitions[message.partition];
+
       if (shouldProgressToNextPartition) {
         processedPartitions[message.partition] = true;
         const nextPartition = remainingPartitions.shift();
@@ -71,12 +72,16 @@ const targetedConsumer = async (
   return await kafkaNodeConsumer(
     kafkaConnectionConfig,
     {
-      topicsToConsumerFrom: [topicName],
-      partition: first(partitionsToConsumerFrom),
-      offset: minOffset
+      toConsumeFrom: [
+        {
+          topic: topicName,
+          partition: first(partitionsToConsumerFrom),
+          offset: minOffset
+        }
+      ]
     },
-    consumer => {
-      return consumeMessage(
+    async consumer => {
+      return await consumeMessage(
         consumer,
         { topicName, minOffset, maxOffsets, partitionsToConsumerFrom },
         onMessageConsumedCallback

@@ -150,8 +150,9 @@ describe("targetedConsumer", () => {
     const expectedMinOffset = 0;
 
     // The offset the consumer is instantiated with
-    const actualMinOffset1 = kafkaNodeConsumer.mock.calls[0][1].offset;
-    expect(actualMinOffset1).toBe(0);
+    const actualMinOffset1 =
+      kafkaNodeConsumer.mock.calls[0][1].toConsumeFrom[0].offset;
+    expect(actualMinOffset1).toBe(expectedMinOffset);
 
     // The offset new partitions are instructed to start from
     const actualMinOffset2 = mockAddTopics.mock.calls[0][0][0].offset;
