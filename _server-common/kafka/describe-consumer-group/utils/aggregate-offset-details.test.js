@@ -1,6 +1,3 @@
-const mockTopicOffsets = require("mock-test-data/data/mock-topic-offsets");
-const mockFetchOffsets = require("mock-test-data/kafkajs/mock-fetch-offsets");
-
 const aggregateOffsetDetails = require("./aggregate-offset-details");
 
 describe("aggregateOffsetDetails", () => {
