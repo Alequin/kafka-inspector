@@ -32,7 +32,7 @@ describe("consumerGroupsResolver", () => {
             clientId: "kafka-node-client",
             clientHost: "/172.21.17.74",
             memberMetadata: {
-              subscription: "topicName1",
+              subscription: ["topicName1"],
               version: 0,
               userData: undefined,
               id: "kafka-node-client-2"
