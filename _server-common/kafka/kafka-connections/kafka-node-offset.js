@@ -5,7 +5,7 @@ const handleKafkaConnectionCallback = require("./handle-kafka-connection-callbac
 const kafkaNodeOffset = (kafkaConnectionConfig, callback) => {
   const client = kafkaNodeClient(kafkaConnectionConfig);
   const offset = new kafkaNode.Offset(client);
-  const closeConnection = client.close;
+  const closeConnection = () => client.close();
   return handleKafkaConnectionCallback(offset, closeConnection, callback);
 };
 

@@ -5,7 +5,7 @@ const handleKafkaConnectionCallback = require("./handle-kafka-connection-callbac
 const kafkaNodeAdmin = (kafkaConnectionConfig, callback) => {
   const client = kafkaNodeClient(kafkaConnectionConfig);
   const admin = new kafkaNode.Admin(client);
-  const closeConnection = client.close;
+  const closeConnection = () => client.close();
   return handleKafkaConnectionCallback(admin, closeConnection, callback);
 };
 

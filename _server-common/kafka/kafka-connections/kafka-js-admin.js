@@ -8,7 +8,7 @@ const kafkaJsAdmin = ({ kafkaBrokers }, callback) => {
   });
   const admin = kafkaJsClient.admin();
 
-  const closeConnection = admin.disconnect;
+  const closeConnection = () => admin.disconnect();
   return handleKafkaConnectionCallback(admin, closeConnection, callback);
 };
 
