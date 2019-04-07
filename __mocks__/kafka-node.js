@@ -66,7 +66,10 @@ const kafkaNode = {
     };
   }),
   Consumer: jest.fn(),
-  ConsumerGroup: jest.fn()
+  ConsumerGroup: jest.fn().mockImplementation(function() {
+    this.on = (_event, callback) => {};
+    this.close = () => {};
+  })
 };
 
 module.exports = kafkaNode;

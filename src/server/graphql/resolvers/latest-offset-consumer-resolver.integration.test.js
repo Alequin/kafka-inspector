@@ -5,7 +5,7 @@ const { PubSub } = require("graphql-subscriptions");
 const mockAsyncIterator = jest.fn();
 const mockAsyncIteratorReturnValue = Symbol();
 const mockPublish = jest.fn();
-const mockSubscribedEvents = {};
+let mockSubscribedEvents = {};
 
 PubSub.mockImplementation(() => {
   return {
@@ -22,13 +22,28 @@ PubSub.mockImplementation(() => {
   };
 });
 
-jest.mock("server-common/kafka/access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("server-common/kafka/access-global-kafka-connections");
+jest.mock("kafka-node");
+const kafkaNode = require("kafka-node");
+const mockCloseKafkaNodeConsumer = jest.fn();
+kafkaNode.ConsumerGroup.mockImplementation(function() {
+  this.on = (_event, callback) => {
+    const mockMessages = [{ offset: 1 }, { offset: 2 }, { offset: 3 }];
+    mockMessages.forEach(callback);
+  };
+  this.close = mockCloseKafkaNodeConsumer;
+});
+
+jest.mock("server-common/kafka/kafka-connections/kafka-node-consumer");
+const kafkaNodeConsumerGroup = require("server-common/kafka/kafka-connections/kafka-node-consumer");
+kafkaNodeConsumerGroup.mockImplementation(
+  jest.requireActual(
+    "server-common/kafka/kafka-connections/kafka-node-consumer-group"
+  )
+);
 
 const latestOffsetConsumerResolver = require("./latest-offset-consumer-resolver");
 
-describe.skip("latestOffsetConsumerResolver", () => {
+describe("latestOffsetConsumerResolver", () => {
   jest.useFakeTimers();
 
   const mockBrokers = ["broker1", "broker2"];
@@ -37,25 +52,21 @@ describe.skip("latestOffsetConsumerResolver", () => {
 
   beforeEach(() => {
     mockPublish.mockClear();
+    kafkaNodeConsumerGroup.mockClear();
+    mockCloseKafkaNodeConsumer.mockClear();
+
+    // clear all mock subscribed events
     forEach(mockSubscribedEvents, (_value, key) => {
       delete mockSubscribedEvents[key];
     });
   });
 
-  describe.skip("when there is a matching subscription key exists", () => {
+  describe("when there is a matching subscription key exists", () => {
     const mockConsumerGroupConstructor = jest.fn();
 
     beforeEach(() => {
-      accessGlobalKafkaConnections.mockReturnValue(
-        mockAccessGlobalKafkaConnectionsImp([
-          {
-            path: "kafkaNode.consumerGroup",
-            override: mockConsumerGroupConstructor
-          }
-        ])
-      );
-
-      mockSubscribedEvents[expectedSubscriptionKey] = null;
+      // Create an existing subscription key
+      mockSubscribedEvents[expectedSubscriptionKey] = 0;
     });
 
     it("does not create a new consumer", () => {
@@ -63,7 +74,7 @@ describe.skip("latestOffsetConsumerResolver", () => {
         {},
         { topicName: mockTopicName, kafkaBrokers: mockBrokers }
       );
-      expect(mockConsumerGroupConstructor).toHaveBeenCalledTimes(0);
+      expect(kafkaNodeConsumerGroup).not.toHaveBeenCalled();
     });
 
     it("returns the value given by asyncIterator", () => {
@@ -77,44 +88,7 @@ describe.skip("latestOffsetConsumerResolver", () => {
     });
   });
 
-  describe.skip("when there is not a matching subscription key exists", () => {
-    const mockConsumerGroup = jest.fn();
-    const mockCloseConsumerGroup = jest.fn();
-
-    beforeEach(() => {
-      mockConsumerGroup.mockClear();
-      mockCloseConsumerGroup.mockClear();
-      accessGlobalKafkaConnections.mockReturnValue(
-        mockAccessGlobalKafkaConnectionsImp([
-          {
-            path: "kafkaNode.consumerGroup",
-            override: mockConsumerGroup.mockImplementation(() => {
-              return {
-                on: (_eventType, callback) => {
-                  const message = { offset: 1, partition: 0 };
-                  callback(message);
-                },
-                removeTopics: (_topics, callback) => {
-                  const error = false;
-                  callback(error);
-                },
-                addTopics: (_topics, callback) => {
-                  const error = false;
-                  callback(error);
-                },
-                close: mockCloseConsumerGroup,
-                payloads: [
-                  {
-                    partition: 0
-                  }
-                ]
-              };
-            })
-          }
-        ])
-      );
-    });
-
+  describe("when there is not a matching subscription key exists", () => {
     it("returns the value given by asyncIterator", () => {
       const expected = mockAsyncIteratorReturnValue;
       const actual = latestOffsetConsumerResolver(
@@ -135,14 +109,14 @@ describe.skip("latestOffsetConsumerResolver", () => {
 
       jest.runOnlyPendingTimers();
 
-      expect(mockConsumerGroup).toHaveBeenCalledTimes(1);
-      expect(mockConsumerGroup.mock.calls[0][0].topicNames).toEqual([
-        mockTopicName
-      ]);
+      expect(kafkaNodeConsumerGroup).toHaveBeenCalledTimes(1);
+      expect(
+        kafkaNodeConsumerGroup.mock.calls[0][1].topicsToConsumerFrom
+      ).toEqual([mockTopicName]);
 
       expect(mockPublish).toHaveBeenCalledTimes(1);
       expect(mockPublish).toHaveBeenCalledWith(expectedSubscriptionKey, {
-        latestOffsetConsumer: [{ offset: 1, partition: 0 }]
+        latestOffsetConsumer: [{ offset: 1 }, { offset: 2 }, { offset: 3 }]
       });
     });
 
@@ -158,12 +132,7 @@ describe.skip("latestOffsetConsumerResolver", () => {
       });
       jest.runOnlyPendingTimers();
 
-      expect(mockConsumerGroup).toHaveBeenCalledTimes(1);
-      expect(mockConsumerGroup.mock.calls[0][0].topicNames).toEqual([
-        mockTopicName
-      ]);
-
-      expect(mockCloseConsumerGroup).toHaveBeenCalledTimes(1);
+      expect(mockCloseKafkaNodeConsumer).toHaveBeenCalledTimes(1);
     });
   });
 });

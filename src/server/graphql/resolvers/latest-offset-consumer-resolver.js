@@ -1,15 +1,20 @@
 const uuid = require("uuid/v4");
 const { PubSub } = require("graphql-subscriptions");
 const { seconds } = require("server-common/time-to-milliseconds");
-const accessGlobalKafkaConnections = require("server-common/kafka/access-global-kafka-connections");
 const anySubscriptionsExistFor = require("./utils/any-subscriptions-exist-for");
+
+const kafkaNodeConsumerGroup = require("server-common/kafka/kafka-connections/kafka-node-consumer");
 
 const pubSub = new PubSub();
 
-const consumeMessages = (consumer, subscriptionKey, onEmptyMessageQueue) => {
+const consumeMessages = (
+  consumer,
+  closeConnection,
+  subscriptionKey,
+  onEmptyMessageQueue
+) => {
   let emptyQueueTimeout = null;
   const messageQueue = [];
-
   consumer.on("message", message => {
     messageQueue.push(message);
     const shouldTimeoutBeSet = !emptyQueueTimeout;
@@ -20,9 +25,8 @@ const consumeMessages = (consumer, subscriptionKey, onEmptyMessageQueue) => {
           subscriptionKey,
           pubSub
         );
-
         if (shouldCloseConsumer) {
-          consumer.close(() => {});
+          closeConnection();
         } else {
           onEmptyMessageQueue(messageQueue.splice(0));
           emptyQueueTimeout = null;
@@ -39,23 +43,16 @@ const latestOffsetConsumerResolver = (_parent, { topicName, kafkaBrokers }) => {
   const subAsyncIterator = pubSub.asyncIterator([subscriptionKey]);
   if (isAlreadyConsuming) return subAsyncIterator;
 
-  const {
-    kafkaNode: { consumerGroup }
-  } = accessGlobalKafkaConnections({ kafkaBrokers });
-
-  const consumerGroupName = `k-inspect-${uuid()}`;
-
-  const consumer = consumerGroup({
-    topicNames: [topicName],
-    groupId: consumerGroupName
-  });
-
-  consumeMessages(consumer, subscriptionKey, messages => {
-    pubSub.publish(subscriptionKey, {
-      latestOffsetConsumer: messages
-    });
-  });
-
+  kafkaNodeConsumerGroup(
+    { kafkaBrokers },
+    { topicsToConsumerFrom: [topicName], groupId: `k-inspect-${uuid()}` },
+    async (consumer, closeConnection) =>
+      consumeMessages(consumer, closeConnection, subscriptionKey, messages => {
+        pubSub.publish(subscriptionKey, {
+          latestOffsetConsumer: messages
+        });
+      })
+  );
   return subAsyncIterator;
 };
 
