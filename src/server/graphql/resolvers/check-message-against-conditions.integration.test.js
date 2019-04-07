@@ -11,7 +11,7 @@ const {
 const { JSON_ENCODING } = require("../constants/parsing-options");
 const checkMessageAgainstConditions = require("./check-message-against-conditions");
 
-describe.skip("checkMessageAgainstConditions", () => {
+describe("checkMessageAgainstConditions", () => {
   it(`matches against the message value when object path starts with value`, () => {
     const mockMessage = {
       key: 123,
@@ -56,7 +56,7 @@ describe.skip("checkMessageAgainstConditions", () => {
     expect(actual).toBe(true);
   });
 
-  describe.skip("When comparator is EQUAL_TO", () => {
+  describe("When comparator is EQUAL_TO", () => {
     it(`Returns true if the given value matches the value returned
     from the objectPath`, () => {
       const mockMessage = {
@@ -145,7 +145,7 @@ describe.skip("checkMessageAgainstConditions", () => {
     });
   });
 
-  describe.skip("When comparator is NOT_EQUAL_TO", () => {
+  describe("When comparator is NOT_EQUAL_TO", () => {
     it(`Returns false if the given value matches the value returned
     from the objectPath`, () => {
       const mockMessage = {
@@ -191,7 +191,7 @@ describe.skip("checkMessageAgainstConditions", () => {
     });
   });
 
-  describe.skip("When comparator is LESS_THAN", () => {
+  describe("When comparator is LESS_THAN", () => {
     it(`Returns true if the value returned from the objectPath 
     is less than the given value`, () => {
       const mockMessage = {
@@ -259,7 +259,7 @@ describe.skip("checkMessageAgainstConditions", () => {
     });
   });
 
-  describe.skip("When comparator is LESS_THAN_OR_EQUAL_TO", () => {
+  describe("When comparator is LESS_THAN_OR_EQUAL_TO", () => {
     it(`Returns true if the value returned from the objectPath 
     is less than the given value`, () => {
       const mockMessage = {
@@ -327,7 +327,7 @@ describe.skip("checkMessageAgainstConditions", () => {
     });
   });
 
-  describe.skip("When comparator is GREATER_THAN", () => {
+  describe("When comparator is GREATER_THAN", () => {
     it(`Returns true if the value returned from the objectPath 
     is greater than the given value`, () => {
       const mockMessage = {
@@ -395,7 +395,7 @@ describe.skip("checkMessageAgainstConditions", () => {
     });
   });
 
-  describe.skip("When comparator is GREATER_THAN_OR_EQUAL_TO", () => {
+  describe("When comparator is GREATER_THAN_OR_EQUAL_TO", () => {
     it(`Returns true if the value returned from the objectPath 
     is greater than the given value`, () => {
       const mockMessage = {
@@ -463,7 +463,7 @@ describe.skip("checkMessageAgainstConditions", () => {
     });
   });
 
-  describe.skip("When comparator is REGEXP", () => {
+  describe("When comparator is REGEXP", () => {
     it(`Returns true if the value returned from the objectPath 
     matches the given regex`, () => {
       const mockMessage = {
@@ -531,7 +531,7 @@ describe.skip("checkMessageAgainstConditions", () => {
     });
   });
 
-  describe.skip("When multiple conditions are given", () => {
+  describe("When multiple conditions are given", () => {
     it(`Returns true when all conditions in the same set match`, () => {
       const mockMessage = {
         value: JSON.stringify({
