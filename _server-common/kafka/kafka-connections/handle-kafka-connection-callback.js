@@ -1,5 +1,3 @@
-const isPromise = require("server-common/is-promise");
-
 const onlyCallOnce = func => {
   let hasRun = false;
   return (...args) => {
@@ -10,7 +8,7 @@ const onlyCallOnce = func => {
   };
 };
 
-const handleKafkaConnectionCallback = (
+const handleKafkaConnectionCallback = async (
   connection,
   closeConnection,
   callback
@@ -19,25 +17,11 @@ const handleKafkaConnectionCallback = (
   const closeOnlyOnce = onlyCallOnce(closeConnection);
 
   try {
-    const result = callback(connection, closeOnlyOnce);
-
-    if (isPromise(result)) {
-      return result
-        .then(toReturn => {
-          closeOnlyOnce();
-          return toReturn;
-        })
-        .catch(error => {
-          closeOnlyOnce();
-          throw error;
-        });
-    } else {
-      closeOnlyOnce();
-      return result;
-    }
+    return await callback(connection, closeOnlyOnce);
   } catch (error) {
-    closeOnlyOnce();
     throw error;
+  } finally {
+    closeOnlyOnce();
   }
 };
 
