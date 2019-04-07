@@ -2,7 +2,7 @@ const deleteClusterResolver = require("./delete-cluster-resolver");
 const testDatabaseMigration = require("mock-test-data/test-database-migration");
 const runQuery = require("server-common/database/run-query");
 
-describe.skip("deleteClusterResolvers", () => {
+describe("deleteClusterResolvers", () => {
   let db = null;
 
   beforeEach(async () => {
