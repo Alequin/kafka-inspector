@@ -20,12 +20,13 @@ describe("consumerGroupInformation", () => {
   beforeEach(() => {
     mockDescribeGroups.mockReset();
     transformGroupInformation.mockReset();
-  });
 
-  it("Uses kafkaNodeAdmin to access the kafka admin", async () => {
     mockDescribeGroups.mockImplementation((_groupNames, callback) =>
       callback()
     );
+  });
+
+  it("Uses kafkaNodeAdmin to access the kafka admin", async () => {
     await consumerGroupInformation(null, {
       kafkaBrokers: ["broker1:9092"]
     });
@@ -33,9 +34,6 @@ describe("consumerGroupInformation", () => {
   });
 
   it("Resolves the transformed consumer groups", async () => {
-    mockDescribeGroups.mockImplementation((_groupNames, callback) =>
-      callback()
-    );
     transformGroupInformation.mockReturnValue("expected return value");
 
     const expected = "expected return value";
