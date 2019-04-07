@@ -1,37 +1,40 @@
-jest.mock("../../access-global-kafka-connections");
-const mockAccessGlobalKafkaConnectionsImp = require("mock-test-data/mock-access-global-kafka-connections");
-const accessGlobalKafkaConnections = require("../../access-global-kafka-connections");
+jest.mock("../../kafka-connections/kafka-js-admin");
+const kafkaJsAdmin = require("../../kafka-connections/kafka-js-admin");
 
-const mockKafkaConnections = mockAccessGlobalKafkaConnectionsImp();
-accessGlobalKafkaConnections.mockReturnValue(mockKafkaConnections);
+const mockFetchOffsets = jest.fn();
+const mockAdmin = {
+  fetchOffsets: mockFetchOffsets
+};
+kafkaJsAdmin.mockImplementation((_kafkaConnectionConfig, callback) => {
+  return callback(mockAdmin);
+});
 
+const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1:9092"] };
 const fetchCommittedOffsets = require("./fetch-committed-offsets");
 
-describe.skip("fetchCommittedOffsets", () => {
-  const mockFetchOffsets = mockKafkaConnections.kafkaJs.admin.fetchOffsets;
-  beforeEach(() => {
-    mockFetchOffsets.mockClear();
-  });
+describe("fetchCommittedOffsets", () => {
+  beforeEach(() => {});
+  it("Requests the offsets and parses them to integers", async () => {
+    mockFetchOffsets.mockResolvedValue([
+      { partition: 0, offset: "5" },
+      { partition: 0, offset: "10" },
+      { partition: 0, offset: "15" }
+    ]);
 
-  it("Should call describeConfigs with requested topic", async () => {
     const topicName = "topic1";
     const consumerGroupName = "group1";
-    await fetchCommittedOffsets(topicName, consumerGroupName);
 
-    expect(mockFetchOffsets).toBeCalledWith({
-      topic: topicName,
-      groupId: consumerGroupName
-    });
-  });
+    const expected = [
+      { partition: 0, committedOffset: 5 },
+      { partition: 0, committedOffset: 10 },
+      { partition: 0, committedOffset: 15 }
+    ];
+    const actual = await fetchCommittedOffsets(
+      topicName,
+      consumerGroupName,
+      mockKafkaConnectionConfig
+    );
 
-  it("Parses the offsets from strings to integers", async () => {
-    const topicName = "topic1";
-    const consumerGroupName = "group1";
-    await fetchCommittedOffsets(topicName, consumerGroupName);
-
-    expect(mockFetchOffsets).toBeCalledWith({
-      topic: topicName,
-      groupId: consumerGroupName
-    });
+    expect(actual).toEqual(expected);
   });
 });
