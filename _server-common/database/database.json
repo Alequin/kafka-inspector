@@ -3,8 +3,12 @@
     "driver": "sqlite3",
     "filename": "./_server-common/database/test-sqlite-database"
   },
-  "db": {
+  "development": {
     "driver": "sqlite3",
-    "filename": "./_server-common/database/sqlite-database"
+    "filename": "./_server-common/database/development-sqlite-database"
+  },
+  "production": {
+    "driver": "sqlite3",
+    "filename": "./_server-common/database/production-sqlite-database"
   }
 }

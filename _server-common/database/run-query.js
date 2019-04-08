@@ -1,10 +1,8 @@
 const sqlite3 = require("sqlite3").verbose();
-const { isTest } = require("server-common/config/environment");
+const { currentEnvironment } = require("server-common/config/environment");
 const database = require("./database.json");
 
-const db = new sqlite3.Database(
-  isTest ? database.test.filename : database.db.filename
-);
+const db = new sqlite3.Database(database[currentEnvironment].filename);
 
 const runQuery = async (query, values) => {
   return new Promise((resolve, reject) => {
