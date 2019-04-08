@@ -29,3 +29,4 @@ kafka-config.js
 _play*
 next.md
 dist
+*system-id.json

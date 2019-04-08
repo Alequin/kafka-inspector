@@ -3,6 +3,7 @@ require("./process-input-args");
 const { createServer } = require("http");
 const { currentEnvironment } = require("server-common/config/environment");
 const { appHtml, findInAssetFolder } = require("server-common/config/paths");
+const systemId = require("server-common/config/system-id");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -37,4 +38,5 @@ apolloServer.installSubscriptionHandlers(wrappedServer);
 wrappedServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log("Environment:", currentEnvironment);
+  console.log("System Id:", systemId());
 });
