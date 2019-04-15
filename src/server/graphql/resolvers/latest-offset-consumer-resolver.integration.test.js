@@ -1,4 +1,7 @@
 const { forEach } = require("lodash");
+jest.mock("server-common/config/system-id");
+const systemId = require("server-common/config/system-id");
+
 jest.mock("graphql-subscriptions");
 const { PubSub } = require("graphql-subscriptions");
 
@@ -54,6 +57,7 @@ describe("latestOffsetConsumerResolver", () => {
     mockPublish.mockClear();
     kafkaNodeConsumerGroup.mockClear();
     mockCloseKafkaNodeConsumer.mockClear();
+    systemId.mockClear();
 
     // clear all mock subscribed events
     forEach(mockSubscribedEvents, (_value, key) => {
@@ -61,7 +65,7 @@ describe("latestOffsetConsumerResolver", () => {
     });
   });
 
-  describe("when there is a matching subscription key exists", () => {
+  describe("when there is a matching subscription key", () => {
     const mockConsumerGroupConstructor = jest.fn();
 
     beforeEach(() => {
@@ -74,6 +78,9 @@ describe("latestOffsetConsumerResolver", () => {
         {},
         { topicName: mockTopicName, kafkaBrokers: mockBrokers }
       );
+
+      // Should not get the system id to use as the consumer group name
+      expect(systemId).not.toBeCalled();
       expect(kafkaNodeConsumerGroup).not.toHaveBeenCalled();
     });
 
@@ -88,7 +95,7 @@ describe("latestOffsetConsumerResolver", () => {
     });
   });
 
-  describe("when there is not a matching subscription key exists", () => {
+  describe("when there is not a matching subscription key", () => {
     it("returns the value given by asyncIterator", () => {
       const expected = mockAsyncIteratorReturnValue;
       const actual = latestOffsetConsumerResolver(
@@ -108,6 +115,9 @@ describe("latestOffsetConsumerResolver", () => {
       );
 
       jest.runOnlyPendingTimers();
+
+      // Should get the system id to use as the consumer group name
+      expect(systemId).toBeCalledTimes(1);
 
       expect(mockPublish).toHaveBeenCalledTimes(1);
       expect(mockPublish).toHaveBeenCalledWith(expectedSubscriptionKey, {

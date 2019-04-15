@@ -1,4 +1,5 @@
 const { first } = require("lodash");
+const systemId = require("../../config/system-id");
 const kafkaNodeConsumer = require("../kafka-connections/kafka-node-consumer");
 const validMaxOffsets = require("./valid-max-offsets");
 const removeTopicFromConsumer = require("./remove-topic-from-consumer");
@@ -78,7 +79,10 @@ const targetedConsumer = async (
           partition: first(partitionsToConsumerFrom),
           offset: minOffset
         }
-      ]
+      ],
+      config: {
+        groupId: systemId()
+      }
     },
     async consumer => {
       return await consumeMessage(

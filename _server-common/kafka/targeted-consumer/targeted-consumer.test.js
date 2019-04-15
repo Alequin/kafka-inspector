@@ -1,3 +1,5 @@
+const systemId = require("../../config/system-id");
+
 jest.mock("../kafka-connections/kafka-node-consumer");
 const kafkaNodeConsumer = require("../kafka-connections/kafka-node-consumer");
 
@@ -183,5 +185,31 @@ describe("targetedConsumer", () => {
     // Should pass the consumed message to the callback
     // as it is equal to / less than the maxOffset
     expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  it(`Provides the system Id as the consumer group id`, async () => {
+    const mockTopicOptions = {
+      topicName: "topic1",
+      partitionsToConsumerFrom: [0],
+      offsetRange: { min: 0, max: 10000 }
+    };
+    const mockKafkaConnectionConfig = { kafkaBrokers: ["broker1"] };
+
+    const mockMessages = [{ offset: 9, partition: 0 }];
+    mockOnConsumerMessage.mockImplementation((_eventType, callback) => {
+      mockMessages.forEach(callback);
+    });
+
+    const callback = jest.fn();
+
+    await targetedConsumer(
+      mockTopicOptions,
+      mockKafkaConnectionConfig,
+      callback
+    );
+
+    expect(kafkaNodeConsumer.mock.calls[0][1].config).toEqual({
+      groupId: systemId()
+    });
   });
 });

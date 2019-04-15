@@ -1,4 +1,4 @@
-const uuid = require("uuid/v4");
+const systemId = require("server-common/config/system-id");
 const { PubSub } = require("graphql-subscriptions");
 const { seconds } = require("server-common/time-to-milliseconds");
 const anySubscriptionsExistFor = require("./utils/any-subscriptions-exist-for");
@@ -43,7 +43,7 @@ const latestOffsetConsumerResolver = (_parent, { topicName, kafkaBrokers }) => {
 
   kafkaNodeConsumerGroup(
     { kafkaBrokers },
-    { topicsToConsumeFrom: [topicName], groupId: `k-inspect-${uuid()}` },
+    { topicsToConsumeFrom: [topicName], groupId: systemId() },
     async consumer =>
       await consumeMessages(consumer, subscriptionKey, messages => {
         pubSub.publish(subscriptionKey, {
