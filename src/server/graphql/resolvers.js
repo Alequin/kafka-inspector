@@ -2,9 +2,6 @@ const resolvers = {
   Subscription: {
     latestOffsetConsumer: {
       subscribe: require("./resolvers/latest-offset-consumer-resolver")
-    },
-    conditionalConsumer: {
-      subscribe: require("./resolvers/conditional-consumer-resolver")
     }
   },
   Mutation: {
@@ -13,7 +10,8 @@ const resolvers = {
   },
   Query: {
     storedClusters: require("./resolvers/stored-clusters-resolver"),
-    cluster: require("./resolvers/cluster-resolver")
+    cluster: require("./resolvers/cluster-resolver"),
+    conditionalConsumer: require("./resolvers/conditional-consumer-resolver")
   },
   Cluster: {
     brokers: require("./resolvers/brokers-resolver"),

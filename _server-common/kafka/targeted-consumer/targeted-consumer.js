@@ -22,8 +22,15 @@ const consumeMessage = (
   return new Promise(resolve => {
     consumer.on("message", async message => {
       const currentMaxOffset = maxOffsets[message.partition];
+      console.log("inner message");
 
       const isMessageWithinOffsetRange = message.offset <= currentMaxOffset;
+      console.log("TCL: message.offset", message.offset);
+      console.log("TCL: currentMaxOffset", currentMaxOffset);
+      console.log(
+        "TCL: isMessageWithinOffsetRange",
+        isMessageWithinOffsetRange
+      );
       if (isMessageWithinOffsetRange) {
         onMessageConsumedCallback(message, consumer);
       }
@@ -81,7 +88,8 @@ const targetedConsumer = async (
         }
       ],
       config: {
-        groupId: systemId()
+        groupId: systemId(),
+        fromOffset: true // Start from requested offset
       }
     },
     async consumer => {

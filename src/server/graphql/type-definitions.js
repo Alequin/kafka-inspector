@@ -32,6 +32,14 @@ const typeDefs = `
   type Query {
     storedClusters: [StoredCluster!]!
     cluster(kafkaBrokers: [String!]!): Cluster
+    conditionalConsumer(
+      kafkaBrokers: [String!]!
+      topicName: String!
+      partitions: [Int!]
+      minOffset: Int
+      maxOffset: Int
+      conditions: ConsumerConditions
+    ): ConditionalConsumerResults!
   }
 
   type Mutation {
@@ -44,14 +52,6 @@ const typeDefs = `
       kafkaBrokers: [String!]!
       topicName: String!
     ): [Message!]!
-    conditionalConsumer(
-      kafkaBrokers: [String!]!
-      topicName: String!
-      partitions: [Int!]
-      minOffset: Int
-      maxOffset: Int
-      conditions: ConsumerConditions
-    ): ConditionalConsumerResults!
   }
 `;
 
